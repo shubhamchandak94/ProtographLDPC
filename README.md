@@ -32,7 +32,7 @@ Implementation can be found at ./LinearCodes
     - All files named PipelineDefaultLibraryGenerated belongs to the control pipeline (LDPC matrix generated using default programs)
     - All files named PipelineDefaultPythonGenerated belongs to the Python pipeline
         - The result of this pipeline is to be compared to the result of the control pipeline in order to provide the basis for analysis
-
+---
 Note
 ---
 - Change run permissions for all necessary bash scripts before attempting to run any of the added processes
