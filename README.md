@@ -22,7 +22,7 @@ Implementation can be found at ./LinearCodes
     - The control LDPC matrix pipeline is constructed using the evenboth operation
     - All corresponding generator matrices are constructed in the dense format
     - All corruption is binary symmetric and follows the user-provided switch the probability
-    - decoding utilizes the prprp 1000000 process 
+    - Decoding utilizes the prprp 1000000 process 
 ```bash
 ./PipelineExecutor n-checks codeword-length/n-bits checks-per-bit error-probability
 ```
