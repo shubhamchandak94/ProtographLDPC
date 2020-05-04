@@ -13,14 +13,6 @@
 #
 # extract message
 #
-# results:
-# display original
-# display codeword
-# display corrupted
-# display % difference
-# display decoded for each
-# display % difference from original codeword for each
-#
 # arguments:
 # parity-check-width, parity-check-height, 1s per col, error rate
 #
