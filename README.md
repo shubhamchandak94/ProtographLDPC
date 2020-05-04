@@ -35,7 +35,7 @@ Implementation can be found at ./LinearCodes
 
 Note
 ---
-- change run permissions for all necessary bash scripts before attempting to run any of the added processes
+- Change run permissions for all necessary bash scripts before attempting to run any of the added processes
     - ./MakePCHK
     - ./MakePCHKT
     - ./PipelineExecutor
