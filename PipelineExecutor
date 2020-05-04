@@ -1,0 +1,80 @@
+# Process:
+#
+# create ldpc matrices (width, height)
+# - create using both personal implementation and library implementation
+#
+# create corresponding generator matrices
+#
+# encode message with generator matrices
+#
+# transmit default message
+#
+# decode default message with prprp max 100000
+#
+# extract message
+#
+# results:
+# display original
+# display codeword
+# display corrupted
+# display % difference
+# display decoded for each
+# display % difference from original codeword for each
+#
+# arguments:
+# parity-check-width, parity-check-height, 1s per col, error rate
+#
+# implied:
+# library ldpc construction: evenboth
+# generator construction method: dense
+# corruption: binary symmetric
+
+clear
+
+echo "generating parity check matrix through default implementation..."
+./make-ldpc ./PipelineRES/ParityCheckMatrices/PipelineDefaultLibraryGenerated ${2} ${1} 1 evenboth ${3}
+echo ""
+
+echo "generating parity check matrix through python..."
+./MakePCHKT ./PipelineRES/ParityCheckMatrices/PipelineDefaultPythonGenerated ${1} ${2}
+echo ""
+
+echo "creating generator matrix from library generated parity check matrix..."
+./make-gen ./PipelineRES/ParityCheckMatrices/PipelineDefaultLibraryGenerated ./PipelineRES/GeneratorMatrices/PipelineDefaultLibraryGenerated dense
+echo ""
+
+echo "creating generator matrix from python generated parity check matrix..."
+./make-gen ./PipelineRES/ParityCheckMatrices/PipelineDefaultPythonGenerated ./PipelineRES/GeneratorMatrices/PipelineDefaultPythonGenerated dense
+echo ""
+
+echo "encoding message with library generated generator matrix..."
+./encode ./PipelineRES/ParityCheckMatrices/PipelineDefaultLibraryGenerated ./PipelineRES/GeneratorMatrices/PipelineDefaultLibraryGenerated ./PipelineRES/Message/PipelineDefault ./PipelineRES/Codewords/PipelineDefaultLibraryGenerated
+echo ""
+
+echo "encoding message with python generated generator matrix..."
+./encode ./PipelineRES/ParityCheckMatrices/PipelineDefaultPythonGenerated ./PipelineRES/GeneratorMatrices/PipelineDefaultPythonGenerated ./PipelineRES/Message/PipelineDefault ./PipelineRES/Codewords/PipelineDefaultPythonGenerated
+echo ""
+
+echo "transmitting library encoded message with error probability ${4}..."
+./transmit ./PipelineRES/Codewords/PipelineDefaultLibraryGenerated ./PipelineRES/ReceivedTransmissions/PipelineDefaultLibraryGenerated 1 bsc ${4}
+echo ""
+
+echo "transmitting python encoded messages with error probability ${4}..."
+./transmit ./PipelineRES/Codewords/PipelineDefaultPythonGenerated ./PipelineRES/ReceivedTransmissions/PipelineDefaultPythonGenerated 1 bsc ${4}
+echo ""
+
+echo "decoding transmission for library generated parity matrix..."
+./decode ./PipelineRES/ParityCheckMatrices/PipelineDefaultLibraryGenerated ./PipelineRES/ReceivedTransmissions/PipelineDefaultLibraryGenerated ./PipelineRES/DecodedTransmissions/PipelineDefaultLibraryGenerated bsc ${4} prprp 1000000
+echo ""
+
+echo "decoding transmission for python generated parity matrix..."
+./decode ./PipelineRES/ParityCheckMatrices/PipelineDefaultPythonGenerated ./PipelineRES/ReceivedTransmissions/PipelineDefaultPythonGenerated ./PipelineRES/DecodedTransmissions/PipelineDefaultPythonGenerated bsc ${4} prprp 1000000
+echo ""
+
+echo "extracting both messages from decoded codewords..."
+./extract ./PipelineRES/GeneratorMatrices/PipelineDefaultLibraryGenerated ./PipelineRES/DecodedTransmissions/PipelineDefaultLibraryGenerated ./PipelineRES/ExtractedMessages/PipelineDefaultLibraryGenerated
+./extract ./PipelineRES/GeneratorMatrices/PipelineDefaultPythonGenerated ./PipelineRES/DecodedTransmissions/PipelineDefaultPythonGenerated ./PipelineRES/ExtractedMessages/PipelineDefaultPythonGenerated
+echo "done"
+echo ""
+
+

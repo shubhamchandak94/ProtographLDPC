@@ -2,6 +2,29 @@ import random
 import sys
 
 
+# the equivalent of the submatrix in Gallagher's construction
+class SubGraph:
+
+    def __init__(self, n, r):
+
+        # creates graph with appropriate no. check nodes
+        self.map = {}
+        for i in range(int(n / r)):
+            self.map[i] = []
+
+        # defines all possible indices, randomizes for sparse parity-codeword mapping
+        codeword_indices = list(range(0, n))
+        random.shuffle(codeword_indices)
+
+        # assigns codeword bits to parity check equations
+        for i in range(int(n / r)):
+            for j in range(int(r)):
+                self.map[i].append(codeword_indices[i * r + j])
+
+    def __repr__(self):
+        return str(self.map)
+
+
 # because of recurring integer division, no warning is given if provided (n, r) configuration is unattainable
 class RegularLDPC:
 
@@ -44,7 +67,7 @@ class RegularLDPC:
 
         # getting width and height
         if len(self.args) == 2:
-            out += str(self.args[0]) + " " + str(self.args[1]) + " "
+            out += str(self.args[1]) + " " + str(self.args[0]) + " "
         elif len(self.args) == 3:
             out += str(self.args[0]) + " " + str(int(self.args[0] * self.args[1] / self.args(2))) + " "
 
@@ -109,33 +132,12 @@ class RegularLDPC:
         return largest
 
 
-# the equivalent of the submatrix in Gallagher's construction
-class SubGraph:
-
-    def __init__(self, n, r):
-
-        # creates graph with appropriate no. check nodes
-        self.map = {}
-        for i in range(int(n / r)):
-            self.map[i] = []
-
-        # defines all possible indices, randomizes for sparse parity-codeword mapping
-        codeword_indices = list(range(0, n))
-        random.shuffle(codeword_indices)
-
-        # assigns codeword bits to parity check equations
-        for i in range(int(n / r)):
-            for j in range(int(r)):
-                self.map[i].append(codeword_indices[i * r + j])
-
-    def __repr__(self):
-        return str(self.map)
-
-
 try:
     # parsing arguments
     ldpc_args = [int(i) for i in sys.argv[2:len(sys.argv)]]
+
     ldpcCode = RegularLDPC(ldpc_args)
+    # print(ldpcCode.get_c_executable(sys.argv[1]))
 
     f = open("transfer.txt", "w")
     f.write(ldpcCode.get_c_executable(sys.argv[1]))
