@@ -3,6 +3,7 @@ A library developed for the exploration of LDPC matrices. Built on radfordneal's
 
 Additions to the base library 
 ---
+---
 - An implementation of LDPC matrices directly from factor graphs. Written in Python\
 Implementation can be found at ./LDPC-TannerGraphs 
 ```bash
