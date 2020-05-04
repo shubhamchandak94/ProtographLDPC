@@ -31,8 +31,8 @@ Implementation can be found at ./LinearCodes
 - Analyzing the results
     - the original message is stored at ./PipelineRES/Message/PipelineDefault
     - the resulting message after transmission and decoding is stored at ./PipelineRES/ExtractedMessage
-    - All files named PipelineDefaultLibraryGenerated belongs to the control pipeline (LDPC matrix generated using default programs)
-    - All files named PipelineDefaultPythonGenerated belongs to the Python pipeline
+    - All files named PipelineDefaultLibraryGenerated belong to the control pipeline (LDPC matrix generated using default programs)
+    - All files named PipelineDefaultPythonGenerated belong to the Python pipeline
         - The result of this pipeline is to be compared to the result of the control pipeline in order to provide the basis for analysis
 ---
 Note
