@@ -1,0 +1,3 @@
+[submodule "LDPC-codes"]
+	path = LDPC-codes
+	url = https://github.com/shubhamchandak94/LDPC-codes/
