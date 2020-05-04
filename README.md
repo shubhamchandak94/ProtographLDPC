@@ -5,13 +5,13 @@ The README for the base library can be found [here](https://github.com/radfordne
 Additions to the base library 
 ---
 ---
-- An implementation of LDPC matrices directly from factor graphs. Written in Python\
+- An implementation of LDPC matrices directly from factor graphs. Written in Python.\
 Implementation can be found at ./LDPC-TannerGraphs 
 ```bash
 ./MakePCHKT parity-matrix-file [n-checks, codeword-length/n-bits | codeword-length, checks-per-bit, bits-per-check]
 ```
 ---
-- An implementation of LDPC matrices directly to matrix form. Written in Java\ 
+- An implementation of LDPC matrices directly to matrix form. Written in Java.\
 Implementation can be found at ./LinearCodes 
 ```bash
 ./MakePCHK parity-matrix-file [n-checks, codeword-length/n-bits | codeword-length, checks-per-bit, bits-per-check] 
