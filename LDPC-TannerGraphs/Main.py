@@ -63,7 +63,7 @@ class RegularLDPC:
         return matrix
 
     def get_c_executable(self, output_file):
-        out = "./make-pchk " + output_file + " "
+        out = "./LDPC-codes/make-pchk " + output_file + " "
 
         # getting width and height
         if len(self.args) == 2:
