@@ -11,6 +11,12 @@ To update submodule in existing clone, run
 git pull --recurse-submodules
 git submodule update --init --recursive
 ```
+Install LDPC-codes submodule:
+```
+cd LDPC-codes/
+make
+cd ..
+```
 
 Additions to the base library
 ---
