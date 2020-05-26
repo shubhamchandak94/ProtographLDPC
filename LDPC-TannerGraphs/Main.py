@@ -34,7 +34,6 @@ class RegularLDPC:
 
         # order provided: w, h
         if len(args) == 2:
-
             if RegularLDPC.gcd(args[0], args[1]) == min(args[0], args[1]) and RegularLDPC.gcd2(args[0], args[1]) != 1:
                 self.tanner_graph = RegularLDPC.get_parity_check_graph(args[0], int(
                     args[0] / RegularLDPC.gcd2(args[0], args[1])), int(args[1] / RegularLDPC.gcd2(args[0], args[1])))
@@ -42,12 +41,21 @@ class RegularLDPC:
                 self.tanner_graph = RegularLDPC.get_parity_check_graph(args[0],
                                                                        int(args[0] / RegularLDPC.gcd(args[0], args[1])),
                                                                        int(args[1] / RegularLDPC.gcd(args[0], args[1])))
-
         # order provided: n, c, r
         elif len(args) == 3:
             self.tanner_graph = RegularLDPC.get_parity_check_graph(args[0], args[2], args[1])
+
+        # incorrect args provided
         else:
             return
+
+        # define necessary fields
+        if len(args) == 2:
+            self.width = int(args[0])
+            self.height = int(args[1])
+        else:
+            self.width = int(args[0])
+            self.height = int(args[0] * args[1] / args[1])
 
     def get_matrix_representation(self):
         matrix = []
@@ -62,6 +70,7 @@ class RegularLDPC:
         RegularLDPC.normalize(matrix)
         return matrix
 
+    # generates a c program call which uses make-ldpc to generate an equivalent ldpc matrix
     def get_c_executable(self, output_file):
         out = "./LDPC-codes/make-pchk " + output_file + " "
 
@@ -69,7 +78,7 @@ class RegularLDPC:
         if len(self.args) == 2:
             out += str(self.args[1]) + " " + str(self.args[0]) + " "
         elif len(self.args) == 3:
-            out += str(self.args[0]) + " " + str(int(self.args[0] * self.args[1] / self.args(2))) + " "
+            out += str(self.args[0]) + " " + str(int(self.args[0] * self.args[1] / self.args[2])) + " "
 
         # getting all 1s positions
         for i in range(len(self.tanner_graph)):
@@ -125,6 +134,7 @@ class RegularLDPC:
 
     @staticmethod
     def largest_row(arr):
+
         largest = 0
         for row in arr:
             if len(row) > largest:
@@ -132,15 +142,58 @@ class RegularLDPC:
         return largest
 
 
-try:
-    # parsing arguments
-    ldpc_args = [int(i) for i in sys.argv[2:len(sys.argv)]]
+# file should be opened with the wb mode
+def intio_write(file, value):
+    for i in range(3):
+        b = value & 0xff
 
+        bAsBinary = int(str(bin(b)), 2)
+        binaryBtoBytes = bAsBinary.to_bytes(1, 'little')
+
+        file.write(binaryBtoBytes)
+
+        value >>= 8
+
+    if value > 0:
+        b = value
+    else:
+        b = (value + 256) % 256
+
+    bAsBinary = int(str(bin(b)), 2)
+    binaryBtoBytes = bAsBinary.to_bytes(1, 'little')
+    file.write(binaryBtoBytes)
+
+
+try:
+    # initializing tanner rep
+    ldpc_args = [int(i) for i in sys.argv[2:len(sys.argv)]]
     ldpcCode = RegularLDPC(ldpc_args)
+
+    # print(vars(ldpcCode))
+
     # print(ldpcCode.get_c_executable(sys.argv[1]))
 
-    f = open("transfer.txt", "w")
-    f.write(ldpcCode.get_c_executable(sys.argv[1]))
-    f.close()
+    # using c executable string to create the ldpc matrix file
+    # f = open("transfer.txt", "w")
+    # f.write(ldpcCode.get_c_executable(sys.argv[1]))
+    # f.close()
+
+    # writing data directly to file
+    # file = open(sys.argv[1], "w+")
+    # file.close()
+
+    with open(sys.argv[1], "wb") as f:
+
+        intio_write(f, (ord('P') << 8) + 0x80)
+
+        intio_write(f, ldpcCode.height)
+        intio_write(f, ldpcCode.width)
+
+        for key in ldpcCode.tanner_graph:
+            intio_write(f, -(key + 1))
+            for value in sorted(ldpcCode.tanner_graph.get(key)):
+                intio_write(f, (value + 1))
+
+        intio_write(f, 0)
 except:
     print("Usage: MakePCHKT parity-check-file [width, height | codeword legnth, 1s per col, 1s per row]")
