@@ -53,14 +53,14 @@ python3 -u compute_error_rate.py $tempdir/default.decoded
 echo ""
 
 echo "generating parity check matrix through python..."
-./MakePCHKT $tempdir/python.pchk ${1} ${2}
+python3 ./LDPC-TannerGraphs/Main.py $tempdir/python.pchk ${1} ${2}
 echo ""
 
 echo "decoding transmission for library generated parity matrix..."
 ./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
 echo ""
 
-echo "computing block error rate and bit error rate (at codeword level) for library generated parity matrix"
+echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix"
 python3 -u compute_error_rate.py $tempdir/python.decoded
 echo ""
 
