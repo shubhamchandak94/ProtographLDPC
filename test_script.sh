@@ -25,7 +25,7 @@ if [ "$#" -ne 6 ]; then
 fi
 
 # read arguments
-n_bits=$1 # number of codeword (n)
+n_bits=$1 # length of codeword (n)
 n_checks=$2 # set according to the desired rate (this is n-k)
 n_ones_column=$3 # should generally set to 3
 error_rate=$4 # BSC error rate
@@ -52,17 +52,30 @@ echo "computing block error rate and bit error rate (at codeword level) for libr
 python3 -u compute_error_rate.py $tempdir/default.decoded
 echo ""
 
-echo "generating parity check matrix through python..."
-python3 ./LDPC-TannerGraphs/Main.py $tempdir/python.pchk ${1} ${2}
+echo "generating parity check matrix through python (Gallager construction)..."
+python3 ./LDPC-TannerGraphs/Main.py $tempdir/pythong.pchk gallager ${1} ${2}
 echo ""
 
-echo "decoding transmission for library generated parity matrix..."
-./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
+echo "decoding transmission for python generated parity matrix (Gallager construction)..."
+./LDPC-codes/decode $tempdir/pythong.pchk $tempdir/received $tempdir/pythong.decoded bsc $error_rate prprp $n_iterations
 echo ""
 
-echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix"
-python3 -u compute_error_rate.py $tempdir/python.decoded
+echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (Gallager construction)"
+python3 -u compute_error_rate.py $tempdir/pythong.decoded
 echo ""
+
+echo "generating parity check matrix through python (Neal construction)..."
+python3 ./LDPC-TannerGraphs/Main.py $tempdir/pythonn.pchk neal ${1} ${2}
+echo ""
+
+echo "decoding transmission for python generated parity matrix (Neal construction)..."
+./LDPC-codes/decode $tempdir/pythonn.pchk $tempdir/received $tempdir/pythonn.decoded bsc $error_rate prprp $n_iterations
+echo ""
+
+echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (Neal construction)"
+python3 -u compute_error_rate.py $tempdir/pythonn.decoded
+echo ""
+
 
 # Delete temporary directory
 rm -rf $tempdir

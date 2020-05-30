@@ -1,6 +1,6 @@
 import random
 import sys
-
+import os
 
 # the equivalent of the submatrix in Gallagher's construction
 class SubGraph:
@@ -36,14 +36,16 @@ class RegularLDPC:
         if len(args) == 2:
             if RegularLDPC.gcd(args[0], args[1]) == min(args[0], args[1]) and RegularLDPC.gcd2(args[0], args[1]) != 1:
                 self.tanner_graph = RegularLDPC.get_parity_check_graph(args[0], int(
-                    args[0] / RegularLDPC.gcd2(args[0], args[1])), int(args[1] / RegularLDPC.gcd2(args[0], args[1])), construction)
+                    args[0] / RegularLDPC.gcd2(args[0], args[1])), int(args[1] / RegularLDPC.gcd2(args[0], args[1])),
+                                                                       construction)
             else:
                 self.tanner_graph = RegularLDPC.get_parity_check_graph(args[0],
                                                                        int(args[0] / RegularLDPC.gcd(args[0], args[1])),
-                                                                       int(args[1] / RegularLDPC.gcd(args[0], args[1])), construction)
+                                                                       int(args[1] / RegularLDPC.gcd(args[0], args[1])),
+                                                                       construction)
         # order provided: n, c, r
         elif len(args) == 3:
-            self.tanner_graph = RegularLDPC.get_parity_check_graph(args[0], args[2], args[1])
+            self.tanner_graph = RegularLDPC.get_parity_check_graph(args[0], args[2], args[1], construction)
 
         # incorrect args provided
         else:
@@ -56,6 +58,7 @@ class RegularLDPC:
         else:
             self.width = int(args[0])
             self.height = int(args[0] * args[1] / args[1])
+
 
     def get_matrix_representation(self):
         matrix = []
@@ -87,9 +90,9 @@ class RegularLDPC:
 
         return out[0:len(out) - 1]
 
-
     @staticmethod
     def get_parity_check_graph(n, r, c, method):
+
         if method:
             submatrices = []
             for i in range(c):
@@ -98,34 +101,33 @@ class RegularLDPC:
         else:
             # create base tanner graph
             tanner_graph = {}
+            counts = {}  # stores weight of each row key
             for i in range(int(n * c / r)):
-                tanner_graph[i] = i
-
-            available_rows = [i for i in range(int(n * c / r))] # keeps track of which rows can increase weightage
-            counts = {} # stores weight of each row key
+                tanner_graph[i] = []
+                counts[i] = 0
 
             col = 0
+            available_rows = [i for i in range(int(n * c / r))]  # keeps track of which rows can increase weightage
             while len(available_rows) > 0:
 
-                col_indices = []
-                for j in range(c):
-                    index = random.choice(available_rows)
-                    while index in col_indices:
-                        index = random.choice(available_rows)
+                col_indices = random_list(available_rows, c)
+
+                for index in col_indices:
+                    tanner_graph[index].append(col)
+                    counts[index] += 1
+
+                indices = []
+                for index in counts:
+                    if counts[index] == r:
+                        available_rows.remove(index)
+                        indices.append(index)
+
+                # separated to avoid io error with dict operations
+                for index in indices:
+                    del counts[index]
 
                 col += 1
-
-    # choose random n elements from list, selected always entered as []
-    @staticmethod
-    def random_list(list, n, selected):
-        if n == 0:
-            return selected
-        else:
-            randint = random.choice(list)
-            selected.append(randint)
-            list.remove(randint)
-            return RegularLDPC.random_list(list, n - 1, selected)
-
+            return tanner_graph
 
     @staticmethod
     def merge(submatrices, n, r):
@@ -175,6 +177,27 @@ class RegularLDPC:
         return largest
 
 
+# UTILS
+# chooses random n elements from to_pass, does not alter passed args
+def random_list(list, n):
+    to_pass = list.copy()
+    return rand_list(to_pass, n, [])
+
+# choose random n elements from list, selected always entered as []: alters arguments
+def rand_list(list, n, selected):
+    if n == 0 or len(list) == 0:
+        return selected
+    else:
+        randint = random.choice(list)
+        selected.append(randint)
+        list.remove(randint)
+        return rand_list(list, n - 1, selected)
+
+# display a parity check matrix
+def print_matrix(matrix):
+    for row in matrix:
+        print(row)
+
 # file should be opened with the wb mode
 def intio_write(file, value):
     for i in range(3):
@@ -197,27 +220,17 @@ def intio_write(file, value):
     file.write(binaryBtoBytes)
 
 
-print(RegularLDPC.random_list([i for i in range(10)], 3, []))
-exit()
+def main():
+    global construction_type
 
+    # initializing tanner rep, 2nd argument is construction method
+    ldpc_dimension_args = [int(i) for i in sys.argv[3:len(sys.argv)]]
+    if sys.argv[2] == "gallager":
+        construction_type = True
+    elif sys.argv[2] == "neal":
+        construction_type = False
 
-try:
-    # initializing tanner rep
-    ldpc_args = [int(i) for i in sys.argv[2:len(sys.argv)]]
-    ldpcCode = RegularLDPC(ldpc_args, False)
-
-    # print(vars(ldpcCode))
-
-    # print(ldpcCode.get_c_executable(sys.argv[1]))
-
-    # using c executable string to create the ldpc matrix file
-    # f = open("transfer.txt", "w")
-    # f.write(ldpcCode.get_c_executable(sys.argv[1]))
-    # f.close()
-
-    # writing data directly to file
-    # file = open(sys.argv[1], "w+")
-    # file.close()
+    ldpcCode = RegularLDPC(ldpc_dimension_args, construction_type)
 
     with open(sys.argv[1], "wb") as f:
 
@@ -232,5 +245,5 @@ try:
                 intio_write(f, (value + 1))
 
         intio_write(f, 0)
-except:
-    print("Usage: MakePCHKT parity-check-file [width, height | codeword legnth, 1s per col, 1s per row]")
+
+main()
