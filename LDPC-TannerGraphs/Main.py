@@ -28,7 +28,7 @@ class SubGraph:
 # because of recurring integer division, no warning is given if provided (n, r) configuration is unattainable
 class RegularLDPC:
 
-    def __init__(self, args):
+    def __init__(self, args, construction):
 
         self.args = args
 
@@ -36,11 +36,11 @@ class RegularLDPC:
         if len(args) == 2:
             if RegularLDPC.gcd(args[0], args[1]) == min(args[0], args[1]) and RegularLDPC.gcd2(args[0], args[1]) != 1:
                 self.tanner_graph = RegularLDPC.get_parity_check_graph(args[0], int(
-                    args[0] / RegularLDPC.gcd2(args[0], args[1])), int(args[1] / RegularLDPC.gcd2(args[0], args[1])))
+                    args[0] / RegularLDPC.gcd2(args[0], args[1])), int(args[1] / RegularLDPC.gcd2(args[0], args[1])), construction)
             else:
                 self.tanner_graph = RegularLDPC.get_parity_check_graph(args[0],
                                                                        int(args[0] / RegularLDPC.gcd(args[0], args[1])),
-                                                                       int(args[1] / RegularLDPC.gcd(args[0], args[1])))
+                                                                       int(args[1] / RegularLDPC.gcd(args[0], args[1])), construction)
         # order provided: n, c, r
         elif len(args) == 3:
             self.tanner_graph = RegularLDPC.get_parity_check_graph(args[0], args[2], args[1])
@@ -87,12 +87,45 @@ class RegularLDPC:
 
         return out[0:len(out) - 1]
 
+
     @staticmethod
-    def get_parity_check_graph(n, r, c):
-        submatrices = []
-        for i in range(c):
-            submatrices.append(SubGraph(n, r))
-        return RegularLDPC.merge(submatrices, n, r)
+    def get_parity_check_graph(n, r, c, method):
+        if method:
+            submatrices = []
+            for i in range(c):
+                submatrices.append(SubGraph(n, r))
+            return RegularLDPC.merge(submatrices, n, r)
+        else:
+            # create base tanner graph
+            tanner_graph = {}
+            for i in range(int(n * c / r)):
+                tanner_graph[i] = i
+
+            available_rows = [i for i in range(int(n * c / r))] # keeps track of which rows can increase weightage
+            counts = {} # stores weight of each row key
+
+            col = 0
+            while len(available_rows) > 0:
+
+                col_indices = []
+                for j in range(c):
+                    index = random.choice(available_rows)
+                    while index in col_indices:
+                        index = random.choice(available_rows)
+
+                col += 1
+
+    # choose random n elements from list, selected always entered as []
+    @staticmethod
+    def random_list(list, n, selected):
+        if n == 0:
+            return selected
+        else:
+            randint = random.choice(list)
+            selected.append(randint)
+            list.remove(randint)
+            return RegularLDPC.random_list(list, n - 1, selected)
+
 
     @staticmethod
     def merge(submatrices, n, r):
@@ -164,10 +197,14 @@ def intio_write(file, value):
     file.write(binaryBtoBytes)
 
 
+print(RegularLDPC.random_list([i for i in range(10)], 3, []))
+exit()
+
+
 try:
     # initializing tanner rep
     ldpc_args = [int(i) for i in sys.argv[2:len(sys.argv)]]
-    ldpcCode = RegularLDPC(ldpc_args)
+    ldpcCode = RegularLDPC(ldpc_args, False)
 
     # print(vars(ldpcCode))
 
