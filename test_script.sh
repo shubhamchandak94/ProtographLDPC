@@ -30,7 +30,9 @@ n_checks=$2 # set according to the desired rate (this is n-k)
 n_ones_column=$3 # should generally set to 3
 error_rate=$4 # BSC error rate
 n_blocks=$5 # number of blocks to get estimate of bit/block error rate
-n_iterations=$6 # number of LDPC iterations
+n_iterations=$6 # number of LDPC iterations in prprp decoding
+
+clear
 
 # create temporary directory
 tempdir=$(mktemp -d)
@@ -38,6 +40,10 @@ echo "temporary directory $tempdir"
 
 echo "transmitting all-zero codeword with error probability ${4}..."
 ./LDPC-codes/transmit $n_bits"x"$n_blocks $tempdir/received 1 bsc $error_rate
+echo ""
+
+echo "computing block error rate and bit error rate (at codeword level) for recieved message before decoding"
+python3 -u compute_error_rate.py $tempdir/received
 echo ""
 
 echo "generating parity check matrix through default implementation..."
@@ -52,30 +58,31 @@ echo "computing block error rate and bit error rate (at codeword level) for libr
 python3 -u compute_error_rate.py $tempdir/default.decoded
 echo ""
 
+
 echo "generating parity check matrix through python (Gallager construction)..."
-python3 ./LDPC-TannerGraphs/Main.py $tempdir/pythong.pchk gallager ${1} ${2}
+python3 ./LDPC-TannerGraphs/Main.py $tempdir/python.pchk gallager ${1} ${2}
 echo ""
 
 echo "decoding transmission for python generated parity matrix (Gallager construction)..."
-./LDPC-codes/decode $tempdir/pythong.pchk $tempdir/received $tempdir/pythong.decoded bsc $error_rate prprp $n_iterations
+./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
 echo ""
 
 echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (Gallager construction)"
-python3 -u compute_error_rate.py $tempdir/pythong.decoded
+python3 -u compute_error_rate.py $tempdir/python.decoded
 echo ""
 
+
 echo "generating parity check matrix through python (Neal construction)..."
-python3 ./LDPC-TannerGraphs/Main.py $tempdir/pythonn.pchk neal ${1} ${2}
+python3 ./LDPC-TannerGraphs/Main.py $tempdir/python.pchk neal ${1} ${2}
 echo ""
 
 echo "decoding transmission for python generated parity matrix (Neal construction)..."
-./LDPC-codes/decode $tempdir/pythonn.pchk $tempdir/received $tempdir/pythonn.decoded bsc $error_rate prprp $n_iterations
+./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
 echo ""
 
 echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (Neal construction)"
-python3 -u compute_error_rate.py $tempdir/pythonn.decoded
+python3 -u compute_error_rate.py $tempdir/python.decoded
 echo ""
-
 
 # Delete temporary directory
 rm -rf $tempdir
