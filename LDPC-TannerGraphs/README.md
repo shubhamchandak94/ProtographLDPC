@@ -4,8 +4,8 @@ Where n: codeword length, r: weight of each row, c: weight of each column
 ## Gallager's Construciton
 The eventual parity check matrix is a combination of multiple matrices of column weight 1 and row weight r.
 Each of these submatrices is constructed such that each row contains contains r 1's and each column contains one 1. <br/>
-
-####Example for n=10, r=5, c=3
+<br/>
+Example for n=10, r=5, c=3 <br/>
 1111100000 <br/>
 0000011111 <br/>
 
