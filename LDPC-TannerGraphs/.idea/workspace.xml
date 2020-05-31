@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b417734e-80e3-441d-8a30-ce9719c8dbfd" name="Default Changelist" comment="Implemented direct construction of ldpc matrices in machine readable">
+      <change afterPath="$PROJECT_DIR$/ImplementedConstructions.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../LDPC-codes" beforeDir="false" afterPath="$PROJECT_DIR$/../LDPC-codes" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../test_script.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../test_script.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,6 +82,7 @@
       <workItem from="1590524319601" duration="5427000" />
       <workItem from="1590785108916" duration="9019000" />
       <workItem from="1590873334849" duration="312000" />
+      <workItem from="1590885201612" duration="990000" />
     </task>
     <task id="LOCAL-00001" summary="Implemented direct construction of ldpc matrices in machine readable">
       <created>1590536729990</created>
