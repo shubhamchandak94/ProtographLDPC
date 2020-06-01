@@ -25,7 +25,9 @@ class SubGraph:
         return str(self.map)
 
 
-# because of recurring integer division, no warning is given if provided (n, r) configuration is unattainable
+# because of recurring integer division, no warning is given if provided (n, r) configuration is unattainable due to
+# the nature of each construction that the width is significantly greater than the height of the matrix rep,
+# repeated rows are not a concern
 class RegularLDPC:
 
     def __init__(self, args, construction):
@@ -89,6 +91,15 @@ class RegularLDPC:
                 out += str(i) + ":" + str(self.tanner_graph[i][j]) + " "
 
         return out[0:len(out) - 1]
+
+    def has_repeated_rows(self):
+        for i in range(0, len(self.tanner_graph) - 1):
+            for j in range(i + 1, len(self.tanner_graph)):
+                if self.tanner_graph[i] == self.tanner_graph[j]:
+                    print("row " + str(i) + " and row " + str(j) + " are identical")
+                    return True
+        return False
+
 
     @staticmethod
     def get_parity_check_graph(n, r, c, method):
@@ -245,5 +256,6 @@ def main():
                 intio_write(f, (value + 1))
 
         intio_write(f, 0)
+
 
 main()
