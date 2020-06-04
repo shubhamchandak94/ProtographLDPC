@@ -3,6 +3,9 @@ import sys
 import os
 
 # the equivalent of the submatrix in Gallagher's construction
+import time
+
+
 class SubGraph:
 
     def __init__(self, n, r):
@@ -61,7 +64,6 @@ class RegularLDPC:
             self.width = int(args[0])
             self.height = int(args[0] * args[1] / args[1])
 
-
     def get_matrix_representation(self):
         matrix = []
         for i in range(len(self.tanner_graph)):
@@ -100,16 +102,16 @@ class RegularLDPC:
                     return True
         return False
 
-
     @staticmethod
     def get_parity_check_graph(n, r, c, method):
 
-        if method:
+        if method == 1:
             submatrices = []
             for i in range(c):
                 submatrices.append(SubGraph(n, r))
             return RegularLDPC.merge(submatrices, n, r)
-        else:
+
+        elif method == 2:
             # create base tanner graph
             tanner_graph = {}
             counts = {}  # stores weight of each row key
@@ -138,6 +140,37 @@ class RegularLDPC:
                     del counts[index]
 
                 col += 1
+            return tanner_graph
+
+        # main difference from neal construction:
+        #    In Neal construction row indices given (index amongst rows)
+        #    Here col indices given (index amongst cols)
+        # TODO find out how to eliminate extra entry
+        elif method == 3:
+
+            tanner_graph = {}
+            for i in range(int(n * c / r)):
+                tanner_graph[i] = []
+
+            width = n
+            height = int(n * c / r)
+
+            # all possible 1s locations (index in column)
+            available_indices = []
+
+            k = n * c
+            for i in range(k - 1, -1, -1):
+                available_indices.append(i % width)
+
+            for i in range(height):
+                for j in range(r):
+
+                    random_index = random.choice(range(len(available_indices)))
+                    while tanner_graph.get(i).count(available_indices[random_index]) != 0 and len(available_indices) > 1:
+                        random_index = random.choice(range(len(available_indices)))
+
+                    tanner_graph.get(i).append(available_indices.pop(random_index))
+
             return tanner_graph
 
     @staticmethod
@@ -194,6 +227,7 @@ def random_list(list, n):
     to_pass = list.copy()
     return rand_list(to_pass, n, [])
 
+
 # choose random n elements from list, selected always entered as []: alters arguments
 def rand_list(list, n, selected):
     if n == 0 or len(list) == 0:
@@ -204,10 +238,12 @@ def rand_list(list, n, selected):
         list.remove(randint)
         return rand_list(list, n - 1, selected)
 
+
 # display a parity check matrix
 def print_matrix(matrix):
     for row in matrix:
         print(row)
+
 
 # file should be opened with the wb mode
 def intio_write(file, value):
@@ -237,9 +273,11 @@ def main():
     # initializing tanner rep, 2nd argument is construction method
     ldpc_dimension_args = [int(i) for i in sys.argv[3:len(sys.argv)]]
     if sys.argv[2] == "gallager":
-        construction_type = True
-    elif sys.argv[2] == "neal":
-        construction_type = False
+        construction_type = 1
+    elif sys.argv[2] == "random":
+        construction_type = 2
+    elif sys.argv[2] == "evenboth":
+        construction_type = 3
 
     ldpcCode = RegularLDPC(ldpc_dimension_args, construction_type)
 
@@ -256,6 +294,12 @@ def main():
                 intio_write(f, (value + 1))
 
         intio_write(f, 0)
+
+    # ldpcCode = RegularLDPC([60, 20], 3)
+    #
+    # matrix = ldpcCode.get_matrix_representation()
+    # for row in matrix:
+    #     print(row)
 
 
 main()
