@@ -72,17 +72,31 @@ python3 -u compute_error_rate.py $tempdir/python.decoded
 echo ""
 
 
-echo "generating parity check matrix through python (Neal construction)..."
-python3 ./LDPC-TannerGraphs/Main.py $tempdir/python.pchk neal ${1} ${2}
+echo "generating parity check matrix through python (construction 2)..."
+python3 ./LDPC-TannerGraphs/Main.py $tempdir/python.pchk random ${1} ${2}
 echo ""
 
-echo "decoding transmission for python generated parity matrix (Neal construction)..."
+echo "decoding transmission for python generated parity matrix (construction 2)..."
 ./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
 echo ""
 
-echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (Neal construction)"
+echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (construction 2)"
 python3 -u compute_error_rate.py $tempdir/python.decoded
 echo ""
+
+
+echo "generating parity check matrix through python (evenboth construction)..."
+python3 ./LDPC-TannerGraphs/Main.py $tempdir/python.pchk evenboth ${1} ${2}
+echo ""
+
+echo "decoding transmission for python generated parity matrix (evenboth construction)..."
+./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
+echo ""
+
+echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (evenboth construction)"
+python3 -u compute_error_rate.py $tempdir/python.decoded
+echo ""
+
 
 # Delete temporary directory
 rm -rf $tempdir

@@ -146,6 +146,7 @@ class RegularLDPC:
         #    In Neal construction row indices given (index amongst rows)
         #    Here col indices given (index amongst cols)
         # TODO find out how to eliminate extra entry
+        # TODO enforce c to provide uniform probabilities among message bits for majority vote decoding
         elif method == 3:
 
             tanner_graph = {}
@@ -171,7 +172,31 @@ class RegularLDPC:
 
                     tanner_graph.get(i).append(available_indices.pop(random_index))
 
-            return tanner_graph
+            return RegularLDPC.enforce_c(tanner_graph, n, c)
+
+    @staticmethod
+    def enforce_c(tanner_graph, n, c):
+
+        for col in range(n):
+
+            count = 0
+            for row in tanner_graph:
+                if tanner_graph.get(row).count(col) == 1:
+                    count += 1
+
+            if count < c:
+                needed = c - count
+
+                available_indices = []
+                for row in tanner_graph:
+                    if tanner_graph.get(row).count(col) == 0:
+                        available_indices.append(row)
+
+                chosen = random_list(available_indices, needed)
+                for row in chosen:
+                    tanner_graph.get(row).append(col)
+
+        return tanner_graph
 
     @staticmethod
     def merge(submatrices, n, r):
@@ -294,12 +319,6 @@ def main():
                 intio_write(f, (value + 1))
 
         intio_write(f, 0)
-
-    # ldpcCode = RegularLDPC([60, 20], 3)
-    #
-    # matrix = ldpcCode.get_matrix_representation()
-    # for row in matrix:
-    #     print(row)
 
 
 main()
