@@ -371,66 +371,66 @@ def intio_write(file, value):
 
 
 def main():
-    # global construction_type
+    global construction_type
+
+    # initializing tanner rep, 2nd argument is construction method
+    ldpc_dimension_args = [int(i) for i in sys.argv[3:len(sys.argv)]]
+    # if sys.argv[2] == "gallager":
+    #     construction_type = 1
+    # elif sys.argv[2] == "random":
+    #     construction_type = 2
+    # elif sys.argv[2] == "evenboth":
+    #     construction_type = 3
+    # elif sys.argv[2]
+
+    # ldpcCode = RegularLDPC(ldpc_dimension_args, construction_type)
+    ldpcCode = RegularLDPC(ldpc_dimension_args, sys.argv[2])
+
+    with open(sys.argv[1], "wb") as f:
+
+        intio_write(f, (ord('P') << 8) + 0x80)
+
+        intio_write(f, ldpcCode.height)
+        intio_write(f, ldpcCode.width)
+
+        for key in ldpcCode.tanner_graph:
+            intio_write(f, -(key + 1))
+            for value in sorted(ldpcCode.tanner_graph.get(key)):
+                intio_write(f, (value + 1))
+
+        intio_write(f, 0)
+
+    # matrix = RegularLDPC.get_matrix_representation(code.tanner_graph)
     #
-    # # initializing tanner rep, 2nd argument is construction method
-    # ldpc_dimension_args = [int(i) for i in sys.argv[3:len(sys.argv)]]
-    # # if sys.argv[2] == "gallager":
-    # #     construction_type = 1
-    # # elif sys.argv[2] == "random":
-    # #     construction_type = 2
-    # # elif sys.argv[2] == "evenboth":
-    # #     construction_type = 3
-    # # elif sys.argv[2]
+    # for line in matrix:
+    #     print(line)
     #
-    # # ldpcCode = RegularLDPC(ldpc_dimension_args, construction_type)
-    # ldpcCode = RegularLDPC(ldpc_dimension_args, sys.argv[2])
+    # row_weights = []
+    # for line in matrix:
+    #     row_weights.append(line.count(1))
     #
-    # with open(sys.argv[1], "wb") as f:
+    # col_weights = []
+    # for c in range(len(matrix[0])):
     #
-    #     intio_write(f, (ord('P') << 8) + 0x80)
+    #     col_weight = 0
+    #     for r in range(len(matrix)):
+    #         if matrix[r][c] == 1:
+    #             col_weight += 1
     #
-    #     intio_write(f, ldpcCode.height)
-    #     intio_write(f, ldpcCode.width)
+    #     col_weights.append(col_weight)
     #
-    #     for key in ldpcCode.tanner_graph:
-    #         intio_write(f, -(key + 1))
-    #         for value in sorted(ldpcCode.tanner_graph.get(key)):
-    #             intio_write(f, (value + 1))
+    # row_weights = list(dict.fromkeys(row_weights))
+    # col_weights = list(dict.fromkeys(col_weights))
     #
-    #     intio_write(f, 0)
-
-    matrix = RegularLDPC.get_matrix_representation(code.tanner_graph)
-
-    for line in matrix:
-        print(line)
-
-    row_weights = []
-    for line in matrix:
-        row_weights.append(line.count(1))
-
-    col_weights = []
-    for c in range(len(matrix[0])):
-
-        col_weight = 0
-        for r in range(len(matrix)):
-            if matrix[r][c] == 1:
-                col_weight += 1
-
-        col_weights.append(col_weight)
-
-    row_weights = list(dict.fromkeys(row_weights))
-    col_weights = list(dict.fromkeys(col_weights))
-
-    if len(row_weights) == 1:
-        print("row weight constant")
-    else:
-        print("row weight not constant")
-
-    if len(col_weights) == 1:
-        print("col weight constant")
-    else:
-        print("col weight not constant")
+    # if len(row_weights) == 1:
+    #     print("row weight constant")
+    # else:
+    #     print("row weight not constant")
+    #
+    # if len(col_weights) == 1:
+    #     print("col weight constant")
+    # else:
+    #     print("col weight not constant")
 
 
 main()
