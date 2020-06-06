@@ -43,26 +43,38 @@ class RegularLDPC:
                 self.tanner_graph = RegularLDPC.get_parity_check_graph(args[0], int(
                     args[0] / RegularLDPC.gcd2(args[0], args[1])), int(args[1] / RegularLDPC.gcd2(args[0], args[1])),
                                                                        construction)
+
+                self.c = int(args[0] / RegularLDPC.gcd2(args[0], args[1]))
+                self.r = int(args[1] / RegularLDPC.gcd2(args[0], args[1]))
+
             else:
                 self.tanner_graph = RegularLDPC.get_parity_check_graph(args[0],
                                                                        int(args[0] / RegularLDPC.gcd(args[0], args[1])),
                                                                        int(args[1] / RegularLDPC.gcd(args[0], args[1])),
                                                                        construction)
+
+                self.c = int(args[0] / RegularLDPC.gcd(args[0], args[1]))
+                self.r = int(args[1] / RegularLDPC.gcd(args[0], args[1]))
+
+            self.width = int(args[0])
+            self.height = int(args[1])
+
+            self.n = args[0]
+
         # order provided: n, c, r
         elif len(args) == 3:
             self.tanner_graph = RegularLDPC.get_parity_check_graph(args[0], args[2], args[1], construction)
 
+            self.width = int(args[0])
+            self.height = int(args[0] * args[1] / args[1])
+
+            self.n = args[0]
+            self.c = args[1]
+            self.r = args[2]
+
         # incorrect args provided
         else:
             return
-
-        # define necessary fields
-        if len(args) == 2:
-            self.width = int(args[0])
-            self.height = int(args[1])
-        else:
-            self.width = int(args[0])
-            self.height = int(args[0] * args[1] / args[1])
 
     @staticmethod
     def get_matrix_representation(tanner_graph):
@@ -143,9 +155,7 @@ class RegularLDPC:
                 col += 1
             return tanner_graph
 
-        # main difference from neal construction:
-        #    In Neal construction row indices given (index amongst rows)
-        #    Here col indices given (index amongst cols)
+        # enforces constant column weight
         elif method == "populate-rows":
 
             tanner_graph = {}
@@ -162,18 +172,35 @@ class RegularLDPC:
             for i in range(k - 1, -1, -1):
                 available_indices.append(i % width)
 
+            placed_entries = 0
             for i in range(height):
                 for j in range(r):
 
-                    random_index = random.choice(range(len(available_indices)))
-                    while tanner_graph.get(i).count(available_indices[random_index]) != 0 and len(
-                            available_indices) > 1:
+                    l = 0
+                    while l < len(available_indices) and tanner_graph.get(i).count(available_indices[l]) == 1:
+                        l += 1
+
+                    if l + placed_entries == k:
+
+                        random_index = random.choice(range(width))
+                        while tanner_graph.get(i).count(random_index) == 1:
+                            random_index = random.choice(range(width))
+
+                        tanner_graph.get(i).append(random_index)
+
+                    else:
                         random_index = random.choice(range(len(available_indices)))
+                        while tanner_graph.get(i).count(available_indices[random_index]) != 0 and len(
+                                available_indices) > 1:
+                            random_index = random.choice(range(len(available_indices)))
 
-                    tanner_graph.get(i).append(available_indices.pop(random_index))
+                        tanner_graph.get(i).append(available_indices.pop(random_index))
+                        placed_entries += 1
 
-            return RegularLDPC.enforce_c(tanner_graph, n, c)
+            return tanner_graph
+            # return RegularLDPC.enforce_c(tanner_graph, n, c)
 
+        # enforces constant column weight
         elif method == "populate-columns":
 
             tanner_graph = {}
@@ -188,15 +215,30 @@ class RegularLDPC:
             for i in range(k - 1, -1, -1):
                 available_indices.append(i % height)
 
+            placed_entries = 0
             for i in range(width):
                 for j in range(c):
 
-                    random_index = random.choice(range(len(available_indices)))
-                    while tanner_graph.get(i).count(available_indices[random_index]) != 0 and len(
-                            available_indices) > 1:
-                        random_index = random.choice(range(len(available_indices)))
+                    l = 0
+                    while l < len(available_indices) and tanner_graph.get(i).count(available_indices[l]) == 1:
+                        l += 1
 
-                    tanner_graph.get(i).append(available_indices.pop(random_index))
+                    if placed_entries + l == k:
+
+                        random_index = random.choice(range(height))
+                        while tanner_graph.get(i).count(random_index) == 1:
+                            random_index = random.choice(range(height))
+
+                        tanner_graph.get(i).append(random_index)
+
+                    else:
+                        random_index = random.choice(range(len(available_indices)))
+                        while tanner_graph.get(i).count(available_indices[random_index]) != 0 and len(
+                                available_indices) > 1:
+                            random_index = random.choice(range(len(available_indices)))
+
+                        tanner_graph.get(i).append(available_indices.pop(random_index))
+                        placed_entries += 1
 
             return RegularLDPC.enforce_c(RegularLDPC.transpose(tanner_graph, height), n, c)
 
@@ -329,33 +371,66 @@ def intio_write(file, value):
 
 
 def main():
-    global construction_type
+    # global construction_type
+    #
+    # # initializing tanner rep, 2nd argument is construction method
+    # ldpc_dimension_args = [int(i) for i in sys.argv[3:len(sys.argv)]]
+    # # if sys.argv[2] == "gallager":
+    # #     construction_type = 1
+    # # elif sys.argv[2] == "random":
+    # #     construction_type = 2
+    # # elif sys.argv[2] == "evenboth":
+    # #     construction_type = 3
+    # # elif sys.argv[2]
+    #
+    # # ldpcCode = RegularLDPC(ldpc_dimension_args, construction_type)
+    # ldpcCode = RegularLDPC(ldpc_dimension_args, sys.argv[2])
+    #
+    # with open(sys.argv[1], "wb") as f:
+    #
+    #     intio_write(f, (ord('P') << 8) + 0x80)
+    #
+    #     intio_write(f, ldpcCode.height)
+    #     intio_write(f, ldpcCode.width)
+    #
+    #     for key in ldpcCode.tanner_graph:
+    #         intio_write(f, -(key + 1))
+    #         for value in sorted(ldpcCode.tanner_graph.get(key)):
+    #             intio_write(f, (value + 1))
+    #
+    #     intio_write(f, 0)
 
-    # initializing tanner rep, 2nd argument is construction method
-    ldpc_dimension_args = [int(i) for i in sys.argv[3:len(sys.argv)]]
-    if sys.argv[2] == "gallager":
-        construction_type = 1
-    elif sys.argv[2] == "random":
-        construction_type = 2
-    elif sys.argv[2] == "evenboth":
-        construction_type = 3
-    elif sys.argv[2]
+    matrix = RegularLDPC.get_matrix_representation(code.tanner_graph)
 
-    ldpcCode = RegularLDPC(ldpc_dimension_args, construction_type)
+    for line in matrix:
+        print(line)
 
-    with open(sys.argv[1], "wb") as f:
+    row_weights = []
+    for line in matrix:
+        row_weights.append(line.count(1))
 
-        intio_write(f, (ord('P') << 8) + 0x80)
+    col_weights = []
+    for c in range(len(matrix[0])):
 
-        intio_write(f, ldpcCode.height)
-        intio_write(f, ldpcCode.width)
+        col_weight = 0
+        for r in range(len(matrix)):
+            if matrix[r][c] == 1:
+                col_weight += 1
 
-        for key in ldpcCode.tanner_graph:
-            intio_write(f, -(key + 1))
-            for value in sorted(ldpcCode.tanner_graph.get(key)):
-                intio_write(f, (value + 1))
+        col_weights.append(col_weight)
 
-        intio_write(f, 0)
+    row_weights = list(dict.fromkeys(row_weights))
+    col_weights = list(dict.fromkeys(col_weights))
+
+    if len(row_weights) == 1:
+        print("row weight constant")
+    else:
+        print("row weight not constant")
+
+    if len(col_weights) == 1:
+        print("col weight constant")
+    else:
+        print("col weight not constant")
 
 
 main()

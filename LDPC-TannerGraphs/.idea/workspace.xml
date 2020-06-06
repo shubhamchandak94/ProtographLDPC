@@ -87,7 +87,7 @@
       <workItem from="1591250105316" duration="3745000" />
       <workItem from="1591307970649" duration="2560000" />
       <workItem from="1591337118516" duration="2439000" />
-      <workItem from="1591432073075" duration="1539000" />
+      <workItem from="1591432073075" duration="3753000" />
     </task>
     <task id="LOCAL-00001" summary="Implemented direct construction of ldpc matrices in machine readable">
       <created>1590536729990</created>
@@ -117,26 +117,26 @@
     </state>
     <state x="537" y="115" key="CommitChangelistDialog2/0.0.1920.1080@0.0.1920.1080" timestamp="1590536729830" />
     <state x="716" y="153" key="CommitChangelistDialog2/0.0.2560.1440@0.0.2560.1440" timestamp="1591339637899" />
-    <state width="2518" height="240" key="GridCell.Tab.0.bottom" timestamp="1591436157136">
+    <state width="2518" height="240" key="GridCell.Tab.0.bottom" timestamp="1591438861262">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state width="1358" height="125" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1590569203582" />
-    <state width="2518" height="240" key="GridCell.Tab.0.bottom/0.0.2560.1440@0.0.2560.1440" timestamp="1591436157136" />
-    <state width="2518" height="240" key="GridCell.Tab.0.center" timestamp="1591436157136">
+    <state width="2518" height="240" key="GridCell.Tab.0.bottom/0.0.2560.1440@0.0.2560.1440" timestamp="1591438861262" />
+    <state width="2518" height="240" key="GridCell.Tab.0.center" timestamp="1591438861262">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state width="1358" height="125" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1590569203582" />
-    <state width="2518" height="240" key="GridCell.Tab.0.center/0.0.2560.1440@0.0.2560.1440" timestamp="1591436157136" />
-    <state width="2518" height="240" key="GridCell.Tab.0.left" timestamp="1591436157135">
+    <state width="2518" height="240" key="GridCell.Tab.0.center/0.0.2560.1440@0.0.2560.1440" timestamp="1591438861262" />
+    <state width="2518" height="240" key="GridCell.Tab.0.left" timestamp="1591438861261">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state width="1358" height="125" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1590569203581" />
-    <state width="2518" height="240" key="GridCell.Tab.0.left/0.0.2560.1440@0.0.2560.1440" timestamp="1591436157135" />
-    <state width="2518" height="240" key="GridCell.Tab.0.right" timestamp="1591436157136">
+    <state width="2518" height="240" key="GridCell.Tab.0.left/0.0.2560.1440@0.0.2560.1440" timestamp="1591438861261" />
+    <state width="2518" height="240" key="GridCell.Tab.0.right" timestamp="1591438861262">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state width="1358" height="125" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1590569203582" />
-    <state width="2518" height="240" key="GridCell.Tab.0.right/0.0.2560.1440@0.0.2560.1440" timestamp="1591436157136" />
+    <state width="2518" height="240" key="GridCell.Tab.0.right/0.0.2560.1440@0.0.2560.1440" timestamp="1591438861262" />
     <state width="2518" height="511" key="GridCell.Tab.1.bottom" timestamp="1591256401483">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
@@ -159,6 +159,6 @@
     <state x="995" y="354" width="670" height="676" key="search.everywhere.popup/0.0.2560.1440@0.0.2560.1440" timestamp="1590981671549" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/LDPC_TannerGraphs$Main.coverage" NAME="Main Coverage Results" MODIFIED="1591436157126" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/LDPC_TannerGraphs$Main.coverage" NAME="Main Coverage Results" MODIFIED="1591438861255" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
