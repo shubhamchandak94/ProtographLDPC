@@ -64,12 +64,13 @@ class RegularLDPC:
             self.width = int(args[0])
             self.height = int(args[0] * args[1] / args[1])
 
-    def get_matrix_representation(self):
+    @staticmethod
+    def get_matrix_representation(tanner_graph):
         matrix = []
-        for i in range(len(self.tanner_graph)):
+        for i in range(len(tanner_graph)):
             row = []
-            for j in range(max(self.tanner_graph[i]) + 1):
-                if j in self.tanner_graph[i]:
+            for j in range(max(tanner_graph[i]) + 1):
+                if j in tanner_graph[i]:
                     row.append(1)
                 else:
                     row.append(0)
@@ -105,13 +106,13 @@ class RegularLDPC:
     @staticmethod
     def get_parity_check_graph(n, r, c, method):
 
-        if method == 1:
+        if method == "gallager":
             submatrices = []
             for i in range(c):
                 submatrices.append(SubGraph(n, r))
             return RegularLDPC.merge(submatrices, n, r)
 
-        elif method == 2:
+        elif method == "random":
             # create base tanner graph
             tanner_graph = {}
             counts = {}  # stores weight of each row key
@@ -145,9 +146,7 @@ class RegularLDPC:
         # main difference from neal construction:
         #    In Neal construction row indices given (index amongst rows)
         #    Here col indices given (index amongst cols)
-        # TODO find out how to eliminate extra entry
-        # TODO enforce c to provide uniform probabilities among message bits for majority vote decoding
-        elif method == 3:
+        elif method == "populate-rows":
 
             tanner_graph = {}
             for i in range(int(n * c / r)):
@@ -167,12 +166,49 @@ class RegularLDPC:
                 for j in range(r):
 
                     random_index = random.choice(range(len(available_indices)))
-                    while tanner_graph.get(i).count(available_indices[random_index]) != 0 and len(available_indices) > 1:
+                    while tanner_graph.get(i).count(available_indices[random_index]) != 0 and len(
+                            available_indices) > 1:
                         random_index = random.choice(range(len(available_indices)))
 
                     tanner_graph.get(i).append(available_indices.pop(random_index))
 
             return RegularLDPC.enforce_c(tanner_graph, n, c)
+
+        elif method == "populate-columns":
+
+            tanner_graph = {}
+            for i in range(n):
+                tanner_graph[i] = []
+
+            width = n
+            height = int(n * c / r)
+
+            available_indices = []
+            k = n * c
+            for i in range(k - 1, -1, -1):
+                available_indices.append(i % height)
+
+            for i in range(width):
+                for j in range(c):
+
+                    random_index = random.choice(range(len(available_indices)))
+                    while tanner_graph.get(i).count(available_indices[random_index]) != 0 and len(
+                            available_indices) > 1:
+                        random_index = random.choice(range(len(available_indices)))
+
+                    tanner_graph.get(i).append(available_indices.pop(random_index))
+
+            return RegularLDPC.enforce_c(RegularLDPC.transpose(tanner_graph, height), n, c)
+
+    @staticmethod
+    def transpose(tanner_graph, new_height):
+        new_graph = {}
+        for i in range(new_height):
+            new_graph[i] = []
+            for j in tanner_graph:
+                if tanner_graph.get(j).count(i) == 1:
+                    new_graph.get(i).append(j)
+        return new_graph
 
     @staticmethod
     def enforce_c(tanner_graph, n, c):
@@ -303,6 +339,7 @@ def main():
         construction_type = 2
     elif sys.argv[2] == "evenboth":
         construction_type = 3
+    elif sys.argv[2]
 
     ldpcCode = RegularLDPC(ldpc_dimension_args, construction_type)
 
