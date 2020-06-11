@@ -490,7 +490,7 @@ def main():
     # write the corresponding graph to specified file in binary
     write_graph_to_file(ldpc_code, sys.argv[1])
 
-
+# a sandbox function for testing ldpc matrix constructions
 def sandbox():
 
     code = RegularLDPC([20, 8, 3], "populate-rows")
@@ -528,4 +528,4 @@ def sandbox():
         print("col weight not constant")
 
 
-sandbox()
+main()
