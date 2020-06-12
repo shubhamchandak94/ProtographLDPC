@@ -90,9 +90,9 @@ class RegularLDPC:
         print("w: " + str(self.width))
         print("h: " + str(self.height))
 
-        print("n: " + str(self.n))
+        # print("n: " + str(self.n))
         print("c: " + str(self.c))
-        print("r: " + str(self.r))
+        # print("r: " + str(self.r))
 
         self.tanner_graph = RegularLDPC.get_parity_check_graph(self.n, self.r, self.c, construction)
 
@@ -479,7 +479,7 @@ def write_graph_to_file(ldpc_code, filepath):
 def main():
 
     # args:
-    # pchk-file construction-type [w, h | n, c, r]
+    # pchk-file construction-type [w, h | n, c, r | w, h, c]
 
     # initializing tanner rep, 2nd argument is construction method
     ldpc_dimension_args = [int(i) for i in sys.argv[3:len(sys.argv)]]
@@ -529,3 +529,4 @@ def sandbox():
 
 
 main()
+# sandbox()
