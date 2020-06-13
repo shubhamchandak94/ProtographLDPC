@@ -37,42 +37,61 @@ class RegularLDPC:
         #
         if len(args) == 2:
 
-            if int(args[0]) < int(args[1]):
-                print("width must be greater than height")
-                exit()
-
+            # if int(args[0]) < int(args[1]):
+            #     print("width must be greater than height")
+            #     exit()
+            #
+            # # self.n = int(args[0])
+            # #
+            # # if gcd(args[0], args[1]) == min(args[0], args[1]) and gcd2(args[0], args[1]) != 1:
+            # #
+            # #     self.r = int(args[0] / gcd2(args[0], args[1]))
+            # #     self.c = int(args[1] / gcd2(args[0], args[1]))
+            # #
+            # # else:
+            # #
+            # #     self.r = int(args[0] / gcd(args[0], args[1]))
+            # #     self.c = int(args[1] / gcd(args[0], args[1]))
+            # #
+            # # self.height = int(args[1])
+            #
+            # w = int(args[0])
+            # h = int(args[1])
+            #
+            # gcf = gcd(w, h)
+            #
+            # w /= gcf
+            # h /= gcf
+            #
+            # if h < 3:
+            #     w *= 3
+            #     h *= 3
+            #
             # self.n = int(args[0])
+            # self.c = int(h)
+            # self.r = int(w)
             #
-            # if gcd(args[0], args[1]) == min(args[0], args[1]) and gcd2(args[0], args[1]) != 1:
-            #
-            #     self.r = int(args[0] / gcd2(args[0], args[1]))
-            #     self.c = int(args[1] / gcd2(args[0], args[1]))
-            #
-            # else:
-            #
-            #     self.r = int(args[0] / gcd(args[0], args[1]))
-            #     self.c = int(args[1] / gcd(args[0], args[1]))
-            #
+            # self.width = int(args[0])
             # self.height = int(args[1])
-
-            w = int(args[0])
-            h = int(args[1])
-
-            gcf = gcd(w, h)
-
-            w /= gcf
-            h /= gcf
-
-            if h < 3:
-                w *= 3
-                h *= 3
-
-            self.n = int(args[0])
-            self.c = int(h)
-            self.r = int(w)
 
             self.width = int(args[0])
             self.height = int(args[1])
+
+            c_f = common_factors(self.width, self.height)
+            index = 1
+
+            r = self.width / c_f[len(c_f) - index]
+            c = self.height / c_f[len(c_f) - index]
+
+            while (c < 3 or r == 1) and index != len(c_f):
+                index += 1
+
+                r = self.width / c_f[len(c_f) - index]
+                c = self.height / c_f[len(c_f) - index]
+
+            self.n = int(self.width)
+            self.r = int(r)
+            self.c = int(c)
 
         #
         # args provided [width, col weight, row weight, height provided]
@@ -521,12 +540,12 @@ def main():
 
 # a sandbox function for testing ldpc matrix constructions
 def sandbox():
-    code = RegularLDPC([100, 20], "populate-columns")
-    print(code.tanner_graph)
+    code = RegularLDPC([1000, 200], "populate-columns")
+    # print(code.tanner_graph)
 
     matrix = code.as_matrix()
-    for line in matrix:
-        print(line)
+    # for line in matrix:
+    #     print(line)
 
     row_weights = []
     for line in matrix:
