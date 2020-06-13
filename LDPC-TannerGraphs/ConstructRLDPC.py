@@ -37,18 +37,41 @@ class RegularLDPC:
         #
         if len(args) == 2:
 
+            if int(args[0]) < int(args[1]):
+                print("width must be greater than height")
+                exit()
+
+            # self.n = int(args[0])
+            #
+            # if gcd(args[0], args[1]) == min(args[0], args[1]) and gcd2(args[0], args[1]) != 1:
+            #
+            #     self.r = int(args[0] / gcd2(args[0], args[1]))
+            #     self.c = int(args[1] / gcd2(args[0], args[1]))
+            #
+            # else:
+            #
+            #     self.r = int(args[0] / gcd(args[0], args[1]))
+            #     self.c = int(args[1] / gcd(args[0], args[1]))
+            #
+            # self.height = int(args[1])
+
+            w = int(args[0])
+            h = int(args[1])
+
+            gcf = gcd(w, h)
+
+            w /= gcf
+            h /= gcf
+
+            if h < 3:
+                w *= 3
+                h *= 3
+
             self.n = int(args[0])
+            self.c = int(h)
+            self.r = int(w)
 
-            if gcd(args[0], args[1]) == min(args[0], args[1]) and gcd2(args[0], args[1]) != 1:
-
-                self.r = int(args[0] / gcd2(args[0], args[1]))
-                self.c = int(args[1] / gcd2(args[0], args[1]))
-
-            else:
-
-                self.r = int(args[0] / gcd(args[0], args[1]))
-                self.c = int(args[1] / gcd(args[0], args[1]))
-
+            self.width = int(args[0])
             self.height = int(args[1])
 
         #
@@ -87,14 +110,14 @@ class RegularLDPC:
             print("invalid input provided")
             return
 
+        self.tanner_graph = RegularLDPC.get_parity_check_graph(self.n, self.r, self.c, construction)
+
         print("w: " + str(self.width))
         print("h: " + str(self.height))
 
         # print("n: " + str(self.n))
         print("c: " + str(self.c))
-        # print("r: " + str(self.r))
-
-        self.tanner_graph = RegularLDPC.get_parity_check_graph(self.n, self.r, self.c, construction)
+        print("r: " + str(self.r))
 
     @staticmethod
     def get_parity_check_graph(n, r, c, method):
@@ -171,7 +194,6 @@ class RegularLDPC:
 
             k = n * c
             for i in range(k - 1, -1, -1):
-
                 # fills available indices with column indices
                 available_indices.append(i % width)
 
@@ -226,7 +248,6 @@ class RegularLDPC:
 
             k = n * c
             for i in range(k - 1, -1, -1):
-
                 # fills available indices with row indices
                 available_indices.append(i % height)
 
@@ -316,11 +337,12 @@ class RegularLDPC:
         matrix = []
         for i in range(len(tanner_graph)):
             row = []
-            for j in range(max(tanner_graph[i]) + 1):
-                if j in tanner_graph[i]:
-                    row.append(1)
-                else:
-                    row.append(0)
+            if i in tanner_graph:
+                for j in range(max(tanner_graph[i]) + 1):
+                    if j in tanner_graph[i]:
+                        row.append(1)
+                    else:
+                        row.append(0)
             matrix.append(row)
         RegularLDPC.normalize(matrix)
         return matrix
@@ -391,13 +413,18 @@ class SubGraph:
 
 
 # UTILS
-# finds the second greatest common denominator for the provided integers
-def gcd2(i, j):
+def common_factors(i, j):
     factors = []
     for z in range(min(i, j) - 1):
         if i % (z + 1) == 0 and j % (z + 1) == 0:
             factors.append(z + 1)
-    return factors[len(factors) - 1]
+    return factors
+
+
+# finds the second greatest common denominator for the provided integers
+def gcd2(i, j):
+    c_f = common_factors(i, j)
+    return c_f[len(c_f) - 1]
 
 
 # finds the greatest common denominator of two integers
@@ -460,8 +487,9 @@ def intio_write(file, value):
     binaryBtoBytes = bAsBinary.to_bytes(1, 'little')
     file.write(binaryBtoBytes)
 
-def write_graph_to_file(ldpc_code, filepath):
 
+# writes tanner graph in machine readable to specified file
+def write_graph_to_file(ldpc_code, filepath):
     with open(filepath, "wb") as f:
 
         intio_write(f, (ord('P') << 8) + 0x80)
@@ -476,8 +504,8 @@ def write_graph_to_file(ldpc_code, filepath):
 
         intio_write(f, 0)
 
-def main():
 
+def main():
     # args:
     # pchk-file construction-type [w, h | n, c, r | w, h, c]
 
@@ -490,10 +518,10 @@ def main():
     # write the corresponding graph to specified file in binary
     write_graph_to_file(ldpc_code, sys.argv[1])
 
+
 # a sandbox function for testing ldpc matrix constructions
 def sandbox():
-
-    code = RegularLDPC([20, 8, 3], "populate-rows")
+    code = RegularLDPC([100, 20], "populate-columns")
     print(code.tanner_graph)
 
     matrix = code.as_matrix()
