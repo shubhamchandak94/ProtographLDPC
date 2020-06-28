@@ -63,7 +63,7 @@ echo ""
 echo "----------------------------------------------------------------------------------------------------------"
 
 echo "generating parity check matrix through python (Gallager construction)..."
-python3 ./LDPC-TannerGraphs/ConstructRLDPC.py $tempdir/python.pchk gallager ${1} ${2} ${3}
+python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk gallager ${1} ${2} ${3}
 echo ""
 
 echo "decoding transmission for python generated parity matrix (Gallager construction)..."
@@ -77,7 +77,7 @@ echo ""
 echo "----------------------------------------------------------------------------------------------------------"
 
 # echo "generating parity check matrix through python (construction 2)..."
-# python3 ./LDPC-TannerGraphs/ConstructRLDPC.py $tempdir/python.pchk random ${1} ${2} ${3}
+# python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk random ${1} ${2} ${3}
 # echo ""
 
 # echo "decoding transmission for python generated parity matrix (construction 2)..."
@@ -91,7 +91,7 @@ echo "--------------------------------------------------------------------------
 # echo "----------------------------------------------------------------------------------------------------------"
 
 echo "generating parity check matrix through python (evenboth construction populate rows)..."
-python3 ./LDPC-TannerGraphs/ConstructRLDPC.py $tempdir/python.pchk populate-rows ${1} ${2} ${3}
+python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk populate-rows ${1} ${2} ${3}
 echo ""
 
 echo "decoding transmission for python generated parity matrix (evenboth construction populate rows)..."
@@ -105,7 +105,7 @@ echo ""
 echo "----------------------------------------------------------------------------------------------------------"
 
 echo "generating parity check matrix through python (evenboth construction populate columns)..."
-python3 ./LDPC-TannerGraphs/ConstructRLDPC.py $tempdir/python.pchk populate-columns ${1} ${2} ${3}
+python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk populate-columns ${1} ${2} ${3}
 echo ""
 
 echo "decoding transmission for python generated parity matrix (evenboth construction populate populate columns)..."
@@ -119,7 +119,7 @@ echo ""
 echo "----------------------------------------------------------------------------------------------------------"
 
 echo "generating parity check matrix through python (evenboth construction populate rows row col weights inferred)..."
-python3 ./LDPC-TannerGraphs/ConstructRLDPC.py $tempdir/python.pchk populate-rows ${1} ${2}
+python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk populate-rows ${1} ${2}
 echo ""
 
 echo "decoding transmission for python generated parity matrix (evenboth construction populate rows)..."
@@ -133,7 +133,7 @@ echo ""
 echo "----------------------------------------------------------------------------------------------------------"
 
 echo "generating parity check matrix through python (evenboth construction populate columns row col weights inferred)..."
-python3 ./LDPC-TannerGraphs/ConstructRLDPC.py $tempdir/python.pchk populate-columns ${1} ${2}
+python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk populate-columns ${1} ${2}
 echo ""
 
 echo "decoding transmission for python generated parity matrix (evenboth construction populate populate columns)..."

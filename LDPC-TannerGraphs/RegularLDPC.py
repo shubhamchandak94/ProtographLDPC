@@ -1,5 +1,7 @@
 import random
-import sys
+
+from TannerGraph import TannerGraph
+import Utils
 
 '''
 - A class for the handling of Regular LDPC matrices in tanner graph form
@@ -14,13 +16,12 @@ where weightages are constant for the most part (certain constructions fail to p
 int construction specifies the method by which the matrix corresponding to args will be created
 '''
 
-
-class RegularLDPC:
+class RegularLDPC(TannerGraph):
 
     def __init__(self, args, construction):
+        TannerGraph.__init__(self, args, construction)
 
-        self.args = args
-        self.width = int(args[0])
+        self.width = int(self.args[0])
 
         #
         # args provided [width, height]
@@ -35,49 +36,12 @@ class RegularLDPC:
         # by dividing both c and r by this second gcd. In this way, the greatest sparsity is achieved without resulting
         # in row or col weightages equal to 1.
         #
-        if len(args) == 2:
+        if len(self.args) == 2:
 
-            # if int(args[0]) < int(args[1]):
-            #     print("width must be greater than height")
-            #     exit()
-            #
-            # # self.n = int(args[0])
-            # #
-            # # if gcd(args[0], args[1]) == min(args[0], args[1]) and gcd2(args[0], args[1]) != 1:
-            # #
-            # #     self.r = int(args[0] / gcd2(args[0], args[1]))
-            # #     self.c = int(args[1] / gcd2(args[0], args[1]))
-            # #
-            # # else:
-            # #
-            # #     self.r = int(args[0] / gcd(args[0], args[1]))
-            # #     self.c = int(args[1] / gcd(args[0], args[1]))
-            # #
-            # # self.height = int(args[1])
-            #
-            # w = int(args[0])
-            # h = int(args[1])
-            #
-            # gcf = gcd(w, h)
-            #
-            # w /= gcf
-            # h /= gcf
-            #
-            # if h < 3:
-            #     w *= 3
-            #     h *= 3
-            #
-            # self.n = int(args[0])
-            # self.c = int(h)
-            # self.r = int(w)
-            #
-            # self.width = int(args[0])
-            # self.height = int(args[1])
+            self.width = int(self.args[0])
+            self.height = int(self.args[1])
 
-            self.width = int(args[0])
-            self.height = int(args[1])
-
-            c_f = common_factors(self.width, self.height)
+            c_f = Utils.common_factors(self.width, self.height)
             index = 1
 
             r = self.width / c_f[len(c_f) - index]
@@ -101,13 +65,13 @@ class RegularLDPC:
         # here, the length of the codeword, the col weight, and the row weight are specified and fed directly into the
         # tanner graph constructor
         #
-        elif len(args) == 4:
+        elif len(self.args) == 4:
 
-            self.height = int(args[0] * args[1] / args[1])
+            self.height = int(self.args[0] * self.args[1] / self.args[1])
 
-            self.n = int(args[0])
-            self.c = int(args[1])
-            self.r = int(args[2])
+            self.n = int(self.args[0])
+            self.c = int(self.args[1])
+            self.r = int(self.args[2])
 
         #
         # args provided [width, height, 1s per col]
@@ -117,19 +81,19 @@ class RegularLDPC:
         # simplicity of (c / r). Because r is dependent on width, height, and c (assuming regularity), defining c results
         # in limiting the constructor to one possible r value. The resulting n, c, r values are passed to the constructor
         #
-        elif len(args) == 3:
+        elif len(self.args) == 3:
 
-            self.height = int(args[1])
+            self.height = int(self.args[1])
 
-            self.n = int(args[0])
-            self.c = int(args[2])
+            self.n = int(self.args[0])
+            self.c = int(self.args[2])
             self.r = int((self.width / self.height) * self.c)
 
         else:
             print("invalid input provided")
             return
 
-        self.tanner_graph = RegularLDPC.get_parity_check_graph(self.n, self.r, self.c, construction)
+        self.tanner_graph = RegularLDPC.get_parity_check_graph(self.n, self.r, self.c, self.construction)
 
         print("w: " + str(self.width))
         print("h: " + str(self.height))
@@ -172,7 +136,7 @@ class RegularLDPC:
             while len(available_rows) > 0:
 
                 # chooses c random row indices
-                col_indices = random_list(available_rows, c)
+                col_indices = Utils.random_list(available_rows, c)
 
                 # populates tanner graph at chosen indices
                 for index in col_indices:
@@ -303,7 +267,7 @@ class RegularLDPC:
                         tanner_graph.get(i).append(available_indices.pop(random_index))
                         placed_entries += 1
 
-            return RegularLDPC.transpose(tanner_graph, height)
+            return Utils.transpose(tanner_graph, height)
 
     '''
     as part of the Gallager construction, this function merges all the generated submatrices vertically 
@@ -318,71 +282,9 @@ class RegularLDPC:
                 merged[int(i * n / r + j)] = submatrices[i].map[j]
         return merged
 
-    '''
-    traverses the dictionary to find identical key values. These correspond to repeated parity check equations which
-    could undermine the code's performance.
-    '''
-
-    def has_repeated_rows(self):
-        for i in range(0, len(self.tanner_graph) - 1):
-            for j in range(i + 1, len(self.tanner_graph)):
-                if self.tanner_graph[i] == self.tanner_graph[j]:
-                    print("row " + str(i) + " and row " + str(j) + " are identical")
-                    return True
-        return False
-
-    '''
-    the equivalent of transposing a matrix, if that matrix were represented by a bipartite graph. This allows for more
-    diverse methods of matrix construction.
-    '''
-
-    @staticmethod
-    def transpose(tanner_graph, new_height):
-        new_graph = {}
-        for i in range(new_height):
-            new_graph[i] = []
-            for j in tanner_graph:
-                if tanner_graph.get(j).count(i) == 1:
-                    new_graph.get(i).append(j)
-        return new_graph
-
-    '''
-    because this program stores ldpc parity information in the form of a tanner graph, this provides a way to construct
-    the appropriate matrix provided the tanner graph
-    '''
-
-    @staticmethod
-    def get_matrix_representation(tanner_graph):
-        matrix = []
-        for i in range(len(tanner_graph)):
-            row = []
-            if i in tanner_graph:
-                for j in range(max(tanner_graph[i]) + 1):
-                    if j in tanner_graph[i]:
-                        row.append(1)
-                    else:
-                        row.append(0)
-            matrix.append(row)
-        RegularLDPC.normalize(matrix)
-        return matrix
-
+    # returns matrix representation of this graph
     def as_matrix(self):
-        return RegularLDPC.get_matrix_representation(self.tanner_graph)
-
-    @staticmethod
-    def normalize(arr):
-        new_length = RegularLDPC.largest_row(arr)
-        for i in range(len(arr)):
-            arr[i] = arr[i] + [0] * (new_length - len(arr[i]))
-
-    @staticmethod
-    def largest_row(arr):
-
-        largest = 0
-        for row in arr:
-            if len(row) > largest:
-                largest = len(row)
-        return largest
+        return Utils.get_matrix_representation(self.tanner_graph)
 
     '''
     returns a string which, when the method is run in the context of Radford Neal's library, can be utilized by the 
@@ -429,151 +331,3 @@ class SubGraph:
 
     def __repr__(self):
         return str(self.map)
-
-
-# UTILS
-def common_factors(i, j):
-    factors = []
-    for z in range(min(i, j) - 1):
-        if i % (z + 1) == 0 and j % (z + 1) == 0:
-            factors.append(z + 1)
-    return factors
-
-
-# finds the second greatest common denominator for the provided integers
-def gcd2(i, j):
-    c_f = common_factors(i, j)
-    return c_f[len(c_f) - 1]
-
-
-# finds the greatest common denominator of two integers
-def gcd(i, j):
-    return gcdr(i, j, min(i, j))
-
-
-# utilizes a recursive shortcut to find the greatest common denominator quickly
-def gcdr(i, j, previous_remainder):
-    remainder = max(i, j) % min(i, j)
-    # multiplier = (max(i, j) - remainder) / min(i, j);
-
-    if remainder == 0:
-        return previous_remainder
-    else:
-        return gcdr(min(i, j), remainder, remainder)
-
-
-# chooses random n elements from to_pass, does not alter passed args
-def random_list(list, n):
-    to_pass = list.copy()
-    return rand_list(to_pass, n, [])
-
-
-# choose random n elements from list, selected always entered as []: alters arguments
-def rand_list(list, n, selected):
-    if n == 0 or len(list) == 0:
-        return selected
-    else:
-        randint = random.choice(list)
-        selected.append(randint)
-        list.remove(randint)
-        return rand_list(list, n - 1, selected)
-
-
-# display a parity check matrix
-def print_matrix(matrix):
-    for row in matrix:
-        print(row)
-
-
-# file should be opened with the wb mode
-def intio_write(file, value):
-    for i in range(3):
-        b = value & 0xff
-
-        bAsBinary = int(str(bin(b)), 2)
-        binaryBtoBytes = bAsBinary.to_bytes(1, 'little')
-
-        file.write(binaryBtoBytes)
-
-        value >>= 8
-
-    if value > 0:
-        b = value
-    else:
-        b = (value + 256) % 256
-
-    bAsBinary = int(str(bin(b)), 2)
-    binaryBtoBytes = bAsBinary.to_bytes(1, 'little')
-    file.write(binaryBtoBytes)
-
-
-# writes tanner graph in machine readable to specified file
-def write_graph_to_file(ldpc_code, filepath):
-    with open(filepath, "wb") as f:
-
-        intio_write(f, (ord('P') << 8) + 0x80)
-
-        intio_write(f, ldpc_code.height)
-        intio_write(f, ldpc_code.width)
-
-        for key in ldpc_code.tanner_graph:
-            intio_write(f, -(key + 1))
-            for value in sorted(ldpc_code.tanner_graph.get(key)):
-                intio_write(f, (value + 1))
-
-        intio_write(f, 0)
-
-
-def main():
-    # args:
-    # pchk-file construction-type [w, h | n, c, r | w, h, c]
-
-    # initializing tanner rep, 2nd argument is construction method
-    ldpc_dimension_args = [int(i) for i in sys.argv[3:len(sys.argv)]]
-
-    # create ldpc code
-    ldpc_code = RegularLDPC(ldpc_dimension_args, sys.argv[2])
-
-    # write the corresponding graph to specified file in binary
-    write_graph_to_file(ldpc_code, sys.argv[1])
-
-
-# a sandbox function for testing ldpc matrix constructions
-def sandbox():
-    code = RegularLDPC([1000, 200], "populate-columns")
-    # print(code.tanner_graph)
-
-    matrix = code.as_matrix()
-    # for line in matrix:
-    #     print(line)
-
-    row_weights = []
-    for line in matrix:
-        row_weights.append(line.count(1))
-
-    col_weights = []
-    for c in range(len(matrix[0])):
-
-        col_weight = 0
-        for r in range(len(matrix)):
-            if matrix[r][c] == 1:
-                col_weight += 1
-
-        col_weights.append(col_weight)
-
-    row_weights = list(dict.fromkeys(row_weights))
-    col_weights = list(dict.fromkeys(col_weights))
-
-    if len(row_weights) == 1:
-        print("row weight constant")
-    else:
-        print("row weight not constant")
-
-    if len(col_weights) == 1:
-        print("col weight constant")
-    else:
-        print("col weight not constant")
-
-
-main()
-# sandbox()
