@@ -19,7 +19,7 @@ int construction specifies the method by which the matrix corresponding to args 
 class RegularLDPC(TannerGraph):
 
     def __init__(self, args, construction):
-        TannerGraph.__init__(self, args, construction)
+        TannerGraph.__init__(self, args, construction=construction, ldpc="regularLDPC")
 
         self.width = int(self.args[0])
 
@@ -284,7 +284,7 @@ class RegularLDPC(TannerGraph):
 
     # returns matrix representation of this graph
     def as_matrix(self):
-        return Utils.get_matrix_representation(self.tanner_graph)
+        return TannerGraph.get_matrix_representation(self.tanner_graph)
 
     '''
     returns a string which, when the method is run in the context of Radford Neal's library, can be utilized by the 

@@ -1,7 +1,9 @@
 import sys
 
-import RegularLDPC
-import ProtographLDPC
+from TannerGraph import TannerGraph
+from RegularLDPC import RegularLDPC
+from ProtographLDPC import ProtographLDPC
+from Protograph import Protograph
 
 # file should be opened with the wb mode
 def intio_write(file, value):
@@ -50,15 +52,15 @@ def main():
     ldpc_dimension_args = [int(i) for i in sys.argv[3:len(sys.argv)]]
 
     # create ldpc code
-    ldpc_code = RegularLDPC.RegularLDPC(ldpc_dimension_args, sys.argv[2])
+    ldpc_code = RegularLDPC(ldpc_dimension_args, sys.argv[2])
 
     # write the corresponding graph to specified file in binary
     write_graph_to_file(ldpc_code, sys.argv[1])
 
 
 # a sandbox function for testing ldpc matrix constructions
-def sandbox():
-    code = RegularLDPC.RegularLDPC([1000, 200], "gallager")
+def regularLDPC_sandbox():
+    code = RegularLDPC([1000, 200], "gallager")
     # print(code.tanner_graph)
 
     matrix = code.as_matrix()
@@ -93,5 +95,25 @@ def sandbox():
         print("col weight not constant")
 
 
-main()
-# sandbox()
+def protographLDPC_sandbox():
+    points = [[0, 0], [0, 1], [1, 0], [1, 2]]
+    protograph = Protograph(points)
+
+    # graph = ProtographLDPC([2, TannerGraph(points)], None)
+    protograph_matrix = TannerGraph.get_matrix_representation(protograph.tanner_graph)
+
+    for row in protograph_matrix:
+        print(row)
+
+    protographLDPC = ProtographLDPC([protograph, 3], None)
+    expanded_matrix = TannerGraph.get_matrix_representation(protographLDPC.tanner_graph)
+
+    print()
+    for row in expanded_matrix:
+        print(row)
+
+
+protographLDPC_sandbox()
+
+# main()
+# regularLDPC_sandbox()
