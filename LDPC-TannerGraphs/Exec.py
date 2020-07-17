@@ -92,7 +92,6 @@ Width, 1s per col, 1s per row, height provided=false - Gallagher, Populate Rows,
 
 
 def ldpcConstructionTests():
-
     # code = RegularLDPC([10, 4], "gallagher")
     # TannerGraph.analyze(code)
     #
@@ -120,7 +119,6 @@ def ldpcConstructionTests():
     # code = RegularLDPC([10, 3, 2, False], "populate-columns")
     # TannerGraph.analyze(code)
 
-
     # # initialize a protograph
     # points = [[0, 0], [0, 1], [1, 0], [1, 2]]
     # protograph = Protograph(points)
@@ -137,8 +135,25 @@ def ldpcConstructionTests():
     # for row in expanded_matrix:
     #     print(row)
 
-    identitySet = Identity.permutation_set(3)
+    # identitySet = Identity.permutation_set(3)
+    code = RegularLDPC([10, 4, 2], "populate-rows")
+    identity = Identity([0, 2, 1])
 
+    matrix1 = code.as_matrix()
+    for row in matrix1:
+        print(row)
+    print()
+
+    matrix2 = identity.as_matrix()
+    for row in matrix2:
+        print(row)
+    print()
+
+    code.insert(identity, [1, 1])
+
+    matrix1 = code.as_matrix()
+    for row in matrix1:
+        print(row)
 
 
 ldpcConstructionTests()

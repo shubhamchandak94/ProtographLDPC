@@ -1,5 +1,6 @@
 class TannerGraph:
 
+    # All subclasses must implement height, width, tanner_graph constructions
     def __init__(self, args, construction=None):
 
         self.args = args
@@ -9,7 +10,6 @@ class TannerGraph:
         self.height = None
 
         self.tanner_graph = {}
-
 
     @staticmethod
     def create_graph(points):
@@ -115,6 +115,26 @@ class TannerGraph:
 
         return False
 
+    # inserts other matrix into location where location is top left of insertion matrix
+    def insert(self, other, location):  # location: [row, column]
+
+        # clears graph
+        for r in range(other.height):
+            c = 0
+            while c < len(self.tanner_graph[r + location[0]]):
+                if location[1] <= self.tanner_graph[r + location[0]][c] < location[1] + other.width:
+                    self.tanner_graph[r + location[0]].pop(c)
+                    c -= 1
+
+                c += 1
+
+        # populates graph
+        for r in range(other.height):
+            for c in other.tanner_graph[r]:
+                if location[1] + c not in self.tanner_graph[location[0] + r]:
+                    self.tanner_graph[location[0] + r].append(location[1] + c)
+
+        # no errors thrown for out of bounds
 
     @staticmethod
     def analyze(code):

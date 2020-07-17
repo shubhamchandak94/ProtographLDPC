@@ -98,12 +98,12 @@ class RegularLDPC(TannerGraph):
 
         self.tanner_graph = RegularLDPC.get_parity_check_graph(self.n, self.r, self.c, self.construction)
 
-        print("w: " + str(self.width))
-        print("h: " + str(self.height))
-
-        # print("n: " + str(self.n))
-        print("c: " + str(self.c))
-        print("r: " + str(self.r))
+        # print("w: " + str(self.width))
+        # print("h: " + str(self.height))
+        #
+        # # print("n: " + str(self.n))
+        # print("c: " + str(self.c))
+        # print("r: " + str(self.r))
 
     @staticmethod
     def get_parity_check_graph(n, r, c, method):

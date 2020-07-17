@@ -14,11 +14,21 @@ class Identity(TannerGraph):
             for i in range(int(args[0])):
                 self.tanner_graph[i] = [i]
 
+            self.height = int(args[0])
+            self.width = self.height
+
         # returns a graph who's matrix contains an entry in the location arg[i] of column i for all columns.
         elif len(args) > 1:
+
+            max_row = max(args)
+            for i in range(max_row):
+                self.tanner_graph[i] = []
+
             for i in range(len(args)):
                 self.tanner_graph[i] = [args[i]]
 
+            self.height = max_row + 1
+            self.width = self.height
 
     @staticmethod
     def permutation_set(width):
