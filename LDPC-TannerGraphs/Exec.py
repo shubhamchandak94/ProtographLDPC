@@ -106,7 +106,7 @@ def ldpcConstructionTests():
     #
     # code = RegularLDPC([10, 4, 2], "populate-rows")
     # TannerGraph.analyze(code)
-    #
+    # 
     # code = RegularLDPC([10, 4, 2], "populate-columns")
     # TannerGraph.analyze(code)
     #
