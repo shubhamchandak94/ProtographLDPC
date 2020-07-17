@@ -70,6 +70,10 @@ class TannerGraph:
         TannerGraph.normalize(matrix)
         return matrix
 
+    # returns matrix representation of this graph
+    def as_matrix(self):
+        return TannerGraph.get_matrix_representation(self.tanner_graph)
+
     @staticmethod
     def get_width(tanner_graph):
         max = 0
@@ -92,6 +96,25 @@ class TannerGraph:
             if len(row) > largest:
                 largest = len(row)
         return largest
+
+    def overlaps(self, other):
+
+        smaller = None
+        larger = None
+        if len(list(self.tanner_graph.keys())) <= len(list(other.keys())):
+            smaller = self
+            larger = other
+        else:
+            smaller = other
+            larger = self
+
+        for i in range(len(smaller)):
+            for entry in smaller[i]:
+                if entry in larger[i]:
+                    return True
+
+        return False
+
 
     @staticmethod
     def analyze(code):

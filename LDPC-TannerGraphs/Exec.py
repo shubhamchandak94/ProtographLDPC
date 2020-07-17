@@ -1,5 +1,6 @@
 import sys
 
+from Identity import Identity
 from TannerGraph import TannerGraph
 from RegularLDPC import RegularLDPC
 from ProtographLDPC import ProtographLDPC
@@ -106,7 +107,7 @@ def ldpcConstructionTests():
     #
     # code = RegularLDPC([10, 4, 2], "populate-rows")
     # TannerGraph.analyze(code)
-    # 
+    #
     # code = RegularLDPC([10, 4, 2], "populate-columns")
     # TannerGraph.analyze(code)
     #
@@ -120,21 +121,23 @@ def ldpcConstructionTests():
     # TannerGraph.analyze(code)
 
 
-    # initialize a protograph
-    points = [[0, 0], [0, 1], [1, 0], [1, 2]]
-    protograph = Protograph(points)
+    # # initialize a protograph
+    # points = [[0, 0], [0, 1], [1, 0], [1, 2]]
+    # protograph = Protograph(points)
+    #
+    # protograph_as_matrix = TannerGraph.get_matrix_representation(protograph.tanner_graph)
+    #
+    # for row in protograph_as_matrix:
+    #     print(row)
+    #
+    # protographLDPC = ProtographLDPC([protograph, 2])
+    # expanded_matrix = TannerGraph.get_matrix_representation(protographLDPC.tanner_graph)
+    #
+    # print()
+    # for row in expanded_matrix:
+    #     print(row)
 
-    protograph_as_matrix = TannerGraph.get_matrix_representation(protograph.tanner_graph)
-
-    for row in protograph_as_matrix:
-        print(row)
-
-    protographLDPC = ProtographLDPC([protograph, 2])
-    expanded_matrix = TannerGraph.get_matrix_representation(protographLDPC.tanner_graph)
-
-    print()
-    for row in expanded_matrix:
-        print(row)
+    identitySet = Identity.permutation_set(3)
 
 
 

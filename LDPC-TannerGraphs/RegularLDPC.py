@@ -287,10 +287,6 @@ class RegularLDPC(TannerGraph):
                 merged[int(i * n / r + j)] = submatrices[i].map[j]
         return merged
 
-    # returns matrix representation of this graph
-    def as_matrix(self):
-        return TannerGraph.get_matrix_representation(self.tanner_graph)
-
     '''
     returns a string which, when the method is run in the context of Radford Neal's library, can be utilized by the 
     make-pchk method to create the appropriate parity check file corresponding to the tanner graph in machine-readable 
