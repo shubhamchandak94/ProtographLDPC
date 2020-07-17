@@ -1,5 +1,7 @@
 import random
 
+from pip._internal.utils import deprecation
+
 from TannerGraph import TannerGraph
 import Utils
 
@@ -16,10 +18,11 @@ where weightages are constant for the most part (certain constructions fail to p
 int construction specifies the method by which the matrix corresponding to args will be created
 '''
 
+
 class RegularLDPC(TannerGraph):
 
     def __init__(self, args, construction):
-        TannerGraph.__init__(self, args, construction=construction, ldpc="regularLDPC")
+        TannerGraph.__init__(self, args, construction=construction)
 
         self.width = int(self.args[0])
 
@@ -105,8 +108,8 @@ class RegularLDPC(TannerGraph):
     @staticmethod
     def get_parity_check_graph(n, r, c, method):
 
-        # Gallager's construction of random LDPC matrices
-        if method == "gallager":
+        # gallagher's construction of random LDPC matrices
+        if method == "gallagher":
 
             # keeps track of all created submatrices
             submatrices = []
@@ -119,7 +122,9 @@ class RegularLDPC(TannerGraph):
 
         # Random construction 1
         # populates columns randomly
+        # !Not a reliable construction!
         elif method == "random":
+            print("random construction is unreliable")
 
             # create base tanner graph with r = 0, c = 0
             tanner_graph = {}
@@ -157,9 +162,9 @@ class RegularLDPC(TannerGraph):
                 col += 1
             return tanner_graph
 
-        # ------------------------------------------------
-        # Duplicate code included for easier understanding
-        # ------------------------------------------------
+        # ------------------------------------------
+        # Duplicate code included for easier reading
+        # ------------------------------------------
 
         # enforces constant row weight
         elif method == "populate-rows":
@@ -267,10 +272,10 @@ class RegularLDPC(TannerGraph):
                         tanner_graph.get(i).append(available_indices.pop(random_index))
                         placed_entries += 1
 
-            return Utils.transpose(tanner_graph, height)
+            return TannerGraph.transpose(tanner_graph, height)
 
     '''
-    as part of the Gallager construction, this function merges all the generated submatrices vertically 
+    as part of the gallagher construction, this function merges all the generated submatrices vertically 
     (in this case sub graphs)
     '''
 
@@ -310,7 +315,7 @@ class RegularLDPC(TannerGraph):
         return out[0:len(out) - 1]
 
 
-# the equivalent of the submatrix in Gallager's construction
+# the equivalent of the submatrix in Gallagher's construction
 class SubGraph:
 
     def __init__(self, n, r):

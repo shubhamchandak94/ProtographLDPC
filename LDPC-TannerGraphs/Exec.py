@@ -5,6 +5,7 @@ from RegularLDPC import RegularLDPC
 from ProtographLDPC import ProtographLDPC
 from Protograph import Protograph
 
+
 # file should be opened with the wb mode
 def intio_write(file, value):
     for i in range(3):
@@ -44,6 +45,7 @@ def write_graph_to_file(ldpc_code, filepath):
         intio_write(f, 0)
 
 
+# code which instantiates codes in the correct format
 def main():
     # args:
     # pchk-file construction-type [w, h | n, c, r | w, h, c]
@@ -56,43 +58,6 @@ def main():
 
     # write the corresponding graph to specified file in binary
     write_graph_to_file(ldpc_code, sys.argv[1])
-
-
-# a sandbox function for testing ldpc matrix constructions
-def regularLDPC_sandbox():
-    code = RegularLDPC([1000, 200], "gallager")
-    # print(code.tanner_graph)
-
-    matrix = code.as_matrix()
-    # for line in matrix:
-    #     print(line)
-
-    row_weights = []
-    for line in matrix:
-        row_weights.append(line.count(1))
-
-    col_weights = []
-    for c in range(len(matrix[0])):
-
-        col_weight = 0
-        for r in range(len(matrix)):
-            if matrix[r][c] == 1:
-                col_weight += 1
-
-        col_weights.append(col_weight)
-
-    row_weights = list(dict.fromkeys(row_weights))
-    col_weights = list(dict.fromkeys(col_weights))
-
-    if len(row_weights) == 1:
-        print("row weight constant")
-    else:
-        print("row weight not constant")
-
-    if len(col_weights) == 1:
-        print("col weight constant")
-    else:
-        print("col weight not constant")
 
 
 def protographLDPC_sandbox():
@@ -113,7 +78,69 @@ def protographLDPC_sandbox():
         print(row)
 
 
-protographLDPC_sandbox()
+'''
 
+Constructions to implement:
+Input - Construction
+
+Regular LDPC:
+Width, Height - Gallagher, Populate Rows, Populate Columns
+Width, Height, 1s per col - Gallagher, Populate Rows, Populate Columns
+Width, 1s per col, 1s per row, height provided=false - Gallagher, Populate Rows, Populate Columns
+'''
+
+
+def ldpcConstructionTests():
+
+    # code = RegularLDPC([10, 4], "gallagher")
+    # TannerGraph.analyze(code)
+    #
+    # code = RegularLDPC([10, 4], "populate-rows")
+    # TannerGraph.analyze(code)
+    #
+    # code = RegularLDPC([10, 4], "populate-columns")
+    # TannerGraph.analyze(code)
+    #
+    # code = RegularLDPC([10, 4, 2], "gallagher")
+    # TannerGraph.analyze(code)
+    #
+    # code = RegularLDPC([10, 4, 2], "populate-rows")
+    # TannerGraph.analyze(code)
+    #
+    # code = RegularLDPC([10, 4, 2], "populate-columns")
+    # TannerGraph.analyze(code)
+    #
+    # code = RegularLDPC([10, 3, 2, False], "gallagher")
+    # TannerGraph.analyze(code)
+    #
+    # code = RegularLDPC([10, 3, 2, False], "populate-rows")
+    # TannerGraph.analyze(code)
+    #
+    # code = RegularLDPC([10, 3, 2, False], "populate-columns")
+    # TannerGraph.analyze(code)
+
+
+    # initialize a protograph
+    points = [[0, 0], [0, 1], [1, 0], [1, 2]]
+    protograph = Protograph(points)
+
+    protograph_as_matrix = TannerGraph.get_matrix_representation(protograph.tanner_graph)
+
+    for row in protograph_as_matrix:
+        print(row)
+
+    protographLDPC = ProtographLDPC([protograph, 2])
+    expanded_matrix = TannerGraph.get_matrix_representation(protographLDPC.tanner_graph)
+
+    print()
+    for row in expanded_matrix:
+        print(row)
+
+
+
+ldpcConstructionTests()
+
+#
+# protographLDPC_sandbox()
+#
 # main()
-# regularLDPC_sandbox()

@@ -1,36 +1,14 @@
-from Protograph import Protograph
-
-
 class TannerGraph:
 
-    def __init__(self, args, construction=None, ldpc=None):
+    def __init__(self, args, construction=None):
 
         self.args = args
         self.construction = construction
 
-        # args: constraints for regular ldpc matrix
-        if ldpc == "regularLDPC":
+        self.width = None
+        self.height = None
 
-            self.width = None
-            self.height = None
-
-            self.tanner_graph = {}
-
-        # args: list of protograph points
-        # this is just a protograph, not a protographLDPC
-        elif ldpc == "protograph":
-
-            self.tanner_graph = TannerGraph.create_graph(args)
-
-            self.height = len(self.tanner_graph)
-            self.width = TannerGraph.get_width(self.tanner_graph)
-
-        elif ldpc == "protographLDPC":
-
-            self.tanner_graph = {}
-
-            self.width = args[0].width * args[1]
-            self.height = args[0].height * args[1]
+        self.tanner_graph = {}
 
 
     @staticmethod
@@ -114,3 +92,42 @@ class TannerGraph:
             if len(row) > largest:
                 largest = len(row)
         return largest
+
+    @staticmethod
+    def analyze(code):
+
+        print()
+        print("arguments: " + str(code.args))
+        print("code construction: " + code.construction)
+
+        print("code as graph")
+        print(code.tanner_graph)
+
+        print("code as matrix: ")
+        matrix = code.as_matrix()
+        for line in matrix:
+            print(line)
+
+        row_weights = []
+        for line in matrix:
+            row_weights.append(line.count(1))
+
+        col_weights = []
+        for c in range(len(matrix[0])):
+
+            col_weight = 0
+            for r in range(len(matrix)):
+                if matrix[r][c] == 1:
+                    col_weight += 1
+
+            col_weights.append(col_weight)
+
+        row_weights = list(dict.fromkeys(row_weights))
+        col_weights = list(dict.fromkeys(col_weights))
+
+        print("row weights: " + str(row_weights))
+        print("col weights: " + str(col_weights))
+
+        print("width: " + str(code.width))
+        print("height: " + str(code.height))
+        print()
