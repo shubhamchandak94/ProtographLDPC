@@ -148,8 +148,6 @@ class TannerGraph:
             print("cannot combine matrices, they overlap")
             return None
 
-        smaller = None
-        larger = None
         if len(list(self.tanner_graph.keys())) <= len(list(other.keys())):
             smaller = self
             larger = other
@@ -201,3 +199,8 @@ class TannerGraph:
         print("width: " + str(code.width))
         print("height: " + str(code.height))
         print()
+
+def printm(graph):
+    m = graph.as_matrix()
+    for line in m:
+        print(line)

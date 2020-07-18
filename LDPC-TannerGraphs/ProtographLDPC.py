@@ -3,7 +3,6 @@ import Utils
 from Identity import Identity
 from TannerGraph import TannerGraph
 
-# TODO fix bug for >1 protograph values
 class ProtographLDPC(TannerGraph):
 
     # args: protograph, growth factor
@@ -64,6 +63,7 @@ class ProtographLDPC(TannerGraph):
                 if not start.overlaps(permutation_set[available_indices[j + 1]]) and available_indices[j + 1] not in taken:
                     start = start.absorb_nonoverlapping(permutation_set[available_indices[j + 1]], [0, 0])
                     taken.append(available_indices[j + 1])
+                    break
 
         return start
 

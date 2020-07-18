@@ -6,6 +6,7 @@ from RegularLDPC import RegularLDPC
 from ProtographLDPC import ProtographLDPC
 from Protograph import Protograph
 
+from TannerGraph import printm
 
 # file should be opened with the wb mode
 def intio_write(file, value):
@@ -131,6 +132,9 @@ def ldpcConstructionTests():
     protographLDPC = ProtographLDPC([protograph, 3])
     matrix = protographLDPC.as_matrix()
 
+
+    # permutation_set = Identity.permutation_set(5)
+    # matrix = ProtographLDPC.submatrix(permutation_set, protograph.get(0, 0)).as_matrix()
     for line in matrix:
         print(line)
 
@@ -139,6 +143,24 @@ def ldpcConstructionTests():
     # print()
     # for row in expanded_matrix:
     #     print(row)
+
+    # permutation_set = Identity.permutation_set(5)
+    #
+    # c1 = permutation_set[0]
+    # c2 = None
+    # for i in range(len(permutation_set)):
+    #     if not c1.overlaps(permutation_set[i]):
+    #         c2 = permutation_set[i]
+    #
+    # printm(c1)
+    # print()
+    #
+    # printm(c2)
+    # print()
+    #
+    # merged = c1.absorb_nonoverlapping(c2, [0, 0])
+    # printm(merged)
+
 
 
 ldpcConstructionTests()
