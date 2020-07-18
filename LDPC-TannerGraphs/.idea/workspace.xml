@@ -2,11 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b417734e-80e3-441d-8a30-ce9719c8dbfd" name="Default Changelist" comment="implemented enforcing of 1s per column - enforces even probabilities in majority vote decoding">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Exec.py" beforeDir="false" afterPath="$PROJECT_DIR$/Exec.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Identity.py" beforeDir="false" afterPath="$PROJECT_DIR$/Identity.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProtographLDPC.py" beforeDir="false" afterPath="$PROJECT_DIR$/ProtographLDPC.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TannerGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/TannerGraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../LDPC-codes" beforeDir="false" afterPath="$PROJECT_DIR$/../LDPC-codes" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -106,7 +101,7 @@
       <workItem from="1594955698137" duration="2667000" />
       <workItem from="1594971895933" duration="2238000" />
       <workItem from="1595019284331" duration="12980000" />
-      <workItem from="1595048988741" duration="619000" />
+      <workItem from="1595048988741" duration="1297000" />
     </task>
     <task id="LOCAL-00001" summary="Implemented direct construction of ldpc matrices in machine readable">
       <created>1590536729990</created>
