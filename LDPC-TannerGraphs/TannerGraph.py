@@ -11,15 +11,20 @@ class TannerGraph:
 
         self.tanner_graph = {}
 
-    @staticmethod
-    def create_graph(points):
-        tanner_graph = {}
-        for point in points:
-            if point[0] not in tanner_graph:
-                tanner_graph[point[0]] = []
-            if point[1] not in tanner_graph[point[0]]:
-                tanner_graph[point[0]].append(point[1])
-        return tanner_graph
+    def append(self, row, value):
+        self.tanner_graph[row].append(value)
+
+    def getRow(self, row):
+        return self.tanner_graph[row]
+
+    def addRow(self):
+        self.tanner_graph[len(self.tanner_graph)] = []
+
+    def keys(self):
+        return self.tanner_graph.keys()
+
+    def __len__(self):
+        return len(self.tanner_graph)
 
     '''
     traverses the dictionary to find identical key values. These correspond to repeated parity check equations which
@@ -109,8 +114,8 @@ class TannerGraph:
             larger = self
 
         for i in range(len(smaller)):
-            for entry in smaller[i]:
-                if entry in larger[i]:
+            for entry in smaller.getRow(i):
+                if entry in larger.getRow(i):
                     return True
 
         return False
@@ -135,6 +140,28 @@ class TannerGraph:
                     self.tanner_graph[location[0] + r].append(location[1] + c)
 
         # no errors thrown for out of bounds
+
+    # location: [row, col]
+    def absorb_nonoverlapping(self, other, location):
+
+        if self.overlaps(other):
+            print("cannot combine matrices, they overlap")
+            return None
+
+        smaller = None
+        larger = None
+        if len(list(self.tanner_graph.keys())) <= len(list(other.keys())):
+            smaller = self
+            larger = other
+        else:
+            smaller = other
+            larger = self
+
+        for r in range(smaller.height):
+            for c in smaller.getRow(r):
+                larger.getRow(r + location[0]).append(c + location[1])
+
+        return larger
 
     @staticmethod
     def analyze(code):

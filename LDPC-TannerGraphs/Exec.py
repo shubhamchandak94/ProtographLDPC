@@ -62,16 +62,16 @@ def main():
 
 
 def protographLDPC_sandbox():
-    points = [[0, 0], [0, 1], [1, 0], [1, 2]]
+    points = [[0, 0], [0, 1], [1, 0], [1, 2]] # REFORMAT
     protograph = Protograph(points)
 
-    # graph = ProtographLDPC([2, TannerGraph(points)], None)
+    # graph = ProtographLDPC([2, TannerGraph(points)])
     protograph_matrix = TannerGraph.get_matrix_representation(protograph.tanner_graph)
 
     for row in protograph_matrix:
         print(row)
 
-    protographLDPC = ProtographLDPC([protograph, 3], None)
+    protographLDPC = ProtographLDPC([protograph, 3])
     expanded_matrix = TannerGraph.get_matrix_representation(protographLDPC.tanner_graph)
 
     print()
@@ -119,41 +119,26 @@ def ldpcConstructionTests():
     # code = RegularLDPC([10, 3, 2, False], "populate-columns")
     # TannerGraph.analyze(code)
 
-    # # initialize a protograph
-    # points = [[0, 0], [0, 1], [1, 0], [1, 2]]
-    # protograph = Protograph(points)
-    #
+    # initialize a protograph
+    points = [[0, 0, 2], [0, 1, 1], [1, 0, 1], [1, 2, 1]]
+    protograph = Protograph(points)
+
     # protograph_as_matrix = TannerGraph.get_matrix_representation(protograph.tanner_graph)
     #
     # for row in protograph_as_matrix:
     #     print(row)
-    #
-    # protographLDPC = ProtographLDPC([protograph, 2])
-    # expanded_matrix = TannerGraph.get_matrix_representation(protographLDPC.tanner_graph)
-    #
+
+    protographLDPC = ProtographLDPC([protograph, 3])
+    matrix = protographLDPC.as_matrix()
+
+    for line in matrix:
+        print(line)
+
+    # expanded_matrix = protographLDPC.as_matrix()
+
     # print()
     # for row in expanded_matrix:
     #     print(row)
-
-    # identitySet = Identity.permutation_set(3)
-    code = RegularLDPC([10, 4, 2], "populate-rows")
-    identity = Identity([0, 2, 1])
-
-    matrix1 = code.as_matrix()
-    for row in matrix1:
-        print(row)
-    print()
-
-    matrix2 = identity.as_matrix()
-    for row in matrix2:
-        print(row)
-    print()
-
-    code.insert(identity, [1, 1])
-
-    matrix1 = code.as_matrix()
-    for row in matrix1:
-        print(row)
 
 
 ldpcConstructionTests()
