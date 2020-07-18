@@ -3,6 +3,7 @@ import Utils
 from Identity import Identity
 from TannerGraph import TannerGraph
 
+# TODO fix bug for >1 protograph values
 class ProtographLDPC(TannerGraph):
 
     # args: protograph, growth factor
