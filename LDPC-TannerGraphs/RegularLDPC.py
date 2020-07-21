@@ -101,13 +101,6 @@ class RegularLDPC(TannerGraph):
 
         self.tanner_graph = RegularLDPC.get_parity_check_graph(self.n, self.r, self.c, self.construction)
 
-        # print("w: " + str(self.width))
-        # print("h: " + str(self.height))
-        #
-        # # print("n: " + str(self.n))
-        # print("c: " + str(self.c))
-        # print("r: " + str(self.r))
-
     # parameters:
     #   n: int, the width of the LDPC code, the codeword length
     #   r: int, the weight of each row of the LDPC code

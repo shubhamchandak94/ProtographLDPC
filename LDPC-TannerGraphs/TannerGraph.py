@@ -266,9 +266,12 @@ def largest_row(arr):
             largest = len(row)
     return largest
 
+
 '''
 analyzes a given code with a few print statements
 '''
+
+
 # parameters:
 #   TannerGraph, graph to be analyzed
 def analyze(code):
@@ -308,9 +311,12 @@ def analyze(code):
     print("height: " + str(code.height))
     print()
 
+
 '''
 Displays a TannerGraph object in matrix form
 '''
+
+
 # parameters:
 #   graph: TannerGraph
 def printm(graph):

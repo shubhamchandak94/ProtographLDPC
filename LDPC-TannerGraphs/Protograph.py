@@ -57,6 +57,10 @@ class Protograph(TannerGraph):
 
         return protograph.tanner_graph
 
+    '''
+    This method allows the protograph to be queried as if was defined by a matrix structure. This is necessary here and
+    not in TannerGraph as Protographs are the only TannerGraphs who's values can be greater than 1.
+    '''
     # parameters:
     #   r: int, row index of fetched entry
     #   c: int, col index of fetched entry

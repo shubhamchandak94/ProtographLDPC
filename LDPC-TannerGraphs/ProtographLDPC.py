@@ -1,6 +1,7 @@
 
 import Utils
 from Identity import Identity
+from RegularLDPC import RegularLDPC
 from TannerGraph import TannerGraph
 
 '''
@@ -12,11 +13,19 @@ nodes) to indicate bipartite connections
 args: input to enable construction. input follows the following construction patern: args[0] = Protograph object 
 containing the Protograph to be lifted. args[1] depicts the factor by which to lift the given protograph.
 
-The implemented construction works as follows:
-given a protograph p and lifting factor f, a blank matrix is constructed of the dimension width = p.width * f and 
+The implemented constructions work as follows:
+
+construction = permutation
+given a protograph p and lift factor f, a blank matrix is constructed of the dimension width = p.width * f and 
 height = p.height * f. For each position (r, c) where r and c are both divisible by f, the scope [r => r + f, c => c + f]
-if populated with a submatrix. This submatrix is a result of the sum of n permutation matrices of width f, where n is
-defined by the position at row = r / f, column = c / f on the supplied protograph  
+is populated with a submatrix. This submatrix is a result of the sum of n permutation matrices of width f, where n is
+defined by the position at row = r / f, column = c / f on the supplied protograph.
+
+construction = regular
+given a protograph p and lift factor f, a blank matrix is constructed of the dimension width = p.width * f and 
+height = p.height * f. For each position (r, c) where r and c are both divisible by f, the scope [r => r + f, c => c + f]
+is populated with a regular LDPC matrix graph, who's row and column weightage is defined by the protograph's value
+at row = r / f, column = c / f/
 '''
 
 class ProtographLDPC(TannerGraph):
@@ -25,9 +34,10 @@ class ProtographLDPC(TannerGraph):
     #   args: list, args[0] = protograph to be lifted, args[1] = lift factor
     # return:
     #   a fully lifted Protograph LDPC code
-    def __init__(self, args):
-        TannerGraph.__init__(self, args)
+    def __init__(self, args, construction):
+        TannerGraph.__init__(self, args, construction=construction)
 
+        self.construction = construction
         self.protograph = args[0]
         self.factor = args[1]
         self.maximum_allowable_protograph_node = self.factor
@@ -35,11 +45,14 @@ class ProtographLDPC(TannerGraph):
         self.width = args[0].width * args[1]
         self.height = args[0].height * args[1]
 
-        # do not alter this set with external methods
-        self.permutation_set = Identity.permutation_set(self.factor)
-        # self.permutation_set = Utils.random_list(self.permutation_set, len(self.permutation_set))
+        self.permutation_set = None
 
-        self.tanner_graph = ProtographLDPC.expanded_protograph(self.protograph, self.factor, permutation_set=self.permutation_set)
+        if construction == "permutation":
+            # do not alter this set with external methods
+            self.permutation_set = Identity.permutation_set(self.factor)
+            # self.permutation_set = Utils.random_list(self.permutation_set, len(self.permutation_set))
+
+        self.tanner_graph = ProtographLDPC.expanded_protograph(self.protograph, self.factor, self.construction, permutation_set=self.permutation_set)
 
     '''
     This method provides a means by which a given protograph can be lifted by a given factor. This method cannot identify
@@ -54,9 +67,9 @@ class ProtographLDPC(TannerGraph):
     # return:
     #   ProtographLDPC, fully expanded
     @staticmethod
-    def expanded_protograph(protograph, factor, permutation_set=None):
+    def expanded_protograph(protograph, factor, construction, permutation_set=None):
 
-        if permutation_set is None:
+        if permutation_set is None and construction == "permutation":
             permutation_set = Identity.permutation_set(factor)
 
         expanded = TannerGraph(None)
@@ -74,7 +87,11 @@ class ProtographLDPC(TannerGraph):
                     continue
 
                 else:
-                    expanded.insert(ProtographLDPC.submatrix(permutation_set, protograph.get(r / factor, c / factor)), [r, c])
+
+                    if construction == "permutation":
+                        expanded.insert(ProtographLDPC.submatrix(permutation_set, protograph.get(r / factor, c / factor)), [r, c])
+                    elif construction == "regular":
+                        expanded.insert(RegularLDPC([factor, factor, protograph.get(r / factor, c / factor)], "populate-columns"), [r, c])
 
         return expanded.tanner_graph
 

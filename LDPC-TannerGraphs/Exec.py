@@ -102,40 +102,18 @@ def ldpcConstructionTests():
     # code = RegularLDPC([10, 3, 2, False], "populate-columns")
     # analyze(code)
 
-    # initialize a protograph
+
     points = [[0, 0, 2], [0, 1, 1], [1, 0, 1], [1, 2, 1]]
 
     protograph = Protograph(points)
 
-    protographLDPC = ProtographLDPC([protograph, 3])
+    protographLDPC = ProtographLDPC([protograph, 3], "regular")
     matrix = protographLDPC.as_matrix()
-
 
     for line in matrix:
         print(line)
 
-    # expanded_matrix = protographLDPC.as_matrix()
 
-    # print()
-    # for row in expanded_matrix:
-    #     print(row)
-
-    # permutation_set = Identity.permutation_set(5)
-    #
-    # c1 = permutation_set[0]
-    # c2 = None
-    # for i in range(len(permutation_set)):
-    #     if not c1.overlaps(permutation_set[i]):
-    #         c2 = permutation_set[i]
-    #
-    # printm(c1)
-    # print()
-    #
-    # printm(c2)
-    # print()
-    #
-    # merged = c1.absorb_nonoverlapping(c2, [0, 0])
-    # printm(merged)
 
 
 
