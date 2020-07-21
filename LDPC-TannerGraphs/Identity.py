@@ -1,10 +1,18 @@
 import itertools
-
 from TannerGraph import TannerGraph
+
+'''
+A class for the handling of Identity type matrices in TannerGraph form. It is important to note the distinction between
+identity matrices and identity type matrices. Identity type matrices are regular matrices whose length and width are the
+same value, and who's columns and rows share a weightage of exactly 1. Identity type matrix entries are restricted in
+value (all must carry a value of 1), but are not as heavily restricted in position as they would be in an Identity Matrix.
+'''
 
 
 class Identity(TannerGraph):
 
+    # parameters:
+    #   args: list, the necessary arguments necessary to construct an identity matrix
     def __init__(self, args):
 
         TannerGraph.__init__(self, args)
@@ -30,6 +38,10 @@ class Identity(TannerGraph):
             self.height = max_row + 1
             self.width = self.height
 
+    # parameters:
+    #   width: the width of every matrix contained in this set
+    # return:
+    #   list, a list containing all possible permutation matrices of width = width
     @staticmethod
     def permutation_set(width):
 

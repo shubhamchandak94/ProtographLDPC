@@ -1,6 +1,29 @@
+"""
+
+A parent of all LDPC codes included in this library
+
+This class provides a structure which all LDPC codes can manipulate in their individual constructions.
+The tanner_graph attribute presents a dictionary where row indices are mapped to lists of column indices.
+This structure is populated in the respective subclasses. It is a requirement of all subclasses to define
+the width, height, and tanner_graph attributes of this superclass, as intermediary functions rely on these
+fields to function appropriately
+
+The Tanner (Bipartite) graph representation describes the same code as the corresponding parity check matrix.
+Each row contained within the structural dictionary describes a row in the corresponding matrix: the key value
+indicates the index of the row in the matrix, and the value list describes the locations of the entries
+contained in that matrix row. Unlisted values are assumed to be empty and therefore zero in the matrix representation
+
+"""
+
+
 class TannerGraph:
 
-    # All subclasses must implement height, width, tanner_graph constructions
+    # All subclasses must implement height, width, tanner_graph definitions
+    # parameters:
+    #   args: list, contains any possible arguments a subclass might require for their respective constructions
+    #   construction: if a subclass implements multiple constructions, this field identifies the construction used by a subclass instance
+    # return:
+    #   a TannerGraph object with the tanner_graph dictionary instantiated empty
     def __init__(self, args, construction=None):
 
         self.args = args
@@ -11,102 +34,48 @@ class TannerGraph:
 
         self.tanner_graph = {}
 
+    # parameters:
+    #   row: int, the row r contained as a key by self.tanner_graph
+    #   value: int, the value which self.tanner_graph.get(row) must append to itself
+    # return:
+    #   None, appends value internally
     def append(self, row, value):
         self.tanner_graph[row].append(value)
 
+    # parameters:
+    #   row: int, row index to query
+    # return:
+    #   list, the calue associated with the row parameter in self.tanner_graph
     def getRow(self, row):
         return self.tanner_graph[row]
 
+    # Adds another row below the existing rows in self.tanner_graph. This corresponds to increasing the number
+    # of parity bits and reducing the number of message bits. In this sense, an n/k code is transformed into
+    # an n/k-1 code. This row is irrelevant until population, as it is initially empty (corresponding to a row
+    # 0s in the matrix representation
+    # return:
+    #   None
     def addRow(self):
         self.tanner_graph[len(self.tanner_graph)] = []
 
+    # return:
+    #   a list of row indices contained in the Graph
     def keys(self):
-        return self.tanner_graph.keys()
+        return list(self.tanner_graph.keys())
 
+    # return:
+    #   the number of rows (either populated or not) described by this Tanner Graph
     def __len__(self):
         return len(self.tanner_graph)
 
-    '''
-    traverses the dictionary to find identical key values. These correspond to repeated parity check equations which
-    could undermine the code's performance.
-    '''
-
-    @staticmethod
-    def has_repeated_rows(tanner_graph):
-        for i in range(0, len(tanner_graph) - 1):
-            for j in range(i + 1, len(tanner_graph)):
-                if tanner_graph[i] == tanner_graph[j]:
-                    print("row " + str(i) + " and row " + str(j) + " are identical")
-                    return True
-        return False
-
-    '''
-    the equivalent of transposing a matrix, if that matrix were represented by a bipartite graph. This allows for more
-    diverse methods of matrix construction.
-    '''
-
-    @staticmethod
-    def transpose(tanner_graph, new_height):
-        new_graph = {}
-        for i in range(new_height):
-            new_graph[i] = []
-            for j in tanner_graph:
-                if tanner_graph.get(j).count(i) == 1:
-                    new_graph.get(i).append(j)
-        return new_graph
-
-    '''
-    because this program stores ldpc parity information in the form of tanner graphs, this provides a way to construct
-    the appropriate matrix provided the tanner graph
-    '''
-
-    @staticmethod
-    def get_matrix_representation(tanner_graph):
-        matrix = []
-        for i in range(len(tanner_graph)):
-            row = []
-            if i in tanner_graph:
-                for j in range(max(tanner_graph[i]) + 1):
-                    if j in tanner_graph[i]:
-                        row.append(1)
-                    else:
-                        row.append(0)
-            matrix.append(row)
-        TannerGraph.normalize(matrix)
-        return matrix
-
-    # returns matrix representation of this graph
-    def as_matrix(self):
-        return TannerGraph.get_matrix_representation(self.tanner_graph)
-
-    @staticmethod
-    def get_width(tanner_graph):
-        max = 0
-        for row in tanner_graph:
-            for index in tanner_graph[row]:
-                if index > max:
-                    max = index
-        return max + 1
-
-    @staticmethod
-    def normalize(arr):
-        new_length = TannerGraph.largest_row(arr)
-        for i in range(len(arr)):
-            arr[i] = arr[i] + [0] * (new_length - len(arr[i]))
-
-    @staticmethod
-    def largest_row(arr):
-        largest = 0
-        for row in arr:
-            if len(row) > largest:
-                largest = len(row)
-        return largest
-
+    # If Two graphs overlap, it is indicated that both graphs contain one or more entries in the same location.
+    # parameters:
+    #   other: TannerGraph, the comparative graph
+    # return:
+    #   boolean value: indicating if self and other overlap
     def overlaps(self, other):
 
-        smaller = None
-        larger = None
-        if len(list(self.tanner_graph.keys())) <= len(list(other.keys())):
+        if len(self.tanner_graph.keys()) <= len(other.keys()):
             smaller = self
             larger = other
         else:
@@ -120,7 +89,15 @@ class TannerGraph:
 
         return False
 
-    # inserts other matrix into location where location is top left of insertion matrix
+    # Performs an insertion of one smaller TannerGraph into another. This is described more easily in terms of code matrices.
+    # Matrix code m can be inserted into matrix code n at location (i, j) if i + m.width < n.width and j + m.height < n.height.
+    # Code M would replace all entries and non entries in the scope of rows j -> j + m.height and columns i -> m.width with its
+    # own relative entries and non entries
+    # parameters:
+    #   other: TannerGraph, the graph which self must absorb
+    #   location: list, the [row, col] values at which the insertion is to occur
+    # return:
+    #   None, all changes are made in self internally
     def insert(self, other, location):  # location: [row, column]
 
         # clears graph
@@ -141,14 +118,20 @@ class TannerGraph:
 
         # no errors thrown for out of bounds
 
-    # location: [row, col]
+    # Equivalent to the process of summing two code matrices. The summation is performed given the two matrices do not
+    # overlap. If one matrix is smaller than the other, the larger matrix will contain all the changes and is returned.
+    # The summation in this case will occur in the scope of rows: i -> i + smaller.height, columns: j -> j + smaller.width
+    # given location: [i, j]
+    # parameters:
+    #   other: TannerGraph, the second tanner graph involved in the summation
+    #   location: list [r, c], the coordinates where the summation is to start in the larger graph
     def absorb_nonoverlapping(self, other, location):
 
         if self.overlaps(other):
             print("cannot combine matrices, they overlap")
             return None
 
-        if len(list(self.tanner_graph.keys())) <= len(list(other.keys())):
+        if len(self.tanner_graph.keys()) <= len(other.keys()):
             smaller = self
             larger = other
         else:
@@ -161,45 +144,175 @@ class TannerGraph:
 
         return larger
 
-    @staticmethod
-    def analyze(code):
+    # return:
+    #   returns the matrix representation of this TannerGraph instance
+    def as_matrix(self):
+        return get_matrix_representation(self.tanner_graph)
 
-        print()
-        print("arguments: " + str(code.args))
-        print("code construction: " + code.construction)
 
-        print("code as graph")
-        print(code.tanner_graph)
+'''
+Traverses the dictionary to find identical key values. These correspond to repeated parity check equations which
+could undermine the code's performance.
+'''
 
-        print("code as matrix: ")
-        matrix = code.as_matrix()
-        for line in matrix:
-            print(line)
 
-        row_weights = []
-        for line in matrix:
-            row_weights.append(line.count(1))
+# parameters:
+#   tanner_graph: TannerGraph.tanner_graph dictionary, the attribute object of a TannerGraph instance which is analyzed
+# returns:
+#   boolean indicating whether or not the dict contains repeated list values
+def has_repeated_rows(tanner_graph):
+    for i in range(0, len(tanner_graph) - 1):
+        for j in range(i + 1, len(tanner_graph)):
+            if tanner_graph[i] == tanner_graph[j]:
+                print("row " + str(i) + " and row " + str(j) + " are identical")
+                return True
+    return False
 
-        col_weights = []
-        for c in range(len(matrix[0])):
 
-            col_weight = 0
-            for r in range(len(matrix)):
-                if matrix[r][c] == 1:
-                    col_weight += 1
+'''
+The equivalent of transposing a matrix, if that matrix were represented by a bipartite graph. This allows for more
+diverse methods of matrix construction.
+'''
 
-            col_weights.append(col_weight)
 
-        row_weights = list(dict.fromkeys(row_weights))
-        col_weights = list(dict.fromkeys(col_weights))
+# parameters:
+#   tanner_graph: Tanner.tanner_graph dictionary, the graph to be transposed
+# returns:
+#   TannerGraph.tanner_graph attribute representing the transposed dictionary
+def transpose(tanner_graph, new_height):
+    new_graph = {}
+    for i in range(new_height):
+        new_graph[i] = []
+        for j in tanner_graph:
+            if tanner_graph.get(j).count(i) == 1:
+                new_graph.get(i).append(j)
+    return new_graph
 
-        print("row weights: " + str(row_weights))
-        print("col weights: " + str(col_weights))
 
-        print("width: " + str(code.width))
-        print("height: " + str(code.height))
-        print()
+'''
+Because this program stores ldpc parity information in the form of tanner graphs, this provides a way to construct
+the appropriate matrix provided the tanner graph
+'''
 
+
+# parameters:
+#   tanner_graph: Tanner.tanner_graph dictionary, the dict object for which a representation must be made
+# returns:
+#   matrix, list(list()) where 1s represent entries and 0s represent lack of thereof
+def get_matrix_representation(tanner_graph):
+    matrix = []
+    for i in range(len(tanner_graph)):
+        row = []
+        if i in tanner_graph:
+            for j in range(max(tanner_graph[i]) + 1):
+                if j in tanner_graph[i]:
+                    row.append(1)
+                else:
+                    row.append(0)
+        matrix.append(row)
+    normalize(matrix)
+    return matrix
+
+
+'''
+Because only rows are directly indexed in the first level of the tanner_graph, the width of a tanner_graph dict 
+is not inherently directly stored anywhere. The dictionary's lists must be traversed to find the maximum index.
+The max + 1 indicates the width of the tanner_graph
+'''
+
+
+# parameters:
+#   tanner_graph: Tanner.tanner_graph dictionary of which the width must be found
+# return:
+#   int, width of the tanner_graph
+def get_width(tanner_graph):
+    max = 0
+    for row in tanner_graph:
+        for index in tanner_graph[row]:
+            if index > max:
+                max = index
+    return max + 1
+
+
+'''
+Given a list of lists, this method normalizes all sublists to the same size by populating smaller sublists with 0s.
+This method is intended to normalize matrix representations for aesthetic purposes
+'''
+
+
+# parameters:
+#   list(list()) array to be normalized
+# return:
+#   list(list()) normalized 2d list
+def normalize(arr):
+    new_length = largest_row(arr)
+    for i in range(len(arr)):
+        arr[i] = arr[i] + [0] * (new_length - len(arr[i]))
+
+
+'''
+Iteratively finds the length of the longest sublist contained in a list of lists. 
+'''
+
+
+# parameters:
+#   arr: list, list to be queried
+# return:
+#   int, length of larges sublist in an array
+def largest_row(arr):
+    largest = 0
+    for row in arr:
+        if len(row) > largest:
+            largest = len(row)
+    return largest
+
+'''
+analyzes a given code with a few print statements
+'''
+# parameters:
+#   TannerGraph, graph to be analyzed
+def analyze(code):
+    print()
+    print("arguments: " + str(code.args))
+    print("code construction: " + code.construction)
+
+    print("code as graph")
+    print(code.tanner_graph)
+
+    print("code as matrix: ")
+    matrix = code.as_matrix()
+    for line in matrix:
+        print(line)
+
+    row_weights = []
+    for line in matrix:
+        row_weights.append(line.count(1))
+
+    col_weights = []
+    for c in range(len(matrix[0])):
+
+        col_weight = 0
+        for r in range(len(matrix)):
+            if matrix[r][c] == 1:
+                col_weight += 1
+
+        col_weights.append(col_weight)
+
+    row_weights = list(dict.fromkeys(row_weights))
+    col_weights = list(dict.fromkeys(col_weights))
+
+    print("row weights: " + str(row_weights))
+    print("col weights: " + str(col_weights))
+
+    print("width: " + str(code.width))
+    print("height: " + str(code.height))
+    print()
+
+'''
+Displays a TannerGraph object in matrix form
+'''
+# parameters:
+#   graph: TannerGraph
 def printm(graph):
     m = graph.as_matrix()
     for line in m:

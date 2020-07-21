@@ -3,9 +3,16 @@ from TannerGraph import TannerGraph
 
 
 class Protograph(TannerGraph):
+    """
+    This TannerGraph subclass constructs the tanner_graph dictionary as a dictionary of lists of ProtographEntry objects.
+    This allows each entry to have an entry value not necessarily equal to 1.
+    """
 
-    # this graph contains a list of entries, not positions. entries have both value and position attributes
-    # args : list 1 locations in matrix
+    # parameters:
+    #   args: list(list()), a list of entries where each entry is a list of length three. These entry lists contain
+    #   their row value at position 0, column value at position 1, and value at position 2
+    # return:
+    #   a fully constructed Protograph object
     def __init__(self, args):
         TannerGraph.__init__(self, args)
 
@@ -14,16 +21,8 @@ class Protograph(TannerGraph):
         self.height = len(self.tanner_graph)
         self.width = self.get_width()
 
-    # @staticmethod
-    # def create_protograph(points):
-    #     tanner_graph = {}
-    #     for point in points:
-    #         if point[0] not in tanner_graph:
-    #             tanner_graph[point[0]] = []
-    #         if point[1] not in tanner_graph[point[0]]:
-    #             tanner_graph[point[0]].append(point[1])
-    #     return tanner_graph
-
+    # return:
+    #   the width of a protograph tanner_graph (the superclass get_width does not work here as entry values should no longer by inferred)
     def get_width(self):
         max = 0
         for row in self.tanner_graph:
@@ -32,6 +31,14 @@ class Protograph(TannerGraph):
                     max = entry.index
         return max + 1
 
+    '''
+    Constructs a protograph object from the supplied point list
+    '''
+
+    # parameters:
+    #   points: list, the list of points defining the protograph
+    # return:
+    #   the tanner_graph which represents the Protograph object
     @staticmethod
     def create_protograph(points):
 
@@ -50,12 +57,23 @@ class Protograph(TannerGraph):
 
         return protograph.tanner_graph
 
+    # parameters:
+    #   r: int, row index of fetched entry
+    #   c: int, col index of fetched entry
+    # return:
+    #   the value of the entry at location [r, c] in self.tanner_graph
     def get(self, r, c):
         row = self.getRow(r)
         for entry in row:
             if entry.index == c:
                 return entry.value
         return 0
+
+
+'''
+This class represents a protograph entry; it allows for entry values to be greater than 1 
+'''
+
 
 class ProtographEntry:
 

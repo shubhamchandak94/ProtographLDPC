@@ -2,7 +2,8 @@ import random
 import os
 import sys
 
-# General Utils
+# GENERAL UTILS
+# finds all common factors between i an dj
 def common_factors(i, j):
     factors = []
     for z in range(min(i, j) - 1):
@@ -48,9 +49,3 @@ def rand_list(list, n, selected):
         selected.append(randint)
         list.remove(randint)
         return rand_list(list, n - 1, selected)
-
-
-# display a parity check matrix
-def print_matrix(matrix):
-    for row in matrix:
-        print(row)

@@ -1,8 +1,6 @@
 import random
 
-from pip._internal.utils import deprecation
-
-from TannerGraph import TannerGraph
+from TannerGraph import *
 import Utils
 
 '''
@@ -15,12 +13,17 @@ args: input to enable construction. input follows the following construction pat
 explicitly simplified, h = height of matrix, n = length of codeword/width matrix, c = column weight, r = row weight
 where weightages are constant for the most part (certain constructions fail to provide complete regularity)
 
-int construction specifies the method by which the matrix corresponding to args will be created
+construction specifies the method by which the matrix corresponding to args will be created
 '''
 
 
 class RegularLDPC(TannerGraph):
 
+    # parameters:
+    #   args: list of arguments needed for regular ldpc construction
+    #   construction: the type of construction to be used
+    # return:
+    #   a fully defined Regular LDPC code
     def __init__(self, args, construction):
         TannerGraph.__init__(self, args, construction=construction)
 
@@ -105,6 +108,11 @@ class RegularLDPC(TannerGraph):
         # print("c: " + str(self.c))
         # print("r: " + str(self.r))
 
+    # parameters:
+    #   n: int, the width of the LDPC code, the codeword length
+    #   r: int, the weight of each row of the LDPC code
+    #   c: int, the weight of each column of the code
+    #   method: String, the construction to be employed
     @staticmethod
     def get_parity_check_graph(n, r, c, method):
 
@@ -272,13 +280,19 @@ class RegularLDPC(TannerGraph):
                         tanner_graph.get(i).append(available_indices.pop(random_index))
                         placed_entries += 1
 
-            return TannerGraph.transpose(tanner_graph, height)
+            return transpose(tanner_graph, height)
 
     '''
-    as part of the gallagher construction, this function merges all the generated submatrices vertically 
-    (in this case sub graphs)
+    as part of the gallagher construction, this function stacks all the generated submatrices vertically 
+    (in this case sub graphs). Because of the nature of LDPC codes, the order of the stacking is irrelevant, 
+    and subsequently random
     '''
-
+    # parameters:
+    #   submatrices: list of TannerGraph.tanner_graph, a list of dictionaries to be stacked
+    #   n: int, the width of each codeword
+    #   r: int, the weight of each row of each submatrix in submatrices
+    # return:
+    #   a TannerGraph.tanner_graph dictionary containing the entire code constructed from individual submatrices
     @staticmethod
     def merge(submatrices, n, r):
         merged = {}
@@ -287,33 +301,13 @@ class RegularLDPC(TannerGraph):
                 merged[int(i * n / r + j)] = submatrices[i].map[j]
         return merged
 
-    '''
-    returns a string which, when the method is run in the context of Radford Neal's library, can be utilized by the 
-    make-pchk method to create the appropriate parity check file corresponding to the tanner graph in machine-readable 
-    form 
-    '''
 
-    # generates a c program call which uses make-ldpc to generate an equivalent ldpc matrix
-    def get_c_executable(self, output_file):
-        out = "./LDPC-codes/make-pchk " + output_file + " "
-
-        # getting width and height
-        if len(self.args) == 2:
-            out += str(self.height) + " " + str(self.width) + " "
-        elif len(self.args) == 3:
-            out += str(self.n) + " " + str(int(self.n * self.c / self.r)) + " "
-
-        # getting all 1s positions
-        for i in range(len(self.tanner_graph)):
-            for j in range(len(self.tanner_graph[i])):
-                out += str(i) + ":" + str(self.tanner_graph[i][j]) + " "
-
-        return out[0:len(out) - 1]
-
-
-# the equivalent of the submatrix in Gallagher's construction
+# the equivalent of the submatrix in Gallagher's construction, used only for Gallagher's construction
 class SubGraph:
 
+    # parameters:
+    #   n: int, the width of the cumulative code
+    #   r: int, the weight of each row in the cumulative code
     def __init__(self, n, r):
 
         # creates graph with appropriate no. check nodes

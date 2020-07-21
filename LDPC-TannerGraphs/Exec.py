@@ -1,7 +1,7 @@
 import sys
 
 from Identity import Identity
-from TannerGraph import TannerGraph
+from TannerGraph import *
 from RegularLDPC import RegularLDPC
 from ProtographLDPC import ProtographLDPC
 from Protograph import Protograph
@@ -62,24 +62,6 @@ def main():
     write_graph_to_file(ldpc_code, sys.argv[1])
 
 
-def protographLDPC_sandbox():
-    points = [[0, 0], [0, 1], [1, 0], [1, 2]] # REFORMAT
-    protograph = Protograph(points)
-
-    # graph = ProtographLDPC([2, TannerGraph(points)])
-    protograph_matrix = TannerGraph.get_matrix_representation(protograph.tanner_graph)
-
-    for row in protograph_matrix:
-        print(row)
-
-    protographLDPC = ProtographLDPC([protograph, 3])
-    expanded_matrix = TannerGraph.get_matrix_representation(protographLDPC.tanner_graph)
-
-    print()
-    for row in expanded_matrix:
-        print(row)
-
-
 '''
 
 Constructions to implement:
@@ -94,47 +76,41 @@ Width, 1s per col, 1s per row, height provided=false - Gallagher, Populate Rows,
 
 def ldpcConstructionTests():
     # code = RegularLDPC([10, 4], "gallagher")
-    # TannerGraph.analyze(code)
+    # analyze(code)
     #
     # code = RegularLDPC([10, 4], "populate-rows")
-    # TannerGraph.analyze(code)
+    # analyze(code)
     #
     # code = RegularLDPC([10, 4], "populate-columns")
-    # TannerGraph.analyze(code)
+    # analyze(code)
     #
     # code = RegularLDPC([10, 4, 2], "gallagher")
-    # TannerGraph.analyze(code)
+    # analyze(code)
     #
     # code = RegularLDPC([10, 4, 2], "populate-rows")
-    # TannerGraph.analyze(code)
+    # analyze(code)
     #
     # code = RegularLDPC([10, 4, 2], "populate-columns")
-    # TannerGraph.analyze(code)
+    # analyze(code)
     #
     # code = RegularLDPC([10, 3, 2, False], "gallagher")
-    # TannerGraph.analyze(code)
+    # analyze(code)
     #
     # code = RegularLDPC([10, 3, 2, False], "populate-rows")
-    # TannerGraph.analyze(code)
+    # analyze(code)
     #
     # code = RegularLDPC([10, 3, 2, False], "populate-columns")
-    # TannerGraph.analyze(code)
+    # analyze(code)
 
     # initialize a protograph
     points = [[0, 0, 2], [0, 1, 1], [1, 0, 1], [1, 2, 1]]
-    protograph = Protograph(points)
 
-    # protograph_as_matrix = TannerGraph.get_matrix_representation(protograph.tanner_graph)
-    #
-    # for row in protograph_as_matrix:
-    #     print(row)
+    protograph = Protograph(points)
 
     protographLDPC = ProtographLDPC([protograph, 3])
     matrix = protographLDPC.as_matrix()
 
 
-    # permutation_set = Identity.permutation_set(5)
-    # matrix = ProtographLDPC.submatrix(permutation_set, protograph.get(0, 0)).as_matrix()
     for line in matrix:
         print(line)
 
