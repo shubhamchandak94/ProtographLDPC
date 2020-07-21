@@ -198,6 +198,24 @@ class TannerGraph:
         return get_matrix_representation(self.tanner_graph)
 
 
+# parameters:
+#   row: int, number of rows to initializes in this Tanner Graph
+#   width: int, width of Graph
+#   height: int, height of Graph
+# return:
+#   Empty Tanner Graph instantiation with width, height attributes defined
+def make_graph(rows, width, height):
+
+    graph = TannerGraph(None)
+
+    graph.width = width
+    graph.height = height
+
+    for i in range(rows):
+        graph.addRow()
+
+    return graph
+
 '''
 Traverses the dictionary to find identical key values. These correspond to repeated parity check equations which
 could undermine the code's performance.

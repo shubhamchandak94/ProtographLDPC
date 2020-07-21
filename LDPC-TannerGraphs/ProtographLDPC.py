@@ -141,52 +141,45 @@ class ProtographLDPC(TannerGraph):
 
         elif submatrix_construction == "quasi-cyclic":
 
-            qc_graph = TannerGraph(None)
-
-            qc_graph.width = factor
-            qc_graph.height = factor
-
-            for i in range(factor):
-                qc_graph.addRow()
+            qc_graph = make_graph(factor, factor, factor)
 
             indices = list(np.random.choice(factor, num_matrices, replace=False))
-
-            for i in range(qc_graph.width):
-
-                new = indices.copy()
-
-                qc_graph.put(i, new)
-
-                right_shift_row(new, qc_graph.width)
-                indices = new
+            qc_graph = construct_stepwise_submatrix(indices, qc_graph)
 
             return qc_graph
 
         elif submatrix_construction == "permuted-quasi-cyclic":
 
-            graph = TannerGraph(None)
-
-            graph.width = factor
-            graph.height = factor
-
-            for i in range(factor):
-                graph.addRow()
+            graph = make_graph(factor, factor, factor)
 
             indices = list(range(0, num_matrices))
-
-            for i in range(factor):
-
-                new = indices.copy()
-
-                graph.put(i, new)
-
-                right_shift_row(new, graph.width)
-                indices = new
+            graph = construct_stepwise_submatrix(indices, graph)
 
             graph.permute_rows()
             graph.permute_columns()
 
             return graph
+
+
+'''
+Constructs a submatrix graph from a series of right shifts of an originating index list. This method provides the
+base implementation for the quasi-cyclic and permuted-quasi-cyclic constructions.  
+'''
+# parameters:
+#   start_indices: list(int), the indices on which the right shift cycle is to initiate upon
+#   graph: TannerGraph, the graph to build the cycles on
+# return:
+#   TannerGraph, graph: the graph argument is returned after construction
+def construct_stepwise_submatrix(start_indices, graph):
+
+    for i in range(graph.width):
+        new = start_indices.copy()
+        graph.put(i, new)
+
+        right_shift_row(new, graph.width)
+        start_indices = new
+
+    return graph
 
 
 
