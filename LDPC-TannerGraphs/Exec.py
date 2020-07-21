@@ -106,12 +106,11 @@ def ldpcConstructionTests():
 
     protograph = Protograph(points)
 
-    protographLDPC = ProtographLDPC([protograph, 8], "quasi-cyclic")
+    protographLDPC = ProtographLDPC([protograph, 8], "permuted-quasi-cyclic")
     matrix = protographLDPC.as_matrix()
 
     for line in matrix:
         print(line)
-
 
 
 ldpcConstructionTests()
