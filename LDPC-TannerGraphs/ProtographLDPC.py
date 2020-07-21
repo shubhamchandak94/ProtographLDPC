@@ -1,8 +1,11 @@
 
+import numpy as np
+
 import Utils
 from Identity import Identity
 from RegularLDPC import RegularLDPC
-from TannerGraph import TannerGraph
+
+from TannerGraph import *
 
 '''
 - A class for the handling of ProtogrpahLDPC matrices in Tanner Graph form
@@ -10,22 +13,29 @@ from TannerGraph import TannerGraph
 The tanner graph is stored as a dictionary, row indices (check nodes) are mapped to lists of column indices (variable 
 nodes) to indicate bipartite connections
 
-args: input to enable construction. input follows the following construction patern: args[0] = Protograph object 
+args: input to enable construction. input follows the following construction pattern: args[0] = Protograph object 
 containing the Protograph to be lifted. args[1] depicts the factor by which to lift the given protograph.
+
+The construction argument indicates the algorithm to be employed in the construction of protograph submatrices. These 
+submatrices are defined by the following scope: (rows: r => r + f, columns: c => c + f) for all (r, c) where r % f == 0
+and c % f == 0. f is the supplied protograph lift factor.
 
 The implemented constructions work as follows:
 
 construction = permutation
-given a protograph p and lift factor f, a blank matrix is constructed of the dimension width = p.width * f and 
-height = p.height * f. For each position (r, c) where r and c are both divisible by f, the scope [r => r + f, c => c + f]
-is populated with a submatrix. This submatrix is a result of the sum of n permutation matrices of width f, where n is
+This submatrix is a result of the sum of n permutation matrices of width f, where n is
 defined by the position at row = r / f, column = c / f on the supplied protograph.
 
 construction = regular
-given a protograph p and lift factor f, a blank matrix is constructed of the dimension width = p.width * f and 
-height = p.height * f. For each position (r, c) where r and c are both divisible by f, the scope [r => r + f, c => c + f]
-is populated with a regular LDPC matrix graph, who's row and column weightage is defined by the protograph's value
-at row = r / f, column = c / f/
+This submatrix is a regular LDPC matrix graph whose row and column weightage is defined by the protograph's value
+at row = r / f, column = c / f.
+
+construction = quasi-cyclic
+Given a list of n randomly chosen indices, where n is defined by the value of the protogrpah at (r, c) and n is
+bounded by the width of the submatrix. For every subsequent row in the submatrix, that row is defined by the 
+circular right shift of the previous row.
+
+
 '''
 
 class ProtographLDPC(TannerGraph):
@@ -50,7 +60,6 @@ class ProtographLDPC(TannerGraph):
         if construction == "permutation":
             # do not alter this set with external methods
             self.permutation_set = Identity.permutation_set(self.factor)
-            # self.permutation_set = Utils.random_list(self.permutation_set, len(self.permutation_set))
 
         self.tanner_graph = ProtographLDPC.expanded_protograph(self.protograph, self.factor, self.construction, permutation_set=self.permutation_set)
 
@@ -88,38 +97,98 @@ class ProtographLDPC(TannerGraph):
 
                 else:
 
-                    if construction == "permutation":
-                        expanded.insert(ProtographLDPC.submatrix(permutation_set, protograph.get(r / factor, c / factor)), [r, c])
-                    elif construction == "regular":
-                        expanded.insert(RegularLDPC([factor, factor, protograph.get(r / factor, c / factor)], "populate-columns"), [r, c])
+                    expanded.insert(ProtographLDPC.submatrix(
+                        submatrix_construction=construction,
+                        factor=factor,
+                        permutation_set=permutation_set,
+                        num_matrices=protograph.get(r / factor, c / factor)
+                    ), [r, c])
 
         return expanded.tanner_graph
 
-    '''
-    Returns a sum of permutation matrices in the TannerGraph form
-    '''
     # parameters:
     #   permutation_set: the set of all possible permutation matrices to use in the summation
     #   num_matrices: the number of matrices to sum up. This of course is bounded by the lifting factor of the protograph
     #       as all permutation matrices are of dimension width = factor, height = factor
+    #   factor: the lifting factor by which the associated protograph is to be lifted by
+    #   submatrix_construction: the algorithm through which the submatrix is constructed
+    # returns:
+    #   submatrix: TannerGraph, graph to be inserted into the eventual code
     @staticmethod
-    def submatrix(permutation_set, num_matrices):
+    def submatrix(submatrix_construction="regular", factor=None, permutation_set=None, num_matrices=None):
 
-        available_indices = list(range(0, len(permutation_set)))
-        available_indices = Utils.random_list(available_indices, len(available_indices))
+        if submatrix_construction == "permutation":
+            available_indices = np.random.choice(len(permutation_set), len(permutation_set), replace=False)
 
-        start = permutation_set[available_indices[0]]
-        taken = [available_indices[0]]
+            start = permutation_set[available_indices[0]]
+            taken = [available_indices[0]]
 
-        if num_matrices == 1:
+            if num_matrices == 1:
+                return start
+
+            for i in range(num_matrices - 1):
+
+                for j in range(len(available_indices) - 1):
+                    if not start.overlaps(permutation_set[available_indices[j + 1]]) and available_indices[j + 1] not in taken:
+                        start = start.absorb_nonoverlapping(permutation_set[available_indices[j + 1]], [0, 0])
+                        taken.append(available_indices[j + 1])
+                        break
+
             return start
 
-        for i in range(num_matrices - 1):
+        elif submatrix_construction == "regular":
+            return RegularLDPC([factor, factor, num_matrices], "populate-rows")
 
-            for j in range(len(available_indices) - 1):
-                if not start.overlaps(permutation_set[available_indices[j + 1]]) and available_indices[j + 1] not in taken:
-                    start = start.absorb_nonoverlapping(permutation_set[available_indices[j + 1]], [0, 0])
-                    taken.append(available_indices[j + 1])
-                    break
+        elif submatrix_construction == "quasi-cyclic":
 
-        return start
+            qc_graph = TannerGraph(None)
+
+            qc_graph.width = factor
+            qc_graph.height = factor
+
+            for i in range(factor):
+                qc_graph.addRow()
+
+            indices = list(np.random.choice(factor, num_matrices, replace=False))
+
+            for i in range(qc_graph.width):
+
+                new = indices.copy()
+
+                qc_graph.put(i, new)
+
+                right_shift_row(new, qc_graph.width)
+                indices = new
+
+            return qc_graph
+
+        elif submatrix_construction == "permuted-quasi-cyclic":
+
+            graph = TannerGraph(None)
+
+            graph.width = factor
+            graph.height = factor
+
+            for i in range(factor):
+                graph.addRow()
+
+            indices = list(range(0, num_matrices))
+
+            for i in range(factor):
+
+                new = indices.copy()
+
+                graph.put(i, new)
+
+                right_shift_row(new, graph.width)
+                indices = new
+
+            graph.permute_rows()
+            graph.permute_columns()
+
+            return graph
+
+
+
+
+

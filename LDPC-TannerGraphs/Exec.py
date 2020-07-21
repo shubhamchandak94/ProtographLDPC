@@ -102,18 +102,15 @@ def ldpcConstructionTests():
     # code = RegularLDPC([10, 3, 2, False], "populate-columns")
     # analyze(code)
 
-
     points = [[0, 0, 2], [0, 1, 1], [1, 0, 1], [1, 2, 1]]
 
     protograph = Protograph(points)
 
-    protographLDPC = ProtographLDPC([protograph, 3], "regular")
+    protographLDPC = ProtographLDPC([protograph, 4], "permuted-quasi-cyclic")
     matrix = protographLDPC.as_matrix()
 
     for line in matrix:
         print(line)
-
-
 
 
 

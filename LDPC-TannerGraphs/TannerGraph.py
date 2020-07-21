@@ -1,3 +1,5 @@
+import numpy as np
+
 """
 
 A parent of all LDPC codes included in this library
@@ -62,6 +64,13 @@ class TannerGraph:
     #   a list of row indices contained in the Graph
     def keys(self):
         return list(self.tanner_graph.keys())
+
+    # WARNING: This function performs insertion without warning if data is being overriden
+    # parameters:
+    #   row_index: int, the index of the row to be appended (location along the height of the matrix)
+    #   row: list, the actual row to insert
+    def put(self, row_index, row):
+        self.tanner_graph[row_index] = row
 
     # return:
     #   the number of rows (either populated or not) described by this Tanner Graph
@@ -144,6 +153,45 @@ class TannerGraph:
 
         return larger
 
+    def permute_rows(self, permutation_list=None):
+
+        if permutation_list is None:
+            permutation_list = np.random.choice(self.height, self.height, replace=False)
+        else:
+            if len(permutation_list) != self.height:
+                print("cannot perform graph row permutation: invalid permutation list")
+                return
+
+        for i in range(len(permutation_list)):
+            self.swap_rows(i, permutation_list[i])
+
+        return None
+
+    def swap_rows(self, i, j):
+        temp = self.tanner_graph[i]
+        self.tanner_graph[i] = self.tanner_graph[j].copy()
+        self.tanner_graph[j] = temp
+
+    def permute_columns(self, permutation_list=None):
+
+        if permutation_list is None:
+            permutation_list = np.random.choice(self.width, self.width, replace=False)
+        else:
+            if len(permutation_list) != self.width:
+                print("cannot perform graph row permutation: invalid permutation list")
+                return
+
+        for i in range(len(permutation_list)):
+            self.swap_columns(i, permutation_list[i])
+
+    def swap_columns(self, i, j):
+        for row in self.tanner_graph:
+            for e in range(len(self.getRow(row))):
+                if self.getRow(row)[e] == i:
+                    self.tanner_graph[row][e] = j
+                elif self.getRow(row)[e] == j:
+                    self.tanner_graph[row][e] = i
+
     # return:
     #   returns the matrix representation of this TannerGraph instance
     def as_matrix(self):
@@ -157,7 +205,7 @@ could undermine the code's performance.
 
 
 # parameters:
-#   tanner_graph: TannerGraph.tanner_graph dictionary, the attribute object of a TannerGraph instance which is analyzed
+#   tanner_graph: TannerGraph.tanner_graph dictionary
 # returns:
 #   boolean indicating whether or not the dict contains repeated list values
 def has_repeated_rows(tanner_graph):
@@ -232,6 +280,21 @@ def get_width(tanner_graph):
             if index > max:
                 max = index
     return max + 1
+
+
+'''
+Performs a circular right shift of all elements in a given list
+'''
+
+# parameters:
+#   row: list, a list to be right shifted. This list is commonly a row of a TannerGraph in library implementations
+#   width: int, the cap to the right-shift. If the width is surpassed by any element, that element is reset to 0
+def right_shift_row(row, width):
+    for i in range(len(row)):
+        if row[i] == width - 1:
+            row[i] = 0
+        else:
+            row[i] += 1
 
 
 '''

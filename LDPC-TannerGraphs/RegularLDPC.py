@@ -110,6 +110,8 @@ class RegularLDPC(TannerGraph):
     def get_parity_check_graph(n, r, c, method):
 
         # gallagher's construction of random LDPC matrices
+        # although this construction yields perfectly regular codes, it is not a reliable construction:
+        #   it is impossible to enforce regularity while strictly maintaining a provided height and width
         if method == "gallagher":
 
             # keeps track of all created submatrices
