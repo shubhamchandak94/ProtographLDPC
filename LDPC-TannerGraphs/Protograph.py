@@ -10,14 +10,22 @@ class Protograph(TannerGraph):
     """
 
     # parameters:
-    #   args: list(list()), a list of entries where each entry is a list of length three. These entry lists contain
-    #   their row value at position 0, column value at position 1, and value at position 2
+    #   args:
+    #     - list(list()), a list of entries where each entry is a list of length three. These entry lists contain
+    #       their row value at position 0, column value at position 1, and value at position 2
+    #     - list(string) where the contained string is the filepath of the predefined protograph
     # return:
     #   a fully constructed Protograph object
     def __init__(self, args):
         TannerGraph.__init__(self, args)
 
-        self.tanner_graph = Protograph.create_tanner_graph_for_protograph(args)
+        if len(args) == 1:
+            array = read_protograph_array_from_file(args[0])
+        else:
+            array = args
+
+
+        self.tanner_graph = Protograph.create_tanner_graph_for_protograph(array)
 
         self.height = len(self.tanner_graph)
         self.width = self.get_width()
@@ -109,6 +117,19 @@ def get_matrix_representation(protograph):
     normalize(matrix)
     return matrix
 
+def write_protograph_to_file(protograph, filepath):
+    return None
+
+def read_protograph_array_from_file(filepath):
+
+    protograph_array = []
+
+    f = open(filepath, 'r')
+    entries = f.read().split('\n')
+    for entry in entries:
+        protograph_array.append([int(i) for i in entry.split(' ')])
+
+    return protograph_array
 
 
 '''

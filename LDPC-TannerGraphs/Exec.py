@@ -33,6 +33,10 @@ def intio_write(file, value):
 
 # writes tanner graph in machine readable to specified file
 def write_graph_to_file(ldpc_code, filepath):
+    if isinstance(ldpc_code, Protograph):
+        print("cannot write Protographs to disk in raw form, must convert to an ldpc code")
+        return
+
     with open(filepath, "wb") as f:
 
         intio_write(f, (ord('P') << 8) + 0x80)
@@ -50,14 +54,32 @@ def write_graph_to_file(ldpc_code, filepath):
 
 # code which instantiates codes in the correct format
 def main():
+
     # args:
-    # pchk-file construction-type [w, h | n, c, r | w, h, c]
+    # pchk-file code-type construction args:([w, h | n, c, r | w, h, c], [protograph-file, l])
 
-    # initializing tanner rep, 2nd argument is construction method
-    ldpc_dimension_args = [int(i) for i in sys.argv[3:len(sys.argv)]]
+    ldpc_code = None
 
-    # create ldpc code
-    ldpc_code = RegularLDPC(ldpc_dimension_args, sys.argv[2])
+    if sys.argv[2] == "regular":
+        # initializing tanner rep, 2nd argument is construction method
+        ldpc_dimension_args = [int(i) for i in sys.argv[4:len(sys.argv)]]
+
+        # create regular code
+        ldpc_code = RegularLDPC(ldpc_dimension_args, sys.argv[3])
+
+    elif sys.argv[2] == "protograph":
+
+        ldpc_args = [i for i in sys.argv[4:len(sys.argv)]]
+
+        for i in range(len(ldpc_args)):
+            try:
+                ldpc_args[i] = int(ldpc_args[i])
+            except:
+                continue
+
+        protograph = Protograph([ldpc_args[0]])
+
+        ldpc_code = ProtographLDPC([protograph, ldpc_args[1]], sys.argv[3])
 
     # write the corresponding graph to specified file in binary
     write_graph_to_file(ldpc_code, sys.argv[1])
@@ -104,21 +126,24 @@ def ldpcConstructionTests():
     # analyze(code)
 
     # points = [[0, 0, 2], [0, 1, 1], [1, 0, 1], [1, 2, 1]]
-    points = [[0, 0, 2], [0, 1, 1], [0, 4, 2], [0, 5, 1], [1, 0, 1], [1, 1, 1], [1, 2, 1], [1, 4, 1], [1, 5, 1],
-              [1, 6, 1], [2, 1, 1], [2, 2, 1], [2, 3, 1], [2, 5, 1], [2, 6, 1], [2, 7, 1], [3, 2, 1], [3, 3, 2],
-              [3, 6, 1], [3, 7, 2]]
+    # points = [[0, 0, 2], [0, 1, 1], [0, 4, 2], [0, 5, 1], [1, 0, 1], [1, 1, 1], [1, 2, 1], [1, 4, 1], [1, 5, 1],
+    #           [1, 6, 1], [2, 1, 1], [2, 2, 1], [2, 3, 1], [2, 5, 1], [2, 6, 1], [2, 7, 1], [3, 2, 1], [3, 3, 2],
+    #           [3, 6, 1], [3, 7, 2]]
 
-    protograph = Protograph(points)
+    # protograph = Protograph(points)
+
+    protograph = Protograph(['../example-protographs/protograph1'])
+    # printm(protograph)
 
     protographLDPC = ProtographLDPC([protograph, 3], "quasi-cyclic")
     printm(protographLDPC)
 
-    
 
 
-ldpcConstructionTests()
+
+# ldpcConstructionTests()
 
 #
 # protographLDPC_sandbox()
 #
-# main()
+main()

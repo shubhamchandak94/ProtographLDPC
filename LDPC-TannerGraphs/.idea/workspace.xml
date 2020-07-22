@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b417734e-80e3-441d-8a30-ce9719c8dbfd" name="Default Changelist" comment="implemented enforcing of 1s per column - enforces even probabilities in majority vote decoding">
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/roshanprabhakar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/roshanprabhakar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Exec.py" beforeDir="false" afterPath="$PROJECT_DIR$/Exec.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Protograph.py" beforeDir="false" afterPath="$PROJECT_DIR$/Protograph.py" afterDir="false" />
@@ -113,7 +114,7 @@
       <workItem from="1595291007805" duration="9029000" />
       <workItem from="1595352324127" duration="10829000" />
       <workItem from="1595374638028" duration="53000" />
-      <workItem from="1595434447533" duration="1863000" />
+      <workItem from="1595434447533" duration="5648000" />
     </task>
     <task id="LOCAL-00001" summary="Implemented direct construction of ldpc matrices in machine readable">
       <created>1590536729990</created>
@@ -144,33 +145,33 @@
     <state x="537" y="115" key="CommitChangelistDialog2/0.0.1920.1080@0.0.1920.1080" timestamp="1590536729830" />
     <state x="716" y="153" key="CommitChangelistDialog2/0.0.2560.1440@0.0.2560.1440" timestamp="1591339637899" />
     <state x="841" y="180" key="CommitChangelistDialog2/0.0.3008.1692@0.0.3008.1692" timestamp="1595041843107" />
-    <state width="2708" height="409" key="GridCell.Tab.0.bottom" timestamp="1595374622351">
+    <state width="2708" height="409" key="GridCell.Tab.0.bottom" timestamp="1595441678567">
       <screen x="0" y="0" width="3008" height="1692" />
     </state>
     <state width="1878" height="209" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1591944116070" />
     <state width="2338" height="409" key="GridCell.Tab.0.bottom/0.0.2560.1440@0.0.2560.1440" timestamp="1595358102944" />
-    <state width="2708" height="409" key="GridCell.Tab.0.bottom/0.0.3008.1692@0.0.3008.1692" timestamp="1595374622351" />
+    <state width="2708" height="409" key="GridCell.Tab.0.bottom/0.0.3008.1692@0.0.3008.1692" timestamp="1595441678567" />
     <state width="3158" height="311" key="GridCell.Tab.0.bottom/0.0.3200.1800@0.0.3200.1800" timestamp="1591755310570" />
-    <state width="2708" height="409" key="GridCell.Tab.0.center" timestamp="1595374622351">
+    <state width="2708" height="409" key="GridCell.Tab.0.center" timestamp="1595441678564">
       <screen x="0" y="0" width="3008" height="1692" />
     </state>
     <state width="1878" height="209" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1591944116069" />
     <state width="2338" height="409" key="GridCell.Tab.0.center/0.0.2560.1440@0.0.2560.1440" timestamp="1595358102943" />
-    <state width="2708" height="409" key="GridCell.Tab.0.center/0.0.3008.1692@0.0.3008.1692" timestamp="1595374622351" />
+    <state width="2708" height="409" key="GridCell.Tab.0.center/0.0.3008.1692@0.0.3008.1692" timestamp="1595441678564" />
     <state width="3158" height="311" key="GridCell.Tab.0.center/0.0.3200.1800@0.0.3200.1800" timestamp="1591755310569" />
-    <state width="2708" height="409" key="GridCell.Tab.0.left" timestamp="1595374622350">
+    <state width="2708" height="409" key="GridCell.Tab.0.left" timestamp="1595441678563">
       <screen x="0" y="0" width="3008" height="1692" />
     </state>
     <state width="1878" height="209" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1591944116068" />
     <state width="2338" height="409" key="GridCell.Tab.0.left/0.0.2560.1440@0.0.2560.1440" timestamp="1595358102943" />
-    <state width="2708" height="409" key="GridCell.Tab.0.left/0.0.3008.1692@0.0.3008.1692" timestamp="1595374622350" />
+    <state width="2708" height="409" key="GridCell.Tab.0.left/0.0.3008.1692@0.0.3008.1692" timestamp="1595441678563" />
     <state width="3158" height="311" key="GridCell.Tab.0.left/0.0.3200.1800@0.0.3200.1800" timestamp="1591755310569" />
-    <state width="2708" height="409" key="GridCell.Tab.0.right" timestamp="1595374622351">
+    <state width="2708" height="409" key="GridCell.Tab.0.right" timestamp="1595441678567">
       <screen x="0" y="0" width="3008" height="1692" />
     </state>
     <state width="1878" height="209" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1591944116069" />
     <state width="2338" height="409" key="GridCell.Tab.0.right/0.0.2560.1440@0.0.2560.1440" timestamp="1595358102943" />
-    <state width="2708" height="409" key="GridCell.Tab.0.right/0.0.3008.1692@0.0.3008.1692" timestamp="1595374622351" />
+    <state width="2708" height="409" key="GridCell.Tab.0.right/0.0.3008.1692@0.0.3008.1692" timestamp="1595441678567" />
     <state width="3158" height="311" key="GridCell.Tab.0.right/0.0.3200.1800@0.0.3200.1800" timestamp="1591755310569" />
     <state width="2518" height="511" key="GridCell.Tab.1.bottom" timestamp="1591256401483">
       <screen x="0" y="0" width="2560" height="1440" />
@@ -204,6 +205,6 @@
     <state x="995" y="354" width="670" height="676" key="search.everywhere.popup/0.0.2560.1440@0.0.2560.1440" timestamp="1595301091669" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/LDPC_TannerGraphs$Main.coverage" NAME="Main Coverage Results" MODIFIED="1595436650738" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/LDPC_TannerGraphs$Main.coverage" NAME="Main Coverage Results" MODIFIED="1595441678549" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
