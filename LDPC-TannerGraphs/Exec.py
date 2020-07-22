@@ -52,12 +52,20 @@ def write_graph_to_file(ldpc_code, filepath):
         intio_write(f, 0)
 
 
-# code which instantiates codes in the correct format
+'''
+This function allows Exec.py to be run from the command line. Currently, the construction of two different types of 
+ldpc codes are supported, regular and protograph codes (construction details are laid out in the respective class
+files). 
+'''
+
+
+# parameters:
+#   args: list, arguments by which the code is to be constructed.
+#       format: pchk-file code-type construction args:([w, h | n, c, r | w, h, c], [protograph-file, l])
+#   return:
+#       None, constructs machine-readable ldpc code in the specified parity check file. The generated format is readable
+#       by executables belonging to the LDPC-codes submodule
 def main():
-
-    # args:
-    # pchk-file code-type construction args:([w, h | n, c, r | w, h, c], [protograph-file, l])
-
     ldpc_code = None
 
     if sys.argv[2] == "regular":
@@ -137,8 +145,6 @@ def ldpcConstructionTests():
 
     protographLDPC = ProtographLDPC([protograph, 3], "quasi-cyclic")
     printm(protographLDPC)
-
-
 
 
 # ldpcConstructionTests()

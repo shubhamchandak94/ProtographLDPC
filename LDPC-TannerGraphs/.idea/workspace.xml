@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b417734e-80e3-441d-8a30-ce9719c8dbfd" name="Default Changelist" comment="implemented enforcing of 1s per column - enforces even probabilities in majority vote decoding">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/roshanprabhakar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/roshanprabhakar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Exec.py" beforeDir="false" afterPath="$PROJECT_DIR$/Exec.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Protograph.py" beforeDir="false" afterPath="$PROJECT_DIR$/Protograph.py" afterDir="false" />
@@ -114,7 +113,7 @@
       <workItem from="1595291007805" duration="9029000" />
       <workItem from="1595352324127" duration="10829000" />
       <workItem from="1595374638028" duration="53000" />
-      <workItem from="1595434447533" duration="5648000" />
+      <workItem from="1595434447533" duration="7036000" />
     </task>
     <task id="LOCAL-00001" summary="Implemented direct construction of ldpc matrices in machine readable">
       <created>1590536729990</created>

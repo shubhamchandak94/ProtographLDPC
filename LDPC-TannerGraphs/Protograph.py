@@ -3,11 +3,18 @@ import Utils
 from TannerGraph import *
 
 
+'''
+This TannerGraph subclass constructs the tanner_graph dictionary as a dictionary of lists of ProtographEntry objects.
+This allows each entry to have an entry value not necessarily equal to 1.
+
+Protographs can be read from predefined files in the following mode:
+Entries are considered non-zero positions in the Protograph's matrix representation
+each entry is listed in the file as follows:
+row in matrix, column in matrix, value in matrix, \n character
+    the integers are all space separated
+'''
+
 class Protograph(TannerGraph):
-    """
-    This TannerGraph subclass constructs the tanner_graph dictionary as a dictionary of lists of ProtographEntry objects.
-    This allows each entry to have an entry value not necessarily equal to 1.
-    """
 
     # parameters:
     #   args:
@@ -85,6 +92,10 @@ class Protograph(TannerGraph):
                 return entry.value
         return 0
 
+    # parameters:
+    #   row: int, row of the protograph to analyze
+    # return:
+    #   max_index: int, maximum index value of all ProtographEntries contained in the row
     def get_max_index(self, row):
         row = self.tanner_graph[row]
         max_index = 0
@@ -93,6 +104,11 @@ class Protograph(TannerGraph):
                 max_index = row[i].index
         return max_index
 
+    # parameters:
+    #   index: int, index to be queried
+    #   row: int, index in graph of row to be queried
+    # return:
+    #   boolean: does index exist in row
     def contains_index(self, index, row):
         pulled = self.tanner_graph[row]
         for e in pulled:
@@ -100,9 +116,20 @@ class Protograph(TannerGraph):
                 return True
         return False
 
+
     def as_matrix(self):
         return get_matrix_representation(self)
 
+
+'''
+Because the superclass as_matrix method cannot work with ProtographEntry objects, Protograph.py must redefine
+the construction of its matrix form. 
+'''
+
+# parameters:
+#   protograph: Protograph, the protograph to generate a matrix of
+# return:
+#   list(list()) representing the protograph code's matrix form
 def get_matrix_representation(protograph):
     matrix = []
     for i in range(protograph.height):
@@ -120,6 +147,10 @@ def get_matrix_representation(protograph):
 def write_protograph_to_file(protograph, filepath):
     return None
 
+# parameters:
+#   filepath: String, filepath which contains predefined protograph
+# return:
+#   array: when fed into the protograph constructor a Protograph object is created
 def read_protograph_array_from_file(filepath):
 
     protograph_array = []
