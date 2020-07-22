@@ -1,5 +1,6 @@
+
 import Utils
-from TannerGraph import TannerGraph
+from TannerGraph import *
 
 
 class Protograph(TannerGraph):
@@ -16,7 +17,7 @@ class Protograph(TannerGraph):
     def __init__(self, args):
         TannerGraph.__init__(self, args)
 
-        self.tanner_graph = Protograph.create_protograph(args)
+        self.tanner_graph = Protograph.create_tanner_graph_for_protograph(args)
 
         self.height = len(self.tanner_graph)
         self.width = self.get_width()
@@ -40,7 +41,7 @@ class Protograph(TannerGraph):
     # return:
     #   the tanner_graph which represents the Protograph object
     @staticmethod
-    def create_protograph(points):
+    def create_tanner_graph_for_protograph(points):
 
         protograph = TannerGraph(None)
 
@@ -57,10 +58,13 @@ class Protograph(TannerGraph):
 
         return protograph.tanner_graph
 
+
+
     '''
     This method allows the protograph to be queried as if was defined by a matrix structure. This is necessary here and
     not in TannerGraph as Protographs are the only TannerGraphs who's values can be greater than 1.
     '''
+
     # parameters:
     #   r: int, row index of fetched entry
     #   c: int, col index of fetched entry
@@ -72,6 +76,39 @@ class Protograph(TannerGraph):
             if entry.index == c:
                 return entry.value
         return 0
+
+    def get_max_index(self, row):
+        row = self.tanner_graph[row]
+        max_index = 0
+        for i in range(len(row)):
+            if row[i].index > max_index:
+                max_index = row[i].index
+        return max_index
+
+    def contains_index(self, index, row):
+        pulled = self.tanner_graph[row]
+        for e in pulled:
+            if e.index == index:
+                return True
+        return False
+
+    def as_matrix(self):
+        return get_matrix_representation(self)
+
+def get_matrix_representation(protograph):
+    matrix = []
+    for i in range(protograph.height):
+        row = []
+        if i in protograph.tanner_graph:
+            for j in range(protograph.get_max_index(i) + 1):
+                if protograph.contains_index(j, i):
+                    row.append(protograph.get(i, j))
+                else:
+                    row.append(0)
+        matrix.append(row)
+    normalize(matrix)
+    return matrix
+
 
 
 '''

@@ -32,9 +32,8 @@ at row = r / f, column = c / f.
 
 construction = quasi-cyclic
 Given a list of n randomly chosen indices, where n is defined by the value of the protogrpah at (r, c) and n is
-bounded by the width of the submatrix. For every subsequent row in the submatrix, that row is defined by the 
-circular right shift of the previous row.
-
+bounded by the width of the submatrix, this list represents the entries for the first row of the code. For every 
+subsequent row in the submatrix, that row is defined by the circular right shift of the previous row.
 
 '''
 

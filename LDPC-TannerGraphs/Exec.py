@@ -8,6 +8,7 @@ from Protograph import Protograph
 
 from TannerGraph import printm
 
+
 # file should be opened with the wb mode
 def intio_write(file, value):
     for i in range(3):
@@ -102,15 +103,17 @@ def ldpcConstructionTests():
     # code = RegularLDPC([10, 3, 2, False], "populate-columns")
     # analyze(code)
 
-    points = [[0, 0, 2], [0, 1, 1], [1, 0, 1], [1, 2, 1]]
+    # points = [[0, 0, 2], [0, 1, 1], [1, 0, 1], [1, 2, 1]]
+    points = [[0, 0, 2], [0, 1, 1], [0, 4, 2], [0, 5, 1], [1, 0, 1], [1, 1, 1], [1, 2, 1], [1, 4, 1], [1, 5, 1],
+              [1, 6, 1], [2, 1, 1], [2, 2, 1], [2, 3, 1], [2, 5, 1], [2, 6, 1], [2, 7, 1], [3, 2, 1], [3, 3, 2],
+              [3, 6, 1], [3, 7, 2]]
 
     protograph = Protograph(points)
 
-    protographLDPC = ProtographLDPC([protograph, 8], "permuted-quasi-cyclic")
-    matrix = protographLDPC.as_matrix()
+    protographLDPC = ProtographLDPC([protograph, 3], "quasi-cyclic")
+    printm(protographLDPC)
 
-    for line in matrix:
-        print(line)
+    
 
 
 ldpcConstructionTests()
