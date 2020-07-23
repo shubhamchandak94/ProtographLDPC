@@ -143,13 +143,10 @@ def ldpcConstructionTests():
     protograph = Protograph(['../example-protographs/protograph1'])
     # printm(protograph)
 
-    protographLDPC = ProtographLDPC([protograph, 3], "quasi-cyclic")
+    protographLDPC = ProtographLDPC([protograph, 16], "quasi-cyclic", width_provided=True)
     printm(protographLDPC)
 
 
-# ldpcConstructionTests()
+ldpcConstructionTests()
 
-#
-# protographLDPC_sandbox()
-#
-main()
+# main()
