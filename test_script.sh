@@ -37,6 +37,11 @@ clear
 
 # create temporary directory
 tempdir=$(mktemp -d)
+
+echo "----------------------------------------------------------------------------------------------------"
+echo "------------------------------------ TRANSMITTING MESSAGE ------------------------------------------"
+echo "----------------------------------------------------------------------------------------------------"
+
 echo "temporary directory $tempdir"
 
 echo "transmitting all-zero codeword with error probability ${4}..."
@@ -47,7 +52,9 @@ echo "computing block error rate and bit error rate (at codeword level) for reci
 python3 -u compute_error_rate.py $tempdir/received
 echo ""
 
-echo "----------------------------------------------------------------------------------------------------------"
+echo "----------------------------------------------------------------------------------------------------"
+echo "------------------------------------- REGULAR CODE TESTS -------------------------------------------"
+echo "----------------------------------------------------------------------------------------------------"
 
 echo "generating parity check matrix through default implementation..."
 ./LDPC-codes/make-ldpc $tempdir/default.pchk ${n_checks} ${n_bits} 1 evenboth ${n_ones_column}
@@ -61,7 +68,7 @@ echo "computing block error rate and bit error rate (at codeword level) for libr
 python3 -u compute_error_rate.py $tempdir/default.decoded
 echo ""
 
-echo "----------------------------------------------------------------------------------------------------------"
+echo "----------------------------------------------------------------------------------------------------"
 
 echo "generating parity check matrix through python (Gallagher construction)..."
 python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk regular gallagher ${1} ${2} ${3}
@@ -75,21 +82,7 @@ echo "computing block error rate and bit error rate (at codeword level) for pyth
 python3 -u compute_error_rate.py $tempdir/python.decoded
 echo ""
 
-echo "----------------------------------------------------------------------------------------------------------"
-
-# echo "generating parity check matrix through python (construction 2)..."
-# python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk random ${1} ${2} ${3}
-# echo ""
-
-# echo "decoding transmission for python generated parity matrix (construction 2)..."
-# ./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
-# echo ""
-
-# echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (construction 2)"
-# python3 -u compute_error_rate.py $tempdir/python.decoded
-# echo ""
-
-# echo "----------------------------------------------------------------------------------------------------------"
+echo "----------------------------------------------------------------------------------------------------"
 
 echo "generating parity check matrix through python (evenboth construction populate rows)..."
 python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk regular populate-rows ${1} ${2} ${3}
@@ -103,7 +96,7 @@ echo "computing block error rate and bit error rate (at codeword level) for pyth
 python3 -u compute_error_rate.py $tempdir/python.decoded
 echo ""
 
-echo "----------------------------------------------------------------------------------------------------------"
+echo "----------------------------------------------------------------------------------------------------"
 
 echo "generating parity check matrix through python (evenboth construction populate columns)..."
 python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk regular populate-columns ${1} ${2} ${3}
@@ -117,7 +110,7 @@ echo "computing block error rate and bit error rate (at codeword level) for pyth
 python3 -u compute_error_rate.py $tempdir/python.decoded
 echo ""
 
-echo "----------------------------------------------------------------------------------------------------------"
+echo "----------------------------------------------------------------------------------------------------"
 
 echo "generating parity check matrix through python (evenboth construction populate rows row col weights inferred)..."
 python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk regular populate-rows ${1} ${2}
@@ -131,7 +124,7 @@ echo "computing block error rate and bit error rate (at codeword level) for pyth
 python3 -u compute_error_rate.py $tempdir/python.decoded
 echo ""
 
-echo "----------------------------------------------------------------------------------------------------------"
+echo "----------------------------------------------------------------------------------------------------"
 
 echo "generating parity check matrix through python (evenboth construction populate columns row col weights inferred)..."
 python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk regular populate-columns ${1} ${2}
@@ -145,13 +138,57 @@ echo "computing block error rate and bit error rate (at codeword level) for pyth
 python3 -u compute_error_rate.py $tempdir/python.decoded
 echo ""
 
-echo "----------------------------------------------------------------------------------------------------------"
+echo "----------------------------------------------------------------------------------------------------"
+echo "------------------------------------ PROTOGRAPH CODE TESTS -----------------------------------------"
+echo "----------------------------------------------------------------------------------------------------"
+
+echo "generating protograph parity check matrix through python (regular construction)..."
+python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk protograph regular ./protographs/${7} ${1}
+echo ""
+
+echo "decoding transmission for python generated parity matrix (regular construction)..."
+./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
+echo ""
+
+echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (permutation construction)"
+python3 -u compute_error_rate.py $tempdir/python.decoded
+echo ""
+
+echo "----------------------------------------------------------------------------------------------------"
 
 echo "generating protograph parity check matrix through python (quasi-cyclic construction)..."
-python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk protograph regular ./example-protographs/${7} ${1}
+python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk protograph quasi-cyclic ./protographs/${7} ${1}
 echo ""
 
 echo "decoding transmission for python generated parity matrix (quasi-cyclic construction)..."
+./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
+echo ""
+
+echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (permutation construction)"
+python3 -u compute_error_rate.py $tempdir/python.decoded
+echo ""
+
+echo "----------------------------------------------------------------------------------------------------"
+
+echo "generating protograph parity check matrix through python (permuted-quasi-cyclic construction)..."
+python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk protograph permuted-quasi-cyclic ./protographs/${7} ${1}
+echo ""
+
+echo "decoding transmission for python generated parity matrix (permuted-quasi-cyclic construction)..."
+./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
+echo ""
+
+echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (permutation construction)"
+python3 -u compute_error_rate.py $tempdir/python.decoded
+echo ""
+
+echo "----------------------------------------------------------------------------------------------------"
+
+echo "generating protograph parity check matrix through python (permutation construction)..."
+python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk protograph permutation ./protographs/${7} ${1}
+echo ""
+
+echo "decoding transmission for python generated parity matrix (permutation construction)..."
 ./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
 echo ""
 
