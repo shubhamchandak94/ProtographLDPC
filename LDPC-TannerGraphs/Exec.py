@@ -87,10 +87,11 @@ def main():
 
         protograph = Protograph([ldpc_args[0]])
 
-        ldpc_code = ProtographLDPC([protograph, ldpc_args[1]], sys.argv[3])
+        ldpc_code = ProtographLDPC([protograph, ldpc_args[1]], sys.argv[3], width_provided=True)
 
     # write the corresponding graph to specified file in binary
     write_graph_to_file(ldpc_code, sys.argv[1])
+
 
 
 '''
@@ -143,10 +144,11 @@ def ldpcConstructionTests():
     protograph = Protograph(['../example-protographs/protograph1'])
     # printm(protograph)
 
-    protographLDPC = ProtographLDPC([protograph, 16], "quasi-cyclic", width_provided=True)
+    protographLDPC = ProtographLDPC([protograph, 64], "quasi-cyclic", width_provided=True)
     printm(protographLDPC)
 
 
-ldpcConstructionTests()
+# ldpcConstructionTests()
 
-# main()
+main()
+#

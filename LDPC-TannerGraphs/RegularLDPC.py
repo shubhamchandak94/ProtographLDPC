@@ -114,6 +114,9 @@ class RegularLDPC(TannerGraph):
         #   it is impossible to enforce regularity while strictly maintaining a provided height and width
         if method == "gallagher":
 
+            if n % r != 0:
+                print("cannot generate perfectly regular matrix for the given arguments, modifications inferred")
+
             # keeps track of all created submatrices
             submatrices = []
             for i in range(c):
