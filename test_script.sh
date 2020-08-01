@@ -182,19 +182,19 @@ echo "computing block error rate and bit error rate (at codeword level) for pyth
 python3 -u compute_error_rate.py $tempdir/python.decoded
 echo ""
 
-echo "----------------------------------------------------------------------------------------------------"
+# echo "----------------------------------------------------------------------------------------------------"
 
-echo "generating protograph parity check matrix through python (permutation construction)..."
-python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk protograph permutation ./protographs/${7} ${1}
-echo ""
+# echo "generating protograph parity check matrix through python (permutation construction)..."
+# python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk protograph permutation ./protographs/${7} ${1}
+# echo ""
 
-echo "decoding transmission for python generated parity matrix (permutation construction)..."
-./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
-echo ""
+# echo "decoding transmission for python generated parity matrix (permutation construction)..."
+# ./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
+# echo ""
 
-echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (permutation construction)"
-python3 -u compute_error_rate.py $tempdir/python.decoded
-echo ""
+# echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (permutation construction)"
+# python3 -u compute_error_rate.py $tempdir/python.decoded
+# echo ""
 
 
 
