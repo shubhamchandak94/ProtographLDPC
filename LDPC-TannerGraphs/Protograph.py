@@ -10,8 +10,8 @@ This allows each entry to have an entry value not necessarily equal to 1.
 Protographs can be read from predefined files in the following mode:
 Entries are considered non-zero positions in the Protograph's matrix representation
 each entry is listed in the file as follows:
-row in matrix, column in matrix, value in matrix, \n character
-    the integers are all space separated
+row in matrix, column in matrix, value in matrix
+    integers are all single-space separated
 '''
 
 class Protograph(TannerGraph):
