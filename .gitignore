@@ -1,7 +1,9 @@
+.idea
 *.idea
 *.iml
-*/.DS_Store
+.DS_Store
 */venv/
 */__pycache__/
 ./LDPC-Visualizer/out/
 ./LinearCodes/out/
+./.idea
