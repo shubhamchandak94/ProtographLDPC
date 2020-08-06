@@ -5,7 +5,14 @@ from TannerGraph import *
 This TannerGraph subclass constructs the tanner_graph dictionary as a dictionary of lists of ProtographEntry objects.
 This allows each entry to have an entry value not necessarily equal to 1.
 
-Protographs can be read from predefined files in the following mode:
+Protographs can be read from predefined files in the following format:
+code_width code height
+transmitted_bits [list of transmitted indices]
+dense/sparse
+matrix
+
+if the switch indicates a dense matrix, the matrix section represents the 
+
 Entries are considered non-zero positions in the Protograph's matrix representation
 each entry is listed in the file as follows:
 row in matrix, column in matrix, value in matrix
@@ -17,8 +24,6 @@ class Protograph(TannerGraph):
 
     # parameters:
     #   args:
-    #     - list(list()), a list of entries where each entry is a list of length three. These entry lists contain
-    #       their row value at position 0, column value at position 1, and value at position 2
     #     - list(string) where the contained string is the filepath of the predefined protograph
     # return:
     #   a fully constructed Protograph object
