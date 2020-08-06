@@ -48,6 +48,7 @@ class ProtographLDPC(TannerGraph):
 
         self.construction = construction
         self.protograph = args[0]
+
         if width_provided:
             self.factor = args[1] / self.protograph.width
             if self.factor - int(self.factor) != 0:
@@ -62,8 +63,8 @@ class ProtographLDPC(TannerGraph):
 
         self.width = self.protograph.width * self.factor
         self.height = self.protograph.height * self.factor
-        self.permutation_set = None
 
+        self.permutation_set = None
         if construction == "permutation":
             # do not alter this set with external methods
             self.permutation_set = Identity.permutation_set(self.factor)
