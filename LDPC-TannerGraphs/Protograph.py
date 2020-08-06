@@ -1,7 +1,5 @@
-
 import Utils
 from TannerGraph import *
-
 
 '''
 This TannerGraph subclass constructs the tanner_graph dictionary as a dictionary of lists of ProtographEntry objects.
@@ -13,6 +11,7 @@ each entry is listed in the file as follows:
 row in matrix, column in matrix, value in matrix
     integers are all single-space separated
 '''
+
 
 class Protograph(TannerGraph):
 
@@ -26,16 +25,20 @@ class Protograph(TannerGraph):
     def __init__(self, args):
         TannerGraph.__init__(self, args)
 
-        if len(args) == 1:
-            array = read_protograph_array_from_file(args[0])
-        else:
-            array = args
+        parsed_file = read_sparse_array_from_file(args[0])
+        array = parsed_file[0]
 
+        self.height = parsed_file[1][0]
+        self.width = parsed_file[1][1]
+        self.transmitted_bits = parsed_file[2]
 
         self.tanner_graph = Protograph.create_tanner_graph_for_protograph(array)
 
-        self.height = len(self.tanner_graph)
-        self.width = self.get_width()
+        actual_height = len(self.tanner_graph)
+        actual_width = self.get_width()
+
+        if self.width != actual_width or self.height != actual_height:
+            print("given height and/or width values inconsistent with provided protograph matrix")
 
     # return:
     #   the width of a protograph tanner_graph (the superclass get_width does not work here as entry values should no longer by inferred)
@@ -56,24 +59,22 @@ class Protograph(TannerGraph):
     # return:
     #   the tanner_graph which represents the Protograph object
     @staticmethod
-    def create_tanner_graph_for_protograph(points):
+    def create_tanner_graph_for_protograph(graph):
 
         protograph = TannerGraph(None)
 
         num_rows = 0
-        for entry in points:
+        for entry in graph:
             if entry[0] + 1 > num_rows:
                 num_rows = entry[0] + 1
 
         for row in range(num_rows):
             protograph.addRow()
 
-        for entry in points:
+        for entry in graph:
             protograph.getRow(entry[0]).append(ProtographEntry(entry[1], entry[2]))
 
         return protograph.tanner_graph
-
-
 
     '''
     This method allows the protograph to be queried as if was defined by a matrix structure. This is necessary here and
@@ -116,7 +117,6 @@ class Protograph(TannerGraph):
                 return True
         return False
 
-
     def as_matrix(self):
         return get_matrix_representation(self)
 
@@ -125,6 +125,7 @@ class Protograph(TannerGraph):
 Because the superclass as_matrix method cannot work with ProtographEntry objects, Protograph.py must redefine
 the construction of its matrix form. 
 '''
+
 
 # parameters:
 #   protograph: Protograph, the protograph to generate a matrix of
@@ -144,23 +145,48 @@ def get_matrix_representation(protograph):
     normalize(matrix)
     return matrix
 
+
 def write_protograph_to_file(protograph, filepath):
     return None
+
 
 # parameters:
 #   filepath: String, filepath which contains predefined protograph
 # return:
 #   array: when fed into the protograph constructor a Protograph object is created
-def read_protograph_array_from_file(filepath):
+def read_sparse_array_from_file(filepath):
 
-    protograph_array = []
+    file_matrix = []
 
     f = open(filepath, 'r')
-    entries = f.read().split('\n')
-    for entry in entries:
-        protograph_array.append([int(i) for i in entry.split(' ')])
+    entries = f.read().split('\n')  # either list of direct entries of list of rows in protograph
 
-    return protograph_array
+    switch = entries[2]
+    dimensions = [int(i) for i in entries[0].split(' ')]
+    transmitted_bits = [int(i) for i in entries[1].split(' ')[1:]]
+    entries = entries[3:]
+
+    for entry in entries:
+        file_matrix.append([int(i) for i in entry.split(' ')])
+
+    if switch == "sparse":
+        output_matrix = file_matrix
+
+    elif switch == "dense":
+
+        protograph_array = []
+
+        for r in range(len(file_matrix)):
+            for c in range(len(file_matrix[r])):
+                protograph_array.append([r, c, file_matrix[r][c]])
+
+        output_matrix = protograph_array
+
+    else:
+        print("invalid protograph switch")
+        return
+
+    return output_matrix, dimensions, transmitted_bits
 
 
 '''
