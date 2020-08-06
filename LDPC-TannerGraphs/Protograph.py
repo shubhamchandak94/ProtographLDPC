@@ -157,8 +157,10 @@ def write_protograph_to_file(protograph, filepath):
 
 # parameters:
 #   filepath: String, filepath which contains predefined protograph
-# return:
-#   array: when fed into the protograph constructor a Protograph object is created
+# return: tuple
+#   output_matrix: list, when fed into the protograph constructor a Protograph object is created
+#   dimensions: tuple, 2 elements (height, width) describing dimension of protograph
+#   transmitted_bits: list, describing indices of transmitted bits in protograph
 def read_sparse_array_from_file(filepath):
 
     file_matrix = []
@@ -167,7 +169,7 @@ def read_sparse_array_from_file(filepath):
     entries = f.read().split('\n')  # either list of direct entries of list of rows in protograph
 
     switch = entries[2]
-    dimensions = [int(i) for i in entries[0].split(' ')]
+    dimensions = (int(i) for i in entries[0].split(' '))
     transmitted_bits = [int(i) for i in entries[1].split(' ')[1:]]
     entries = entries[3:]
 
