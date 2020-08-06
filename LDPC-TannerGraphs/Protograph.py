@@ -123,7 +123,7 @@ class Protograph(TannerGraph):
 
 '''
 Because the superclass as_matrix method cannot work with ProtographEntry objects, Protograph.py must redefine
-the construction of its matrix form. 
+the construction of its matrix form.
 '''
 
 
@@ -190,7 +190,7 @@ def read_sparse_array_from_file(filepath):
 
 
 '''
-This class represents a protograph entry; it allows for entry values to be greater than 1 
+This class represents a protograph entry; it allows for entry values to be greater than 1
 '''
 
 

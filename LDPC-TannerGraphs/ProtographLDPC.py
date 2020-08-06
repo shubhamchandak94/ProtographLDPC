@@ -10,13 +10,13 @@ from TannerGraph import *
 '''
 - A class for the handling of ProtogrpahLDPC matrices in Tanner Graph form
 
-The tanner graph is stored as a dictionary, row indices (check nodes) are mapped to lists of column indices (variable 
+The tanner graph is stored as a dictionary, row indices (check nodes) are mapped to lists of column indices (variable
 nodes) to indicate bipartite connections
 
-args: input to enable construction. input follows the following construction pattern: args[0] = Protograph object 
+args: input to enable construction. input follows the following construction pattern: args[0] = Protograph object
 containing the Protograph to be lifted. args[1] depicts the factor by which to lift the given protograph.
 
-The construction argument indicates the algorithm to be employed in the construction of protograph submatrices. These 
+The construction argument indicates the algorithm to be employed in the construction of protograph submatrices. These
 submatrices are defined by the following scope: (rows: r => r + f, columns: c => c + f) for all (r, c) where r % f == 0
 and c % f == 0. f is the supplied protograph lift factor.
 
@@ -32,7 +32,7 @@ at row = r / f, column = c / f.
 
 construction = quasi-cyclic
 Given a list of n randomly chosen indices, where n is defined by the value of the protogrpah at (r, c) and n is
-bounded by the width of the submatrix, this list represents the entries for the first row of the code. For every 
+bounded by the width of the submatrix, this list represents the entries for the first row of the code. For every
 subsequent row in the submatrix, that row is defined by the circular right shift of the previous row.
 
 '''
@@ -48,7 +48,6 @@ class ProtographLDPC(TannerGraph):
 
         self.construction = construction
         self.protograph = args[0]
-
         if width_provided:
             self.factor = args[1] / self.protograph.width
             if self.factor - int(self.factor) != 0:
@@ -61,9 +60,8 @@ class ProtographLDPC(TannerGraph):
 
         self.maximum_allowable_protograph_node = self.factor
 
-        self.width = args[0].width * args[1]
-        self.height = args[0].height * args[1]
-
+        self.width = self.protograph.width * self.factor
+        self.height = self.protograph.height * self.factor
         self.permutation_set = None
 
         if construction == "permutation":
@@ -172,7 +170,7 @@ class ProtographLDPC(TannerGraph):
 
 '''
 Constructs a submatrix graph from a series of right shifts of an originating index list. This method provides the
-base implementation for the quasi-cyclic and permuted-quasi-cyclic constructions.  
+base implementation for the quasi-cyclic and permuted-quasi-cyclic constructions.
 '''
 # parameters:
 #   start_indices: list(int), the indices on which the right shift cycle is to initiate upon
@@ -189,8 +187,3 @@ def construct_stepwise_submatrix(start_indices, graph):
         start_indices = new
 
     return graph
-
-
-
-
-
