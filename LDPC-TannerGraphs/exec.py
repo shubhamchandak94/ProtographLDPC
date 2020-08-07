@@ -55,9 +55,9 @@ def write_graph_to_file(ldpc_code, filepath):
 
 
 '''
-This function allows Exec.py to be run from the command line. Currently, the construction of two different types of 
+This function allows Exec.py to be run from the command line. Currently, the construction of two different types of
 ldpc codes are supported, regular and protograph codes (construction details are laid out in the respective class
-files). 
+files).
 '''
 
 
@@ -88,16 +88,16 @@ def main():
         elif sys.argv[2] == "protograph":
 
             protograph_dir = sys.argv[4]
-            protograph_file = protograph_dir + '/' + os.path.basename(protograph_dir)
+            protograph_file = os.path.join(protograph_dir,os.path.basename(protograph_dir))
 
             protograph = Protograph([protograph_file])
-            factor = int(open(protograph_dir + '/' + '.transmitted', 'r').read().split('\n')[0].split(' ')[1])
+            factor = int(open(os.path.join(protograph_dir,'.transmitted'), 'r').read().split('\n')[0].split(' ')[1])
 
             ldpc_code = ProtographLDPC([protograph, factor], sys.argv[3])
 
         # write the corresponding graph to specified file in binary
         ldpc_filename = os.path.basename(sys.argv[1])
-        ldpc_dir = os.path.dirname(sys.argv[1]) + '/' + ldpc_filename
+        ldpc_dir = os.path.join(os.path.dirname(sys.argv[1]), ldpc_filename)
 
         try:
             os.mkdir(ldpc_dir)
@@ -119,7 +119,7 @@ def main():
 
             copy_tree(dir_to_copy, dir_to_paste)
 
-        ldpc_pchk_file = ldpc_dir + '/' + ldpc_filename
+        ldpc_pchk_file = os.path.join(ldpc_dir, ldpc_filename)
         open(ldpc_pchk_file, 'w')
 
         write_graph_to_file(ldpc_code, ldpc_pchk_file)

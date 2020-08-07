@@ -11,7 +11,7 @@ transmitted_bits [list of transmitted indices]
 dense/sparse
 matrix
 
-if the switch indicates a dense matrix, the matrix section represents the 
+if the switch indicates a dense matrix, the matrix section represents the
 
 Entries are considered non-zero positions in the Protograph's matrix representation
 each entry is listed in the file as follows:
@@ -20,7 +20,7 @@ row in matrix, column in matrix, value in matrix
 
 If puncturing is to be used in the transmission of codewords, call the generate_protograph_dir() function
 to create a directory, in place of the existing protograph template file, which contains the information needed
-for decoding punctured messages. The protograph constructor readable template is moved into this directory. 
+for decoding punctured messages. The protograph constructor readable template is moved into this directory.
 '''
 
 
@@ -133,8 +133,8 @@ class Protograph(TannerGraph):
     '''
     This method takes a protograph template (given in the format specified in the class docs) and generates a directory
     containing the template itself, as well as a .transmitted file containing the transmitted bits per codeword. To
-    create protograph objects, the constructor for this class understands the template format: pass the filepath of the 
-    template, not the protograph directory    
+    create protograph objects, the constructor for this class understands the template format: pass the filepath of the
+    template, not the protograph directory
     '''
 
     # parameters:
@@ -151,7 +151,7 @@ class Protograph(TannerGraph):
 
         dirname = os.path.dirname(filepath)
         filename = os.path.basename(filepath)
-        protograph_dir = dirname + '/' + filename
+        protograph_dir = os.path.join(dirname, filename)
         os.remove(filepath)
         os.mkdir(protograph_dir)
 
@@ -165,10 +165,10 @@ class Protograph(TannerGraph):
         transmitted_bits = [str(i) for i in transmitted_bits]
         transmitted_bits = ' '.join(transmitted_bits)
 
-        f = open(protograph_dir + '/' + filename, 'w')
+        f = open(os.path.join(protograph_dir, filename), 'w')
         f.write('\n'.join(contents))
 
-        f = open(protograph_dir + '/' + '.transmitted', 'w')
+        f = open(os.path.join(protograph_dir, '.transmitted'), 'w')
         f.write('factor: ' + str(protograph_factor) + '\n' + 'total bits before transmission: ' + str(
             int(contents[0].split(' ')[1]) * protograph_factor) + '\n' + transmitted_bits)
 
