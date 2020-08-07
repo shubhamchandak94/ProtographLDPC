@@ -1,4 +1,4 @@
-import Utils
+import os
 from TannerGraph import *
 
 '''
@@ -124,6 +124,37 @@ class Protograph(TannerGraph):
 
     def as_matrix(self):
         return get_matrix_representation(self)
+
+    @staticmethod
+    def generate_protograph_dir(filepath, protograph_factor):
+
+        try:
+            contents = open(filepath, 'r').read().split('\n')
+        except Exception:
+            print("could not find or process specified protograph file")
+            return
+
+        dirname = os.path.dirname(filepath)
+        filename = os.path.basename(filepath)
+        protograph_dir = dirname + '/' + filename
+        os.remove(filepath)
+        os.mkdir(protograph_dir)
+
+        protograph_bits_transmitted = [int(i) for i in contents[1].split(' ')[1:]]
+        transmitted_bits = []
+
+        for i in protograph_bits_transmitted:
+            for j in range(i * protograph_factor, i * protograph_factor + protograph_factor):
+                transmitted_bits.append(j)
+
+        transmitted_bits = [str(i) for i in transmitted_bits]
+        transmitted_bits = ' '.join(transmitted_bits)
+
+        f = open(protograph_dir + '/' + filename, 'w')
+        f.write('\n'.join(contents))
+
+        f = open(protograph_dir + '/' + '.transmitted', 'w')
+        f.write('total bits before transmission: ' + str(int(contents[0].split(' ')[1]) * protograph_factor) + '\n' + transmitted_bits)
 
 
 '''

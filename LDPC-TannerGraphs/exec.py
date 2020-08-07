@@ -68,30 +68,33 @@ files).
 def main():
     ldpc_code = None
 
-    if sys.argv[2] == "regular":
-        # initializing tanner rep, 2nd argument is construction method
-        ldpc_dimension_args = [int(i) for i in sys.argv[4:len(sys.argv)]]
+    if sys.argv[1] == "generate_protograph":  # format file structure for protograph and bits transmitted file
+        Protograph.generate_protograph_dir(sys.argv[2], int(sys.argv[3]))
 
-        # create regular code
-        ldpc_code = RegularLDPC(ldpc_dimension_args, sys.argv[3])
+    else:
+        if sys.argv[2] == "regular":
+            # initializing tanner rep, 2nd argument is construction method
+            ldpc_dimension_args = [int(i) for i in sys.argv[4:len(sys.argv)]]
 
-    elif sys.argv[2] == "protograph":
+            # create regular code
+            ldpc_code = RegularLDPC(ldpc_dimension_args, sys.argv[3])
 
-        ldpc_args = [i for i in sys.argv[4:len(sys.argv)]]
+        elif sys.argv[2] == "protograph":
 
-        for i in range(len(ldpc_args)):
-            try:
-                ldpc_args[i] = int(ldpc_args[i])
-            except:
-                continue
+            ldpc_args = [i for i in sys.argv[4:len(sys.argv)]]
 
-        protograph = Protograph([ldpc_args[0]])
+            for i in range(len(ldpc_args)):
+                try:
+                    ldpc_args[i] = int(ldpc_args[i])
+                except:
+                    continue
 
-        ldpc_code = ProtographLDPC([protograph, ldpc_args[1]], sys.argv[3], width_provided=True)
+            protograph = Protograph([ldpc_args[0]])
 
-    # write the corresponding graph to specified file in binary
-    write_graph_to_file(ldpc_code, sys.argv[1])
+            ldpc_code = ProtographLDPC([protograph, ldpc_args[1]], sys.argv[3], width_provided=True)
 
+        # write the corresponding graph to specified file in binary
+        write_graph_to_file(ldpc_code, sys.argv[1])
 
 
 '''
