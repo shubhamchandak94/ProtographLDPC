@@ -39,6 +39,7 @@ class Protograph(TannerGraph):
 
         self.height = parsed_file[1][0]
         self.width = parsed_file[1][1]
+
         self.transmitted_bits = parsed_file[2]
 
         self.tanner_graph = Protograph.create_tanner_graph_for_protograph(array)
@@ -168,7 +169,7 @@ class Protograph(TannerGraph):
         f.write('\n'.join(contents))
 
         f = open(protograph_dir + '/' + '.transmitted', 'w')
-        f.write('total bits before transmission: ' + str(
+        f.write('factor: ' + str(protograph_factor) + '\n' + 'total bits before transmission: ' + str(
             int(contents[0].split(' ')[1]) * protograph_factor) + '\n' + transmitted_bits)
 
 
@@ -214,7 +215,7 @@ def read_sparse_array_from_file(filepath):
     entries = f.read().split('\n')  # either list of direct entries of list of rows in protograph
 
     switch = entries[2]
-    dimensions = (int(i) for i in entries[0].split(' '))
+    dimensions = [int(i) for i in entries[0].split(' ')]
     transmitted_bits = [int(i) for i in entries[1].split(' ')[1:]]
     entries = entries[3:]
 

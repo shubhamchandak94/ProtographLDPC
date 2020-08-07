@@ -43,21 +43,22 @@ class ProtographLDPC(TannerGraph):
     #   args: list, args[0] = protograph to be lifted, args[1] = lift factor
     # return:
     #   a fully lifted Protograph LDPC code
-    def __init__(self, args, construction, width_provided=False):
+    def __init__(self, args, construction):
         TannerGraph.__init__(self, args, construction=construction)
 
         self.construction = construction
         self.protograph = args[0]
 
-        if width_provided:
-            self.factor = args[1] / self.protograph.width
-            if self.factor - int(self.factor) != 0:
-                print("cannot generate provided protograph with provided code length")
-                print("accepted code lengths: x for all x % " + str(self.protograph.width) + " = 0")
-                return
-            self.factor = int(args[1] / self.protograph.width)
-        else:
-            self.factor = args[1]
+        # if width_provided:
+        #     self.factor = args[1] / self.protograph.width
+        #     if self.factor - int(self.factor) != 0:
+        #         print("cannot generate provided protograph with provided code length")
+        #         print("accepted code lengths: x for all x % " + str(self.protograph.width) + " = 0")
+        #         return
+        #     self.factor = int(args[1] / self.protograph.width)
+        # else:
+        #     self.factor = args[1]
+        self.factor = int(args[1])
 
         self.maximum_allowable_protograph_node = self.factor
 

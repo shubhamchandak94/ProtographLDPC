@@ -1,4 +1,6 @@
+import os
 import sys
+from distutils.dir_util import copy_tree
 
 from Identity import Identity
 from TannerGraph import *
@@ -59,9 +61,10 @@ files).
 '''
 
 
+# ASSUMES GENERATED PROTOGRAPH FOR PROTOGRAPH CONSTRUCTIONS
 # parameters:
 #   args: list, arguments by which the code is to be constructed.
-#       format: pchk-file code-type construction args:([w, h | n, c, r | w, h, c], [protograph-file, l])
+#       format: pchk-file code-type construction args:([w, h | n, c, r | w, h, c], [protograph-dir])
 #   return:
 #       None, constructs machine-readable ldpc code in the specified parity check file. The generated format is readable
 #       by executables belonging to the LDPC-codes submodule
@@ -72,7 +75,10 @@ def main():
         Protograph.generate_protograph_dir(sys.argv[2], int(sys.argv[3]))
 
     else:
+
+        protograph_file = None
         if sys.argv[2] == "regular":
+
             # initializing tanner rep, 2nd argument is construction method
             ldpc_dimension_args = [int(i) for i in sys.argv[4:len(sys.argv)]]
 
@@ -81,32 +87,40 @@ def main():
 
         elif sys.argv[2] == "protograph":
 
-            ldpc_args = [i for i in sys.argv[4:len(sys.argv)]]
+            protograph_dir = sys.argv[4]
+            protograph_file = protograph_dir + '/' + os.path.basename(protograph_dir)
 
-            for i in range(len(ldpc_args)):
-                try:
-                    ldpc_args[i] = int(ldpc_args[i])
-                except:
-                    continue
+            protograph = Protograph([protograph_file])
+            factor = int(open(protograph_dir + '/' + '.transmitted', 'r').read().split('\n')[0].split(' ')[1])
 
-            protograph = Protograph([ldpc_args[0]])
-
-            ldpc_code = ProtographLDPC([protograph, ldpc_args[1]], sys.argv[3], width_provided=True)
+            ldpc_code = ProtographLDPC([protograph, factor], sys.argv[3])
 
         # write the corresponding graph to specified file in binary
-        write_graph_to_file(ldpc_code, sys.argv[1])
+        ldpc_filename = os.path.basename(sys.argv[1])
+        ldpc_dir = os.path.dirname(sys.argv[1]) + '/' + ldpc_filename
+        ldpc_protograph_dir = ldpc_dir + '/protograph'
 
+        try:
+            os.mkdir(ldpc_dir)
+        except FileExistsError:
+            print("a code already exists at the specified location")
+            return
 
-'''
+        try:
+            os.mkdir(ldpc_protograph_dir)
+        except FileExistsError:
+            print("protograph already exists here")
+            return
 
-Constructions to implement:
-Input - Construction
+        ldpc_pchk_file = ldpc_dir + '/' + ldpc_filename
+        open(ldpc_pchk_file, 'w')
+        write_graph_to_file(ldpc_code, ldpc_pchk_file)
 
-Regular LDPC:
-Width, Height - Gallagher, Populate Rows, Populate Columns
-Width, Height, 1s per col - Gallagher, Populate Rows, Populate Columns
-Width, 1s per col, 1s per row, height provided=false - Gallagher, Populate Rows, Populate Columns
-'''
+        if protograph_file is not None:
+            dir_to_copy = os.path.dirname(protograph_file)
+            dir_to_paste = ldpc_protograph_dir
+
+            copy_tree(dir_to_copy, dir_to_paste)
 
 
 def ldpcConstructionTests():
