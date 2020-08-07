@@ -17,6 +17,10 @@ Entries are considered non-zero positions in the Protograph's matrix representat
 each entry is listed in the file as follows:
 row in matrix, column in matrix, value in matrix
     integers are all single-space separated
+
+If puncturing is to be used in the transmission of codewords, call the generate_protograph_dir() function
+to create a directory, in place of the existing protograph template file, which contains the information needed
+for decoding punctured messages. The protograph constructor readable template is moved into this directory. 
 '''
 
 
@@ -125,6 +129,16 @@ class Protograph(TannerGraph):
     def as_matrix(self):
         return get_matrix_representation(self)
 
+    '''
+    This method takes a protograph template (given in the format specified in the class docs) and generates a directory
+    containing the template itself, as well as a .transmitted file containing the transmitted bits per codeword. To
+    create protograph objects, the constructor for this class understands the template format: pass the filepath of the 
+    template, not the protograph directory    
+    '''
+
+    # parameters:
+    #   filepath: string, path of protograph template
+    #   protograph_factor: int, factor by which the protograph is to be expanded by
     @staticmethod
     def generate_protograph_dir(filepath, protograph_factor):
 
@@ -154,7 +168,8 @@ class Protograph(TannerGraph):
         f.write('\n'.join(contents))
 
         f = open(protograph_dir + '/' + '.transmitted', 'w')
-        f.write('total bits before transmission: ' + str(int(contents[0].split(' ')[1]) * protograph_factor) + '\n' + transmitted_bits)
+        f.write('total bits before transmission: ' + str(
+            int(contents[0].split(' ')[1]) * protograph_factor) + '\n' + transmitted_bits)
 
 
 '''
@@ -193,7 +208,6 @@ def write_protograph_to_file(protograph, filepath):
 #   dimensions: tuple, 2 elements (height, width) describing dimension of protograph
 #   transmitted_bits: list, describing indices of transmitted bits in protograph
 def read_sparse_array_from_file(filepath):
-
     file_matrix = []
 
     f = open(filepath, 'r')
