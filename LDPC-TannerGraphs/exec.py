@@ -98,7 +98,6 @@ def main():
         # write the corresponding graph to specified file in binary
         ldpc_filename = os.path.basename(sys.argv[1])
         ldpc_dir = os.path.dirname(sys.argv[1]) + '/' + ldpc_filename
-        ldpc_protograph_dir = ldpc_dir + '/protograph'
 
         try:
             os.mkdir(ldpc_dir)
@@ -106,21 +105,26 @@ def main():
             print("a code already exists at the specified location")
             return
 
-        try:
-            os.mkdir(ldpc_protograph_dir)
-        except FileExistsError:
-            print("protograph already exists here")
-            return
-
-        ldpc_pchk_file = ldpc_dir + '/' + ldpc_filename
-        open(ldpc_pchk_file, 'w')
-        write_graph_to_file(ldpc_code, ldpc_pchk_file)
-
         if protograph_file is not None:
+            ldpc_protograph_dir = ldpc_dir + '/protograph'
+
+            try:
+                os.mkdir(ldpc_protograph_dir)
+            except FileExistsError:
+                print("protograph already exists here")
+                return
+
             dir_to_copy = os.path.dirname(protograph_file)
             dir_to_paste = ldpc_protograph_dir
 
             copy_tree(dir_to_copy, dir_to_paste)
+
+        ldpc_pchk_file = ldpc_dir + '/' + ldpc_filename
+        open(ldpc_pchk_file, 'w')
+
+        write_graph_to_file(ldpc_code, ldpc_pchk_file)
+
+
 
 
 def ldpcConstructionTests():
@@ -165,6 +169,6 @@ def ldpcConstructionTests():
     # printm(protographLDPC)
 
 
-ldpcConstructionTests()
+# ldpcConstructionTests()
 #
-# main()
+main()
