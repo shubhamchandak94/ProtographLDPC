@@ -165,6 +165,6 @@ def ldpcConstructionTests():
     # printm(protographLDPC)
 
 
-# ldpcConstructionTests()
+ldpcConstructionTests()
 #
-main()
+# main()
