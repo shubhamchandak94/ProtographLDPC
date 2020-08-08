@@ -130,48 +130,6 @@ class Protograph(TannerGraph):
     def as_matrix(self):
         return get_matrix_representation(self)
 
-    '''
-    This method takes a protograph template (given in the format specified in the class docs) and generates a directory
-    containing the template itself, as well as a .transmitted file containing the transmitted bits per codeword. To
-    create protograph objects, the constructor for this class understands the template format: pass the filepath of the
-    template, not the protograph directory
-    '''
-
-    # parameters:
-    #   filepath: string, path of protograph template
-    #   protograph_factor: int, factor by which the protograph is to be expanded by
-    @staticmethod
-    def generate_protograph_dir(filepath, protograph_factor):
-
-        try:
-            contents = open(filepath, 'r').read().split('\n')
-        except Exception:
-            print("could not find or process specified protograph file")
-            return
-
-        dirname = os.path.dirname(filepath)
-        filename = os.path.basename(filepath)
-        protograph_dir = os.path.join(dirname, filename)
-        os.remove(filepath)
-        os.mkdir(protograph_dir)
-
-        protograph_bits_transmitted = [int(i) for i in contents[1].split(' ')[1:]]
-        transmitted_bits = []
-
-        for i in protograph_bits_transmitted:
-            for j in range(i * protograph_factor, i * protograph_factor + protograph_factor):
-                transmitted_bits.append(j)
-
-        transmitted_bits = [str(i) for i in transmitted_bits]
-        transmitted_bits = ' '.join(transmitted_bits)
-
-        f = open(os.path.join(protograph_dir, filename), 'w')
-        f.write('\n'.join(contents))
-
-        f = open(os.path.join(protograph_dir, '.transmitted'), 'w')
-        f.write('factor: ' + str(protograph_factor) + '\n' + 'total bits before transmission: ' + str(
-            int(contents[0].split(' ')[1]) * protograph_factor) + '\n' + transmitted_bits)
-
 
 '''
 Because the superclass as_matrix method cannot work with ProtographEntry objects, Protograph.py must redefine
@@ -236,7 +194,7 @@ def read_sparse_array_from_file(filepath):
         output_matrix = protograph_array
 
     else:
-        print("invalid protograph switch")
+        print("invalid protograph format option specified")
         return
 
     return output_matrix, dimensions, transmitted_bits

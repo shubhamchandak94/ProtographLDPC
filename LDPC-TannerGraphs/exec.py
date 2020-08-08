@@ -1,6 +1,6 @@
 import os
 import sys
-from distutils.dir_util import copy_tree
+import shutil
 
 from Identity import Identity
 from TannerGraph import *
@@ -61,112 +61,83 @@ files).
 '''
 
 
-# ASSUMES GENERATED PROTOGRAPH FOR PROTOGRAPH CONSTRUCTIONS
 # parameters:
 #   args: list, arguments by which the code is to be constructed.
-#       format: pchk-file code-type construction args:([w, h | n, c, r | w, h, c], [protograph-dir])
+#       format: pchk-file code-type construction ([w, h | n, c, r, x | w, h, c], [protograph-dir, factor])
 #   return:
 #       None, constructs machine-readable ldpc code in the specified parity check file. The generated format is readable
 #       by executables belonging to the LDPC-codes submodule
 def main():
+    pchk_file = sys.argv[1]
+    code_type = sys.argv[2]
+    construction = sys.argv[3]
+
+    args = sys.argv[4:]
+
+    protograph_file = None
+    factor = None
+
+    # populate this object, then write this to disk
     ldpc_code = None
 
-    if sys.argv[1] == "generate_protograph":  # format file structure for protograph and bits transmitted file
-        Protograph.generate_protograph_dir(sys.argv[2], int(sys.argv[3]))
+    # protograph_file = None
+    if code_type == "regular":
 
-    else:
+        regular_dimension_args = [int(i) for i in args]
+        ldpc_code = RegularLDPC(regular_dimension_args, construction)
 
-        protograph_file = None
-        if sys.argv[2] == "regular":
+    elif code_type == "protograph":
 
-            # initializing tanner rep, 2nd argument is construction method
-            ldpc_dimension_args = [int(i) for i in sys.argv[4:len(sys.argv)]]
+        protograph_file = args[0]
+        factor = int(args[1])
 
-            # create regular code
-            ldpc_code = RegularLDPC(ldpc_dimension_args, sys.argv[3])
+        # protograph_file = os.path.join(protograph_dir, os.path.basename(protograph_dir))
 
-        elif sys.argv[2] == "protograph":
+        protograph = Protograph([protograph_file])
+        # factor = int(open(os.path.join(protograph_dir, '.transmitted'), 'r').read().split('\n')[0].split(' ')[1])
 
-            protograph_dir = sys.argv[4]
-            protograph_file = os.path.join(protograph_dir,os.path.basename(protograph_dir))
+        ldpc_code = ProtographLDPC([protograph, factor], construction)
 
-            protograph = Protograph([protograph_file])
-            factor = int(open(os.path.join(protograph_dir,'.transmitted'), 'r').read().split('\n')[0].split(' ')[1])
+    # write the corresponding graph to specified file in binary
+    ldpc_filename = os.path.basename(pchk_file)
+    ldpc_dir = os.path.join(os.path.dirname(pchk_file), ldpc_filename)
 
-            ldpc_code = ProtographLDPC([protograph, factor], sys.argv[3])
+    if os.path.isdir(ldpc_dir):
+        shutil.rmtree(ldpc_dir)
 
-        # write the corresponding graph to specified file in binary
-        ldpc_filename = os.path.basename(sys.argv[1])
-        ldpc_dir = os.path.join(os.path.dirname(sys.argv[1]), ldpc_filename)
+    try:
+        os.mkdir(ldpc_dir)
+    except FileExistsError:
+        print("a code already exists at the specified location")
+        return
 
-        try:
-            os.mkdir(ldpc_dir)
-        except FileExistsError:
-            print("a code already exists at the specified location")
-            return
+    ldpc_pchk_file = os.path.join(ldpc_dir, ldpc_filename)
+    open(ldpc_pchk_file, 'w')
 
-        if protograph_file is not None:
-            ldpc_protograph_dir = ldpc_dir + '/protograph'
-
-            try:
-                os.mkdir(ldpc_protograph_dir)
-            except FileExistsError:
-                print("protograph already exists here")
-                return
-
-            dir_to_copy = os.path.dirname(protograph_file)
-            dir_to_paste = ldpc_protograph_dir
-
-            copy_tree(dir_to_copy, dir_to_paste)
-
-        ldpc_pchk_file = os.path.join(ldpc_dir, ldpc_filename)
-        open(ldpc_pchk_file, 'w')
-
-        write_graph_to_file(ldpc_code, ldpc_pchk_file)
+    write_graph_to_file(ldpc_code, ldpc_pchk_file)
 
 
+
+    if code_type == "protograph":
+
+        contents = open(protograph_file, 'r').read().split('\n')
+
+        protograph_bits_transmitted = [int(i) for i in contents[1].split(' ')[1:]]
+        all_transmitted_bits = []
+
+        for i in protograph_bits_transmitted:
+            for j in range(i * factor, i * factor + factor):
+                all_transmitted_bits.append(str(j))
+
+        f = open(os.path.join(ldpc_dir, '.transmitted'), 'w')
+        f.write('factor: ' + str(factor) + '\n' + 'total bits before transmission: ' + str(
+            int(contents[0].split(' ')[1]) * factor) + '\n' + ' '.join(all_transmitted_bits))
 
 
 def ldpcConstructionTests():
-    # code = RegularLDPC([10, 4], "gallagher")
-    # analyze(code)
-    #
-    # code = RegularLDPC([10, 4], "populate-rows")
-    # analyze(code)
-    #
-    # code = RegularLDPC([10, 4], "populate-columns")
-    # analyze(code)
-    #
-    # code = RegularLDPC([10, 4, 2], "gallagher")
-    # analyze(code)
-    #
-    # code = RegularLDPC([10, 4, 2], "populate-rows")
-    # analyze(code)
-    #
-    # code = RegularLDPC([10, 4, 2], "populate-columns")
-    # analyze(code)
-    #
-    # code = RegularLDPC([10, 3, 2, False], "gallagher")
-    # analyze(code)
-    #
-    # code = RegularLDPC([10, 3, 2, False], "populate-rows")
-    # analyze(code)
-    #
-    # code = RegularLDPC([10, 3, 2, False], "populate-columns")
-    # analyze(code)
-
-    # points = [[0, 0, 2], [0, 1, 1], [1, 0, 1], [1, 2, 1]]
-    # points = [[0, 0, 2], [0, 1, 1], [0, 4, 2], [0, 5, 1], [1, 0, 1], [1, 1, 1], [1, 2, 1], [1, 4, 1], [1, 5, 1],
-    #           [1, 6, 1], [2, 1, 1], [2, 2, 1], [2, 3, 1], [2, 5, 1], [2, 6, 1], [2, 7, 1], [3, 2, 1], [3, 3, 2],
-    #           [3, 6, 1], [3, 7, 2]]
-
-    # protograph = Protograph(points)
 
     protograph = Protograph(['../protographs/protograph3'])
     printm(protograph)
-
-    # protographLDPC = ProtographLDPC([protograph, 15], "quasi-cyclic", width_provided=True)
-    # printm(protographLDPC)
 
 
 # ldpcConstructionTests()
