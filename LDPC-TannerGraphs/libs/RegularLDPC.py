@@ -1,7 +1,7 @@
 import random
 
 from lib.TannerGraph import *
-import Utils
+from libs import Utils
 
 '''
 - A class for the handling of Regular LDPC matrices in tanner graph form
