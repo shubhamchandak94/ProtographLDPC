@@ -2,13 +2,11 @@ import os
 import sys
 import shutil
 
-from Identity import Identity
-from TannerGraph import *
-from RegularLDPC import RegularLDPC
-from ProtographLDPC import ProtographLDPC
-from Protograph import Protograph
+from lib.RegularLDPC import RegularLDPC
+from lib.ProtographLDPC import ProtographLDPC
+from lib.Protograph import Protograph
 
-from TannerGraph import printm
+from lib.TannerGraph import printm
 
 
 # file should be opened with the wb mode
@@ -101,7 +99,6 @@ def main():
 
     # will write this to disk after population
     ldpc_code = None
-
 
     if code_type == "regular":
 
