@@ -55,7 +55,7 @@ def write_graph_to_file(ldpc_code, filepath):
 
 
 '''
-This function allows Exec.py to be run from the command line. Currently, the construction of two different types of
+This function allows exec.py to be run from the command line. Currently, the construction of two different types of
 ldpc codes are supported, regular and protograph codes (construction details are laid out in the respective class
 files).
 '''
@@ -64,10 +64,32 @@ files).
 # parameters:
 #   args: list, arguments by which the code is to be constructed.
 #       format: pchk-file code-type construction ([w, h | n, c, r, x | w, h, c], [protograph-dir, factor])
+#           if code-type == regular
+#
+#               row column weights inferred
+#               1) w: width of code
+#                  h: height of code
+#
+#               height inferred
+#               2) n: width of code
+#                  c: weight of columns
+#                  r: weight of rows
+#                  x: random number (has no pertinence to the construction, just to distinguish between possible arguments
+#
+#               row weightage inferred
+#               3) w: width of code
+#                  h: height of code
+#                  c: column weightage
+#
+#           if code-type == protograph
+#               protograph-dir: path to protograph file
+#               factor: expansion factor
+#
 #   return:
-#       None, constructs machine-readable ldpc code in the specified parity check file. The generated format is readable
-#       by executables belonging to the LDPC-codes submodule
+#       None, constructs machine-readable ldpc code in the specified parity check file. The generated parity check file is
+#       readable by executables belonging to the LDPC-codes submodule
 def main():
+
     pchk_file = sys.argv[1]
     code_type = sys.argv[2]
     construction = sys.argv[3]
@@ -77,10 +99,10 @@ def main():
     protograph_file = None
     factor = None
 
-    # populate this object, then write this to disk
+    # will write this to disk after population
     ldpc_code = None
 
-    # protograph_file = None
+
     if code_type == "regular":
 
         regular_dimension_args = [int(i) for i in args]
@@ -91,33 +113,33 @@ def main():
         protograph_file = args[0]
         factor = int(args[1])
 
-        # protograph_file = os.path.join(protograph_dir, os.path.basename(protograph_dir))
-
         protograph = Protograph([protograph_file])
-        # factor = int(open(os.path.join(protograph_dir, '.transmitted'), 'r').read().split('\n')[0].split(' ')[1])
-
         ldpc_code = ProtographLDPC([protograph, factor], construction)
 
-    # write the corresponding graph to specified file in binary
+    # determine build paths
     ldpc_filename = os.path.basename(pchk_file)
     ldpc_dir = os.path.join(os.path.dirname(pchk_file), ldpc_filename)
 
+    # if a directory already exists at this path, delete it
     if os.path.isdir(ldpc_dir):
-        shutil.rmtree(ldpc_dir)
+        delete = input("a directory exists at this location, replace? [y/n]: ")
+        if delete == 'y':
+            shutil.rmtree(ldpc_dir)
+        else:
+            exit()
 
+    # create ldpc directory
     try:
         os.mkdir(ldpc_dir)
     except FileExistsError:
         print("a code already exists at the specified location")
         return
 
+    # write the corresponding graph to specified file in binary
     ldpc_pchk_file = os.path.join(ldpc_dir, ldpc_filename)
-    open(ldpc_pchk_file, 'w')
-
     write_graph_to_file(ldpc_code, ldpc_pchk_file)
 
-
-
+    # generate .transmitted file for puncturing if a protograph code is constructed
     if code_type == "protograph":
 
         contents = open(protograph_file, 'r').read().split('\n')
@@ -133,9 +155,8 @@ def main():
         f.write('factor: ' + str(factor) + '\n' + 'total bits before transmission: ' + str(
             int(contents[0].split(' ')[1]) * factor) + '\n' + ' '.join(all_transmitted_bits))
 
-
+# testing sandbox
 def ldpcConstructionTests():
-
     protograph = Protograph(['../protographs/protograph3'])
     printm(protograph)
 
