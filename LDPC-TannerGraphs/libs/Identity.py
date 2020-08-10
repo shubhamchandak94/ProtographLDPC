@@ -1,5 +1,5 @@
 import itertools
-from lib.TannerGraph import TannerGraph
+from libs.TannerGraph import TannerGraph
 
 '''
 A class for the handling of Identity type matrices in TannerGraph form. It is important to note the distinction between

@@ -1,4 +1,4 @@
-from lib.TannerGraph import *
+from libs.TannerGraph import *
 
 '''
 This TannerGraph subclass constructs the tanner_graph dictionary as a dictionary of lists of ProtographEntry objects.

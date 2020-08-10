@@ -2,11 +2,11 @@ import os
 import sys
 import shutil
 
-from lib.RegularLDPC import RegularLDPC
-from lib.ProtographLDPC import ProtographLDPC
-from lib.Protograph import Protograph
+from libs.RegularLDPC import RegularLDPC
+from libs.ProtographLDPC import ProtographLDPC
+from libs.Protograph import Protograph
 
-from lib.TannerGraph import printm
+from libs.TannerGraph import printm
 
 
 # file should be opened with the wb mode
@@ -87,7 +87,6 @@ files).
 #       None, constructs machine-readable ldpc code in the specified parity check file. The generated parity check file is
 #       readable by executables belonging to the LDPC-codes submodule
 def main():
-
     pchk_file = sys.argv[1]
     code_type = sys.argv[2]
     construction = sys.argv[3]
@@ -151,6 +150,13 @@ def main():
         f = open(os.path.join(ldpc_dir, '.transmitted'), 'w')
         f.write('factor: ' + str(factor) + '\n' + 'total bits before transmission: ' + str(
             int(contents[0].split(' ')[1]) * factor) + '\n' + ' '.join(all_transmitted_bits))
+
+    elif code_type == "regular":
+
+        f = open(os.path.join(ldpc_dir, '.transmitted'), 'w')
+        f.write('factor: None' + '\n' + 'total bits before transmission: ' + str(ldpc_code.width) + '\n' + str(
+            list(range(0, ldpc_code.width))).replace(',', '').replace('[', '').replace(']', ''))
+
 
 # testing sandbox
 def ldpcConstructionTests():

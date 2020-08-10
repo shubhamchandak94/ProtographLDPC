@@ -1,7 +1,7 @@
-from lib.Identity import Identity
-from lib.RegularLDPC import RegularLDPC
+from libs.Identity import Identity
+from libs.RegularLDPC import RegularLDPC
 
-from lib.TannerGraph import *
+from libs.TannerGraph import *
 
 '''
 - A class for the handling of ProtogrpahLDPC matrices in Tanner Graph form

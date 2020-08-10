@@ -1,6 +1,6 @@
 import random
 
-from lib.TannerGraph import *
+from libs.TannerGraph import *
 from libs import Utils
 
 '''
