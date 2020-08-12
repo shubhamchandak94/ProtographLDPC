@@ -1,3 +1,32 @@
+## Brief description
+
+## Installation
+
+## Usage
+
+## Example
+
+## Citation
+TODO: add Zenodo indexing here, along with citation style with authors etc.
+
+## Background and algorithm description
+
+### Background on LDPC codes - regular and protograph
+
+### Regular parity check matrix construction
+
+### Protograph parity check matrix construction
+
+### Puncturing
+
+### Tests
+
+### Future work
+
+### References
+Here are some papers and other resources that were helpful for understanding protograph LDPC codes and implementing thi
+
+
 ## Welcome to GitHub Pages
 
 You can use the [editor on GitHub](https://github.com/shubhamchandak94/ProtographLDPC/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
