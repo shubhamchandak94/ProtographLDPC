@@ -1,7 +1,3 @@
----
-nav_exclude: true
----
-
 # Protograph LDPC Codes
 Implementation of Protograph LDPC error correction codes
 
