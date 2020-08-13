@@ -1,4 +1,5 @@
 import random
+import sys
 
 from libs.TannerGraph import *
 from libs import Utils
@@ -6,10 +7,10 @@ from libs import Utils
 '''
 - A class for the handling of Regular LDPC matrices in tanner graph form
 
-The tanner graph is stored as a dictionary, row indices (check nodes) are mapped to lists of column indices (variable 
+The tanner graph is stored as a dictionary, row indices (check nodes) are mapped to lists of column indices (variable
 nodes) to indicate bipartite connections
 
-args: input to enable construction. input follows the following construction patern: h = n * (c / r) where c / r is not 
+args: input to enable construction. input follows the following construction patern: h = n * (c / r) where c / r is not
 explicitly simplified, h = height of matrix, n = length of codeword/width matrix, c = column weight, r = row weight
 where weightages are constant for the most part (certain constructions fail to provide complete regularity)
 
@@ -30,56 +31,6 @@ class RegularLDPC(TannerGraph):
         self.width = int(self.args[0])
 
         #
-        # args provided [width, height]
-        # no col weight provided, col weight inferred to preserve regularity of the matrix
-        #
-        # here, c and r are inferred from the provided width, height values according to the construction equality
-        # h = n * (c / r)
-        #
-        # in the first case, if the gcd of the width and height equals either the width or the height, complete
-        # simplification of the fraction yields a situation where either c or r is equal to 1. To counter this effect,
-        # if the gcd of the two is equal to one of them, the second gcd is found and c / r is reduced
-        # by dividing both c and r by this second gcd. In this way, the greatest sparsity is achieved without resulting
-        # in row or col weightages equal to 1.
-        #
-        if len(self.args) == 2:
-
-            self.width = int(self.args[0])
-            self.height = int(self.args[1])
-
-            c_f = Utils.common_factors(self.width, self.height)
-            index = 1
-
-            r = self.width / c_f[len(c_f) - index]
-            c = self.height / c_f[len(c_f) - index]
-
-            while (c < 3 or r == 1) and index != len(c_f):
-                index += 1
-
-                r = self.width / c_f[len(c_f) - index]
-                c = self.height / c_f[len(c_f) - index]
-
-            self.n = int(self.width)
-            self.r = int(r)
-            self.c = int(c)
-
-        #
-        # args provided [width, col weight, row weight, height provided]
-        # height inferred given regularity of matrix (fourth argument always false, included to distinguish between
-        # args permutations)
-        #
-        # here, the length of the codeword, the col weight, and the row weight are specified and fed directly into the
-        # tanner graph constructor
-        #
-        elif len(self.args) == 4:
-
-            self.height = int(self.args[0] * self.args[1] / self.args[1])
-
-            self.n = int(self.args[0])
-            self.c = int(self.args[1])
-            self.r = int(self.args[2])
-
-        #
         # args provided [width, height, 1s per col]
         # user-controlled matrix weightages
         #
@@ -87,7 +38,7 @@ class RegularLDPC(TannerGraph):
         # simplicity of (c / r). Because r is dependent on width, height, and c (assuming regularity), defining c results
         # in limiting the constructor to one possible r value. The resulting n, c, r values are passed to the constructor
         #
-        elif len(self.args) == 3:
+        if len(self.args) == 3:
 
             self.height = int(self.args[1])
 
@@ -97,7 +48,7 @@ class RegularLDPC(TannerGraph):
 
         else:
             print("invalid input provided")
-            return
+            sys.exit(1)
 
         self.tanner_graph = RegularLDPC.get_parity_check_graph(self.n, self.r, self.c, self.construction)
 
@@ -109,10 +60,10 @@ class RegularLDPC(TannerGraph):
     @staticmethod
     def get_parity_check_graph(n, r, c, method):
 
-        # gallagher's construction of random LDPC matrices
+        # Gallager's construction of random LDPC matrices
         # although this construction yields perfectly regular codes, it is not a reliable construction:
         #   it is impossible to enforce regularity while strictly maintaining a provided height and width
-        if method == "gallagher":
+        if method == "gallager":
 
             if n % r != 0:
                 print("cannot generate perfectly regular matrix for the given arguments, modifications inferred")
@@ -279,10 +230,12 @@ class RegularLDPC(TannerGraph):
                         placed_entries += 1
 
             return transpose(tanner_graph, height)
+        else:
+            raise RuntimeError('Invalid construction method')
 
     '''
-    as part of the gallagher construction, this function stacks all the generated submatrices vertically 
-    (in this case sub graphs). Because of the nature of LDPC codes, the order of the stacking is irrelevant, 
+    as part of the Gallager construction, this function stacks all the generated submatrices vertically
+    (in this case sub graphs). Because of the nature of LDPC codes, the order of the stacking is irrelevant,
     and subsequently random
     '''
     # parameters:
@@ -300,7 +253,7 @@ class RegularLDPC(TannerGraph):
         return merged
 
 
-# the equivalent of the submatrix in Gallagher's construction, used only for Gallagher's construction
+# the equivalent of the submatrix in Gallager's construction, used only for Gallager's construction
 class SubGraph:
 
     # parameters:

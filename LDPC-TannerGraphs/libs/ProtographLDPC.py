@@ -164,7 +164,8 @@ class ProtographLDPC(TannerGraph):
             graph.permute_columns()
 
             return graph
-
+        else:
+            raise RuntimeError('Invalid construction method')
 
 '''
 Constructs a submatrix graph from a series of right shifts of an originating index list. This method provides the

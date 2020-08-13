@@ -1,13 +1,84 @@
 import os
 import sys
 import shutil
+import argparse
 
 from libs.RegularLDPC import RegularLDPC
 from libs.ProtographLDPC import ProtographLDPC
 from libs.Protograph import Protograph
 
-from libs.TannerGraph import printm
 
+def get_parser():
+    # argument parser
+    parser = argparse.ArgumentParser(description='Input')
+    parser.add_argument('--output-pchk-file','-o',
+                        action='store',
+                        dest='pchk_file',
+                        type=str,
+                        help='File to store generated pchk file.\
+                        An additional .transmitted file is also generated when \
+                        puncturing is used.\
+                        For example, when this argument is my.pchk, \
+                        then my.pchk.transmitted will also be generated when \
+                        puncturing is used.',
+                        required=True)
+    parser.add_argument('--code-type','-t',
+                        action='store',
+                        dest='code_type',
+                        choices=['regular','protograph'],
+                        help='Type of LDPC code to construct.',
+                        required=True)
+    parser.add_argument('--construction','-c',
+                        action='store',
+                        dest='construction',
+                        type=str,
+                        help='Method used for code construction. \
+                              Allowed options: regular: \
+                              {gallager,random,populate-rows,populate-columns}.\
+                              protograph: {permutation,regular,quasi-cyclic,permuted-quasi-cyclic}.',
+                        required=True)
+    parser.add_argument('--n-checks',
+                        action='store',
+                        dest='n_checks',
+                        type=int,
+                        help='For regular codes: number of check nodes.')
+    parser.add_argument('--n-bits',
+                        action='store',
+                        dest='n_bits',
+                        type=int,
+                        help='For regular codes: number of codeword bits \
+                              (including untransmitted/punctured bits).')
+    parser.add_argument('--checks-per-col',
+                        action='store',
+                        dest='checks_per_col',
+                        type=int,
+                        default=3,
+                        help='For regular codes: number of 1s per column of parity \
+                             check matrix. [default: 3]')
+    parser.add_argument('--fraction-tranmitted','-f',
+                        action='store',
+                        dest='fraction_tranmitted',
+                        type=float,
+                        default=1.0,
+                        help='For regular codes: fraction of bits out of n-bits \
+                             to transmit (randomly chosen). [default: 1.0]')
+    parser.add_argument('--protograph-file','-p',
+                        action='store',
+                        dest='protograph_file',
+                        type=str,
+                        help='For protograph codes: file containing protograph.')
+    parser.add_argument('--expansion-factor','-e',
+                        action='store',
+                        dest='expansion_factor',
+                        type=int,
+                        help='For protograph codes: protograph expansion factor.')
+    parser.add_argument('--seed','-s',
+                        action='store',
+                        dest='seed',
+                        type=int,
+                        help='Random seed for reproducibility. [default: 123]',
+                        default=123)
+    return parser
 
 # file should be opened with the wb mode
 def intio_write(file, value):
@@ -61,37 +132,27 @@ files).
 
 # parameters:
 #   args: list, arguments by which the code is to be constructed.
-#       format: pchk-file code-type construction ([w, h | n, c, r, x | w, h, c], [protograph-dir, factor])
+#       format: pchk-file code-type construction ([w, h, c], [protograph-dir, factor])
 #           if code-type == regular
-#
-#               row column weights inferred
-#               1) w: width of code
-#                  h: height of code
-#
-#               height inferred
-#               2) n: width of code
-#                  c: weight of columns
-#                  r: weight of rows
-#                  x: random number (has no pertinence to the construction, just to distinguish between possible arguments
-#
 #               row weightage inferred
-#               3) w: width of code
+#                  w: width of code
 #                  h: height of code
 #                  c: column weightage
-#
+#                  f: fraction of bits out of w to transmit (puncturing), default 1.0
 #           if code-type == protograph
-#               protograph-dir: path to protograph file
+#               protograph-file: path to protograph file
 #               factor: expansion factor
 #
 #   return:
 #       None, constructs machine-readable ldpc code in the specified parity check file. The generated parity check file is
 #       readable by executables belonging to the LDPC-codes submodule
 def main():
-    pchk_file = sys.argv[1]
-    code_type = sys.argv[2]
-    construction = sys.argv[3]
+    parser = get_parser()
+    args = parser.parse_args()
 
-    args = sys.argv[4:]
+    pchk_file = args.pchk_file
+    code_type = args.code_type
+    construction = args.construction
 
     protograph_file = None
     factor = None
@@ -100,15 +161,16 @@ def main():
     ldpc_code = None
 
     if code_type == "regular":
-
-        regular_dimension_args = [int(i) for i in args]
+         if args.n_checks is None or args.n_bits is None or args.checks_per_col is None:
+             raise RuntimeError('Please provide n_checks, n_bits and checks_per_col for regular codes.')
+             sys.exit(1)
+        regular_dimension_args = [args.n_bits,args.n_checks,args.checks_per_col]
         ldpc_code = RegularLDPC(regular_dimension_args, construction)
-
     elif code_type == "protograph":
-
-        protograph_file = args[0]
-        factor = int(args[1])
-
+        if args.protograph_file is None or args.expansion_factor is None:
+            raise RuntimeError('Please provide protograph_file and expansion_factor for protograph codes.')
+        protograph_file = args.protograph_file
+        factor = args.expansion_factor
         protograph = Protograph([protograph_file])
         ldpc_code = ProtographLDPC([protograph, factor], construction)
 
@@ -158,12 +220,5 @@ def main():
             list(range(0, ldpc_code.width))).replace(',', '').replace('[', '').replace(']', ''))
 
 
-# testing sandbox
-def ldpcConstructionTests():
-    protograph = Protograph(['../protographs/protograph3'])
-    printm(protograph)
-
-
-# ldpcConstructionTests()
-#
-main()
+if __name__ == '__main__':
+    main()

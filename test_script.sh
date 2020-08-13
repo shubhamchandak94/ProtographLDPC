@@ -70,11 +70,11 @@ echo ""
 
 echo "----------------------------------------------------------------------------------------------------"
 
-echo "generating parity check matrix through python (Gallagher construction)..."
-python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk regular gallagher ${1} ${2} ${3}
+echo "generating parity check matrix through python (Gallager construction)..."
+python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk regular gallager ${1} ${2} ${3}
 echo ""
 
-echo "decoding transmission for python generated parity matrix (Gallagher construction)..."
+echo "decoding transmission for python generated parity matrix (Gallager construction)..."
 ./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
 echo ""
 
