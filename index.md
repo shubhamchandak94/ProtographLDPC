@@ -1,3 +1,9 @@
+---
+layout: default
+title: Home
+nav_order: 1
+---
+
 **THIS IS UNDER CONSTRUCTION. PLEASE CHECK AGAIN SOON FOR A RELEASE**
 
 # Overview
