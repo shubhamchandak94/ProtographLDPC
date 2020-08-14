@@ -1,4 +1,6 @@
-remote_theme: pmarsceill/just-the-docs
+#remote_theme: pmarsceill/just-the-docs
+theme: just-the-docs
+
 title: "ProtographLDPC"
 description: "Implementation of Protograph LDPC error correction codes"
 search_enabled: false
@@ -15,4 +17,4 @@ heading_anchors: true
 
 footer_content: "Copyright &copy; 2020 Shubham Chandak. Distributed by an <a href=\"https://github.com/shubhamchandak94/ProtographLDPC/blob/master/LICENSE\">MIT license.</a>"
 
-exclude: "README.md"
+exclude: ["README.md", ".gitignore"]
