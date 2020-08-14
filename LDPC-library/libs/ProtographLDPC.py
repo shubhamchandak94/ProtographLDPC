@@ -36,25 +36,17 @@ subsequent row in the submatrix, that row is defined by the circular right shift
 class ProtographLDPC(TannerGraph):
 
     # parameters:
-    #   args: list, args[0] = protograph to be lifted, args[1] = lift factor
+    #   protograph to be lifted
+    #   lift factor
+    #   construction method
     # return:
     #   a fully lifted Protograph LDPC code
-    def __init__(self, args, construction):
-        TannerGraph.__init__(self, args, construction=construction)
+    def __init__(self, protograph, factor, construction):
+        TannerGraph.__init__(self, [protograph,factor], construction=construction)
 
         self.construction = construction
-        self.protograph = args[0]
-
-        # if width_provided:
-        #     self.factor = args[1] / self.protograph.width
-        #     if self.factor - int(self.factor) != 0:
-        #         print("cannot generate provided protograph with provided code length")
-        #         print("accepted code lengths: x for all x % " + str(self.protograph.width) + " = 0")
-        #         return
-        #     self.factor = int(args[1] / self.protograph.width)
-        # else:
-        #     self.factor = args[1]
-        self.factor = int(args[1])
+        self.protograph = protograph
+        self.factor = factor
 
         self.maximum_allowable_protograph_node = self.factor
 
@@ -106,21 +98,22 @@ class ProtographLDPC(TannerGraph):
                         submatrix_construction=construction,
                         factor=factor,
                         permutation_set=permutation_set,
-                        num_matrices=protograph.get(r / factor, c / factor)
+                        num_ones_per_row=protograph.get(r / factor, c / factor)
                     ), [r, c])
 
         return expanded.tanner_graph
 
     # parameters:
     #   permutation_set: the set of all possible permutation matrices to use in the summation
-    #   num_matrices: the number of matrices to sum up. This of course is bounded by the lifting factor of the protograph
-    #       as all permutation matrices are of dimension width = factor, height = factor
+    #  (when submatrix_construction="permutation")
+    #   num_ones_per_row: the number of ones per column/row. This is bounded by the lifting factor of the protograph
+    #   as all submatrices are of dimension width = factor, height = factor.
     #   factor: the lifting factor by which the associated protograph is to be lifted by
     #   submatrix_construction: the algorithm through which the submatrix is constructed
     # returns:
     #   submatrix: TannerGraph, graph to be inserted into the eventual code
     @staticmethod
-    def submatrix(submatrix_construction="regular", factor=None, permutation_set=None, num_matrices=None):
+    def submatrix(submatrix_construction="regular", factor=None, permutation_set=None, num_ones_per_row=None):
 
         if submatrix_construction == "permutation":
             available_indices = np.random.choice(len(permutation_set), len(permutation_set), replace=False)
@@ -128,10 +121,10 @@ class ProtographLDPC(TannerGraph):
             start = permutation_set[available_indices[0]]
             taken = [available_indices[0]]
 
-            if num_matrices == 1:
+            if num_ones_per_row == 1:
                 return start
 
-            for i in range(num_matrices - 1):
+            for i in range(num_ones_per_row - 1):
 
                 for j in range(len(available_indices) - 1):
                     if not start.overlaps(permutation_set[available_indices[j + 1]]) and available_indices[j + 1] not in taken:
@@ -142,14 +135,14 @@ class ProtographLDPC(TannerGraph):
             return start
 
         elif submatrix_construction == "regular":
-            return RegularLDPC([factor, factor, num_matrices], "populate-rows")
+            return RegularLDPC([factor, factor, num_ones_per_row], "populate-rows")
 
         elif submatrix_construction == "quasi-cyclic":
 
             qc_graph = make_graph(factor, factor, factor)
 
-            indices = list(np.random.choice(factor, num_matrices, replace=False))
-            qc_graph = construct_stepwise_submatrix(indices, qc_graph)
+            first_row_indices = random.sample(range(factor), num_ones_per_row)
+            qc_graph = construct_cyclic_submatrix(first_row_indices, qc_graph)
 
             return qc_graph
 
@@ -157,8 +150,8 @@ class ProtographLDPC(TannerGraph):
 
             graph = make_graph(factor, factor, factor)
 
-            indices = list(range(0, num_matrices))
-            graph = construct_stepwise_submatrix(indices, graph)
+            first_row_indices = list(range(num_ones_per_row))
+            graph = construct_cyclic_submatrix(first_row_indices, graph)
 
             graph.permute_rows()
             graph.permute_columns()
@@ -172,17 +165,14 @@ Constructs a submatrix graph from a series of right shifts of an originating ind
 base implementation for the quasi-cyclic and permuted-quasi-cyclic constructions.
 '''
 # parameters:
-#   start_indices: list(int), the indices on which the right shift cycle is to initiate upon
+#   first_row_indices: list(int), the indices on which the right shift cycle is to initiate upon
 #   graph: TannerGraph, the graph to build the cycles on
 # return:
 #   TannerGraph, graph: the graph argument is returned after construction
-def construct_stepwise_submatrix(start_indices, graph):
-
+def construct_cyclic_submatrix(first_row_indices, graph):
     for i in range(graph.width):
-        new = start_indices.copy()
+        new = first_row_indices.copy()
         graph.put(i, new)
-
         right_shift_row(new, graph.width)
-        start_indices = new
-
+        first_row_indices = new
     return graph

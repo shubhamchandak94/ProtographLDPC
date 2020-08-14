@@ -1,7 +1,8 @@
 import os
-import sys
 import shutil
 import argparse
+import random
+import math
 
 from libs.RegularLDPC import RegularLDPC
 from libs.ProtographLDPC import ProtographLDPC
@@ -55,9 +56,9 @@ def get_parser():
                         default=3,
                         help='For regular codes: number of 1s per column of parity \
                              check matrix. [default: 3]')
-    parser.add_argument('--fraction-tranmitted','-f',
+    parser.add_argument('--fraction-transmitted','-f',
                         action='store',
-                        dest='fraction_tranmitted',
+                        dest='fraction_transmitted',
                         type=float,
                         default=1.0,
                         help='For regular codes: fraction of bits out of n-bits \
@@ -124,31 +125,17 @@ def write_graph_to_file(ldpc_code, filepath):
 
 
 '''
-This function allows exec.py to be run from the command line. Currently, the construction of two different types of
+Currently, the construction of two different types of
 ldpc codes are supported, regular and protograph codes (construction details are laid out in the respective class
 files).
 '''
 
-
-# parameters:
-#   args: list, arguments by which the code is to be constructed.
-#       format: pchk-file code-type construction ([w, h, c], [protograph-dir, factor])
-#           if code-type == regular
-#               row weightage inferred
-#                  w: width of code
-#                  h: height of code
-#                  c: column weightage
-#                  f: fraction of bits out of w to transmit (puncturing), default 1.0
-#           if code-type == protograph
-#               protograph-file: path to protograph file
-#               factor: expansion factor
-#
-#   return:
-#       None, constructs machine-readable ldpc code in the specified parity check file. The generated parity check file is
-#       readable by executables belonging to the LDPC-codes submodule
 def main():
     parser = get_parser()
     args = parser.parse_args()
+
+    # set random seed
+    random.seed(args.seed)
 
     pchk_file = args.pchk_file
     code_type = args.code_type
@@ -161,64 +148,57 @@ def main():
     ldpc_code = None
 
     if code_type == "regular":
-         if args.n_checks is None or args.n_bits is None or args.checks_per_col is None:
-             raise RuntimeError('Please provide n_checks, n_bits and checks_per_col for regular codes.')
-             sys.exit(1)
+        if args.n_checks is None or args.n_bits is None or args.checks_per_col is None:
+            raise RuntimeError('Please provide n_checks, n_bits and checks_per_col for regular codes.')
         regular_dimension_args = [args.n_bits,args.n_checks,args.checks_per_col]
-        ldpc_code = RegularLDPC(regular_dimension_args, construction)
+        ldpc_code = RegularLDPC(regular_dimension_args, construction, verbose=True)
     elif code_type == "protograph":
         if args.protograph_file is None or args.expansion_factor is None:
             raise RuntimeError('Please provide protograph_file and expansion_factor for protograph codes.')
         protograph_file = args.protograph_file
         factor = args.expansion_factor
-        protograph = Protograph([protograph_file])
-        ldpc_code = ProtographLDPC([protograph, factor], construction)
-
-    # determine build paths
-    ldpc_filename = os.path.basename(pchk_file)
-    ldpc_dir = os.path.join(os.path.dirname(pchk_file), ldpc_filename)
-
-    # if a directory already exists at this path, delete it
-    if os.path.isdir(ldpc_dir):
-        delete = input("a directory exists at this location, replace? [y/n]: ")
-        if delete == 'y':
-            shutil.rmtree(ldpc_dir)
-        else:
-            exit()
-
-    # create ldpc directory
-    try:
-        os.mkdir(ldpc_dir)
-    except FileExistsError:
-        print("a code already exists at the specified location")
-        return
+        protograph = Protograph(protograph_file)
+        ldpc_code = ProtographLDPC(protograph, factor, construction)
 
     # write the corresponding graph to specified file in binary
-    ldpc_pchk_file = os.path.join(ldpc_dir, ldpc_filename)
-    write_graph_to_file(ldpc_code, ldpc_pchk_file)
+    write_graph_to_file(ldpc_code, pchk_file)
+    print("INFO: Before puncturing (if applicable):")
+    print("INFO: # check nodes =",ldpc_code.height)
+    print("INFO: # variable nodes (bits in codeword) =",ldpc_code.width)
+    print("INFO: # message bits =",ldpc_code.width-ldpc_code.height)
+    print("INFO: # Rate = ", "{:.2f}".format((ldpc_code.width-ldpc_code.height)/ldpc_code.width))
 
-    # generate .transmitted file for puncturing if a protograph code is constructed
+    puncturing_used = None
+    # generate .transmitted file for puncturing if needed
+    transmitted_bits_file = pchk_file + ".transmitted"
     if code_type == "protograph":
-
-        contents = open(protograph_file, 'r').read().split('\n')
-
-        protograph_bits_transmitted = [int(i) for i in contents[1].split(' ')[1:]]
-        all_transmitted_bits = []
-
-        for i in protograph_bits_transmitted:
-            for j in range(i * factor, i * factor + factor):
-                all_transmitted_bits.append(str(j))
-
-        f = open(os.path.join(ldpc_dir, '.transmitted'), 'w')
-        f.write('factor: ' + str(factor) + '\n' + 'total bits before transmission: ' + str(
-            int(contents[0].split(' ')[1]) * factor) + '\n' + ' '.join(all_transmitted_bits))
-
+        if protograph.transmitted_bits is not None: # otherwise no puncturing required
+            bits_to_transmit =\
+                [j for i in protograph.transmitted_bits for j in range(i * factor, i * factor + factor)]
+            num_bits_transmitted = len(bits_to_transmit)
+            f = open(os.path.join(transmitted_bits_file), 'w')
+            f.write('total bits before transmission: ' + str(
+                str(ldpc_code.width) + '\n' + ' '.join([str(pos) for pos in bits_to_transmit])))
+            puncturing_used = True
     elif code_type == "regular":
+        assert 0.0 < args.fraction_transmitted <= 1.0
+        if args.fraction_transmitted != 1.0: # otherwise no puncturing required
+            num_bits_transmitted = math.ceil(args.fraction_transmitted*ldpc_code.width)
+            bits_to_transmit = random.sample(range(ldpc_code.width),num_bits_transmitted)
+            bits_to_transmit.sort()
+            f = open(os.path.join(transmitted_bits_file), 'w')
+            f.write('total bits before transmission: ' + str(
+                str(ldpc_code.width) + '\n' + ' '.join([str(pos) for pos in bits_to_transmit])))
+            puncturing_used = True
 
-        f = open(os.path.join(ldpc_dir, '.transmitted'), 'w')
-        f.write('factor: None' + '\n' + 'total bits before transmission: ' + str(ldpc_code.width) + '\n' + str(
-            list(range(0, ldpc_code.width))).replace(',', '').replace('[', '').replace(']', ''))
-
-
+    print()
+    if puncturing_used:
+        print("INFO: Puncturing used:")
+        print("INFO: # check nodes =",ldpc_code.height)
+        print("INFO: # transmitted variable nodes (bits in codeword) =",num_bits_transmitted)
+        print("INFO: # message bits =",ldpc_code.width-ldpc_code.height)
+        print("INFO: # Rate = ", "{:.2f}".format((ldpc_code.width-ldpc_code.height)/num_bits_transmitted))
+    else:
+        print("INFO: Puncturing NOT used")
 if __name__ == '__main__':
     main()

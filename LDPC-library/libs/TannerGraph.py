@@ -1,5 +1,3 @@
-import numpy as np
-
 """
 
 A parent of all LDPC codes included in this library
@@ -17,6 +15,7 @@ contained in that matrix row. Unlisted values are assumed to be empty and theref
 
 """
 
+import random
 
 class TannerGraph:
 
@@ -156,7 +155,7 @@ class TannerGraph:
     def permute_rows(self, permutation_list=None):
 
         if permutation_list is None:
-            permutation_list = np.random.choice(self.height, self.height, replace=False)
+            permutation_list = random.sample(range(self.height), self.height)
         else:
             if len(permutation_list) != self.height:
                 print("cannot perform graph row permutation: invalid permutation list")
@@ -175,7 +174,7 @@ class TannerGraph:
     def permute_columns(self, permutation_list=None):
 
         if permutation_list is None:
-            permutation_list = np.random.choice(self.width, self.width, replace=False)
+            permutation_list = random.sample(range(self.width), self.width)
         else:
             if len(permutation_list) != self.width:
                 print("cannot perform graph row permutation: invalid permutation list")
@@ -281,7 +280,7 @@ def get_matrix_representation(tanner_graph):
 
 
 '''
-Because only rows are directly indexed in the first level of the tanner_graph, the width of a tanner_graph dict 
+Because only rows are directly indexed in the first level of the tanner_graph, the width of a tanner_graph dict
 is not inherently directly stored anywhere. The dictionary's lists must be traversed to find the maximum index.
 The max + 1 indicates the width of the tanner_graph
 '''
@@ -332,7 +331,7 @@ def normalize(arr):
 
 
 '''
-Iteratively finds the length of the longest sublist contained in a list of lists. 
+Iteratively finds the length of the longest sublist contained in a list of lists.
 '''
 
 
