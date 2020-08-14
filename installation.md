@@ -7,7 +7,8 @@ parent: Overview
 
 # Installation
 ---
-The relevant code is contained at [this](https://github.com/shubhamchandak94/ProtographLDPC/) repository <br>
+The relevant code is contained at [this](https://github.com/shubhamchandak94/ProtographLDPC/) repository. <br>
+All provided services require python 3.x
 
 Do a recursive download
 ```sh
