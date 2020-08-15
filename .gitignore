@@ -2,3 +2,10 @@
 Gemfile
 Gemfile.lock
 _site/
+
+*.idea/
+.idea
+./LDPC-library/libs/__pycache__/
+.DS_Store
+*.pyc
+.pyc
