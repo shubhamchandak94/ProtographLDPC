@@ -1,8 +1,6 @@
 import random
-import sys
 
 from libs.TannerGraph import *
-from libs import Utils
 
 '''
 - A class for the handling of Regular LDPC matrices in tanner graph form
@@ -25,30 +23,28 @@ class RegularLDPC(TannerGraph):
     #   construction: the type of construction to be used
     # return:
     #   a fully defined Regular LDPC code
-    def __init__(self, args, construction):
+    def __init__(self, args, construction, verbose=False):
         TannerGraph.__init__(self, args, construction=construction)
 
         self.width = int(self.args[0])
 
         #
-        # args provided [width, height, 1s per col]
+        # args provided [width (n_bits), height (n_checks), 1s per col]
         # user-controlled matrix weightages
         #
-        # here, a value of c is defined along with width and height so that the program does not have to infer the
-        # simplicity of (c / r). Because r is dependent on width, height, and c (assuming regularity), defining c results
-        # in limiting the constructor to one possible r value. The resulting n, c, r values are passed to the constructor
+        # Because r is dependent on width, height, and c (assuming regularity), defining c results
+        # in limiting the constructor to one possible r value.
+        # The resulting n, c, r values are passed to the constructor.
         #
         if len(self.args) == 3:
-
             self.height = int(self.args[1])
-
             self.n = int(self.args[0])
             self.c = int(self.args[2])
             self.r = int((self.width / self.height) * self.c)
-
+            if verbose:
+                print("INFO: Regular code: inferred ones per row as", self.r)
         else:
-            print("invalid input provided")
-            sys.exit(1)
+            raise RuntimeError("invalid input provided")
 
         self.tanner_graph = RegularLDPC.get_parity_check_graph(self.n, self.r, self.c, self.construction)
 
@@ -66,7 +62,8 @@ class RegularLDPC(TannerGraph):
         if method == "gallager":
 
             if n % r != 0:
-                print("cannot generate perfectly regular matrix for the given arguments, modifications inferred")
+                print("WARNING: Gallager construction: "+
+                    "cannot generate perfectly regular matrix for the given arguments, modifications inferred")
 
             # keeps track of all created submatrices
             submatrices = []
@@ -81,7 +78,7 @@ class RegularLDPC(TannerGraph):
         # populates columns randomly
         # !Not a reliable construction!
         elif method == "random":
-            print("random construction is unreliable")
+            print("WARNING: random construction is unreliable")
 
             # create base tanner graph with r = 0, c = 0
             tanner_graph = {}
@@ -98,7 +95,7 @@ class RegularLDPC(TannerGraph):
             while len(available_rows) > 0:
 
                 # chooses c random row indices
-                col_indices = Utils.random_list(available_rows, c)
+                col_indices = random.sample(available_rows, c)
 
                 # populates tanner graph at chosen indices
                 for index in col_indices:

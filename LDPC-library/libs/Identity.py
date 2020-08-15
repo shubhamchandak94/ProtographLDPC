@@ -44,12 +44,5 @@ class Identity(TannerGraph):
     #   list, a list containing all possible permutation matrices of width = width
     @staticmethod
     def permutation_set(width):
-
-        indices = [i for i in range(width)]
-        permutations = list(itertools.permutations(indices))
-
-        permutation_set = []
-        for permutation in permutations:
-            permutation_set.append(Identity(permutation))
-
-        return permutation_set
+        indices = list(range(width))
+        return [Identity(permutation) for permutation in itertools.permutations(indices)]

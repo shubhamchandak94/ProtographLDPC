@@ -9,4 +9,4 @@
 ./LDPC-Visualizer/out/
 ./LinearCodes/out/
 ./.idea
-./LDPC-TannerGraphs/libs/__pycache__/
+./LDPC-library/libs/__pycache__/

@@ -5,21 +5,19 @@ This TannerGraph subclass constructs the tanner_graph dictionary as a dictionary
 This allows each entry to have an entry value not necessarily equal to 1.
 
 Protographs can be read from predefined files in the following format:
-code_width code height
-transmitted_bits [list of transmitted indices]
-dense/sparse
+n_checks (height) n_bits (width)
+transmitted_bits [list of transmitted indices (1-indexed)] # optional, only needed when puncturing
+dense/sparse # mode
 matrix
 
 if the switch indicates a dense matrix, the matrix section represents the
+consists of n_checks lines each containing n_bits space-separated values
+representing the edge weight for that connection
 
-Entries are considered non-zero positions in the Protograph's matrix representation
+For sparse mode, entries are non-zero positions in the Protograph's matrix representation
 each entry is listed in the file as follows:
 row in matrix, column in matrix, value in matrix
-    integers are all single-space separated
-
-If puncturing is to be used in the transmission of codewords, call the generate_protograph_dir() function
-to create a directory, in place of the existing protograph template file, which contains the information needed
-for decoding punctured messages. The protograph constructor readable template is moved into this directory.
+    integers are all single-space separated, positions are 1-indexed
 '''
 
 
@@ -27,19 +25,20 @@ class Protograph(TannerGraph):
 
     # parameters:
     #   args:
-    #     - list(string) where the contained string is the filepath of the predefined protograph
+    #     - protograph_file: filepath of the predefined protograph
     # return:
     #   a fully constructed Protograph object
-    def __init__(self, args):
-        TannerGraph.__init__(self, args)
+    def __init__(self, protograph_file):
+        TannerGraph.__init__(self, [protograph_file])
 
-        parsed_file = read_sparse_array_from_file(args[0])
+        parsed_file = read_protograph_array_from_file(protograph_file)
+
         array = parsed_file[0]
 
         self.height = parsed_file[1][0]
         self.width = parsed_file[1][1]
 
-        self.transmitted_bits = parsed_file[2]
+        self.transmitted_bits = parsed_file[2] # this is None for no puncturing
 
         self.tanner_graph = Protograph.create_tanner_graph_for_protograph(array)
 
@@ -52,7 +51,7 @@ class Protograph(TannerGraph):
     # return:
     #   the width of a protograph tanner_graph (the superclass get_width does not work here as entry values should no longer by inferred)
     def get_width(self):
-        max = 0
+        max = -1
         for row in self.tanner_graph:
             for entry in self.getRow(row):
                 if entry.index > max:
@@ -87,7 +86,7 @@ class Protograph(TannerGraph):
 
     '''
     This method allows the protograph to be queried as if was defined by a matrix structure. This is necessary here and
-    not in TannerGraph as Protographs are the only TannerGraphs who's values can be greater than 1.
+    not in TannerGraph as Protographs are the only TannerGraphs whose values can be greater than 1.
     '''
 
     # parameters:
@@ -165,33 +164,38 @@ def write_protograph_to_file(protograph, filepath):
 #   output_matrix: list, when fed into the protograph constructor a Protograph object is created
 #   dimensions: tuple, 2 elements (height, width) describing dimension of protograph
 #   transmitted_bits: list, describing indices of transmitted bits in protograph
-def read_sparse_array_from_file(filepath):
-    file_matrix = []
-
+def read_protograph_array_from_file(filepath):
     f = open(filepath, 'r')
-    entries = f.read().split('\n')  # either list of direct entries of list of rows in protograph
-
-    switch = entries[2]
-    dimensions = [int(i) for i in entries[0].split(' ')]
-    transmitted_bits = [int(i) for i in entries[1].split(' ')[1:]]
-    entries = entries[3:]
-
-    for entry in entries:
-        file_matrix.append([int(i) for i in entry.split(' ')])
+    lines = [line.rstrip('\n') for line in f.readlines()]
+    dimensions = [int(i) for i in lines[0].split(' ')]
+    if lines[1].split(' ')[0] == "transmitted_bits":
+        # subtract 1 for 1-indexed to 0-indexed
+        transmitted_bits = [int(i)-1 for i in lines[1].split(' ')[1:]]
+        switch = lines[2]
+        matrix_entries = lines[3:]
+    else:
+        transmitted_bits = None
+        switch = lines[1]
+        matrix_entries = lines[2:]
 
     if switch == "sparse":
-        output_matrix = file_matrix
+        output_matrix = []
+        for entry in matrix_entries:
+            r, c, value = [int(i) for i in entry.split(' ')]
+            # 1 indexed to 0 indexed
+            r -= 1
+            c -= 1
+            output_matrix.append([r, c, value])
 
     elif switch == "dense":
-
         protograph_array = []
-
+        file_matrix = []
+        for entry in matrix_entries:
+            file_matrix.append([int(i) for i in entry.split(' ')])
         for r in range(len(file_matrix)):
             for c in range(len(file_matrix[r])):
                 protograph_array.append([r, c, file_matrix[r][c]])
-
         output_matrix = protograph_array
-
     else:
         print("invalid protograph format option specified")
         return
