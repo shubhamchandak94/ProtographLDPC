@@ -177,8 +177,7 @@ class TannerGraph:
             permutation_list = random.sample(range(self.width), self.width)
         else:
             if len(permutation_list) != self.width:
-                print("cannot perform graph row permutation: invalid permutation list")
-                return
+                raise RuntimeError("cannot perform graph row permutation: invalid permutation list")
 
         for i in range(len(permutation_list)):
             self.swap_columns(i, permutation_list[i])

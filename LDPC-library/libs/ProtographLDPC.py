@@ -42,7 +42,7 @@ class ProtographLDPC(TannerGraph):
     # return:
     #   a fully lifted Protograph LDPC code
     def __init__(self, protograph, factor, construction):
-        TannerGraph.__init__(self, [protograph,factor], construction=construction)
+        TannerGraph.__init__(self, [protograph, factor], construction=construction)
 
         self.construction = construction
         self.protograph = protograph
@@ -86,8 +86,8 @@ class ProtographLDPC(TannerGraph):
             for c in range(0, protograph.width * factor, factor):
 
                 if protograph.get(r / factor, c / factor) > factor:
-                    print("invalid protograph value for given lift factor")
-                    return None
+                    raise RuntimeError("Invalid protograph value for given lift factor")
+
 
                 elif protograph.get(r / factor, c / factor) == 0:
                     continue

@@ -46,7 +46,7 @@ class Protograph(TannerGraph):
         actual_width = self.get_width()
 
         if self.width != actual_width or self.height != actual_height:
-            print("given height and/or width values inconsistent with provided protograph matrix")
+            raise RuntimeError("given height and/or width values inconsistent with provided protograph matrix")
 
     # return:
     #   the width of a protograph tanner_graph (the superclass get_width does not work here as entry values should no longer by inferred)
@@ -197,8 +197,7 @@ def read_protograph_array_from_file(filepath):
                 protograph_array.append([r, c, file_matrix[r][c]])
         output_matrix = protograph_array
     else:
-        print("invalid protograph format option specified")
-        return
+        raise RuntimeError("invalid protograph format option specified")
 
     return output_matrix, dimensions, transmitted_bits
 
