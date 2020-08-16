@@ -10,3 +10,5 @@
 ./LinearCodes/out/
 ./.idea
 ./LDPC-library/libs/__pycache__/
+.jekyll_cache/
+_site/
