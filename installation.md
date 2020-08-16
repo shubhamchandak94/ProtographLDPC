@@ -8,7 +8,7 @@ parent: Overview
 # Installation
 ---
 The relevant code is contained at [this](https://github.com/shubhamchandak94/ProtographLDPC/) repository. <br>
-All provided services require python 3.x
+Python 3.x is recommended for all services, support has not been tested for earlier versions
 
 Do a recursive download
 ```sh
