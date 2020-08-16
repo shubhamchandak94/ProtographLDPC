@@ -42,6 +42,8 @@ class Identity(TannerGraph):
     #   width: the width of every matrix contained in this set
     # return:
     #   list, a list containing all possible permutation matrices of width = width
+    # NOTE: this function is not very useful in practice for large width since the
+    # time and space complexity grows as width! (factorial)
     @staticmethod
     def permutation_set(width):
         indices = list(range(width))

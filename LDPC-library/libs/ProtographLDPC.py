@@ -2,7 +2,6 @@ from libs.Identity import Identity
 from libs.RegularLDPC import RegularLDPC
 
 from libs.TannerGraph import *
-import numpy as np
 
 '''
 - A class for the handling of ProtogrpahLDPC matrices in Tanner Graph form
@@ -20,7 +19,7 @@ and c % f == 0. f is the supplied protograph lift factor.
 The implemented constructions work as follows:
 
 construction = permutation
-This submatrix is a result of the sum of n permutation matrices of width f, where n is
+This submatrix is a result of the sum of n (non-overlapping) permutation matrices of width f, where n is
 defined by the position at row = r / f, column = c / f on the supplied protograph.
 
 construction = regular
@@ -56,12 +55,7 @@ class ProtographLDPC(TannerGraph):
         self.width = self.protograph.width * self.factor
         self.height = self.protograph.height * self.factor
 
-        self.permutation_set = None
-        if construction == "permutation":
-            # do not alter this set with external methods
-            self.permutation_set = Identity.permutation_set(self.factor)
-
-        self.tanner_graph = ProtographLDPC.expanded_protograph(self.protograph, self.factor, self.construction, permutation_set=self.permutation_set)
+        self.tanner_graph = ProtographLDPC.expanded_protograph(self.protograph, self.factor, self.construction)
 
     '''
     This method provides a means by which a given protograph can be lifted by a given factor. This method cannot identify
@@ -71,15 +65,10 @@ class ProtographLDPC(TannerGraph):
     # parameters:
     #   protograph: Protograph, the protograph code which must be lifted
     #   factor: the factor by which to lift the protograph
-    #   permutation_set: the set containing all possible permutation matrices of width = factor
-    #       in TannerGraph classof Identity form
     # return:
     #   ProtographLDPC, fully expanded
     @staticmethod
-    def expanded_protograph(protograph, factor, construction, permutation_set=None):
-
-        if permutation_set is None and construction == "permutation":
-            permutation_set = Identity.permutation_set(factor)
+    def expanded_protograph(protograph, factor, construction):
 
         expanded = TannerGraph(None)
         for i in range(protograph.height * factor):
@@ -100,15 +89,12 @@ class ProtographLDPC(TannerGraph):
                     expanded.insert(ProtographLDPC.submatrix(
                         submatrix_construction=construction,
                         factor=factor,
-                        permutation_set=permutation_set,
                         num_ones_per_row=protograph.get(r / factor, c / factor)
                     ), [r, c])
 
         return expanded.tanner_graph
 
     # parameters:
-    #   permutation_set: the set of all possible permutation matrices to use in the summation
-    #  (when submatrix_construction="permutation")
     #   num_ones_per_row: the number of ones per column/row. This is bounded by the lifting factor of the protograph
     #   as all submatrices are of dimension width = factor, height = factor.
     #   factor: the lifting factor by which the associated protograph is to be lifted by
@@ -116,25 +102,23 @@ class ProtographLDPC(TannerGraph):
     # returns:
     #   submatrix: TannerGraph, graph to be inserted into the eventual code
     @staticmethod
-    def submatrix(submatrix_construction="regular", factor=None, permutation_set=None, num_ones_per_row=None):
+    def submatrix(submatrix_construction="regular", factor=None, num_ones_per_row=None):
 
         if submatrix_construction == "permutation":
-            available_indices = np.random.choice(len(permutation_set), len(permutation_set), replace=False)
-
-            start = permutation_set[available_indices[0]]
-            taken = [available_indices[0]]
+            # start with a random permutation
+            start = Identity(random.sample(range(factor),factor))
 
             if num_ones_per_row == 1:
-                return start
+                return start # we are done
 
             for i in range(num_ones_per_row - 1):
-
-                for j in range(len(available_indices) - 1):
-                    if not start.overlaps(permutation_set[available_indices[j + 1]]) and available_indices[j + 1] not in taken:
-                        start = start.absorb_nonoverlapping(permutation_set[available_indices[j + 1]], [0, 0])
-                        taken.append(available_indices[j + 1])
+                # in this case we need to add in more permutations,
+                # but we need to make sure they are non-overlapping
+                while True:
+                    trial_permutation = Identity(random.sample(range(factor),factor))
+                    if not start.overlaps(trial_permutation):
+                        start = start.absorb_nonoverlapping(trial_permutation,[0, 0])
                         break
-
             return start
 
         elif submatrix_construction == "regular":
