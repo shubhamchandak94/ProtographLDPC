@@ -169,7 +169,7 @@ def main():
     print("INFO: # check nodes =", ldpc_code.height)
     print("INFO: # variable nodes (bits in codeword) =", ldpc_code.width)
     print("INFO: # message bits =", ldpc_code.width - ldpc_code.height)
-    print("INFO: # Rate = ", "{:.2f}".format((ldpc_code.width - ldpc_code.height) / ldpc_code.width))
+    print("INFO: # Rate =", "{:.2f}".format((ldpc_code.width - ldpc_code.height) / ldpc_code.width))
 
     puncturing_used = None
     # generate .transmitted file for puncturing if needed
@@ -207,12 +207,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# def sandbox():
-#     protograph = Protograph('../protographs/protograph3')
-#     code = ProtographLDPC(protograph, 4, 'quasi-cyclic')
-#
-#     analyze(code)
-#
-#
-# sandbox()

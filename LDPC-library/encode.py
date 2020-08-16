@@ -3,10 +3,11 @@ import os
 import argparse
 import tempfile
 
+
 def get_parser():
     # argument parser
     parser = argparse.ArgumentParser(description='Input')
-    parser.add_argument('--pchk-file','-p',
+    parser.add_argument('--pchk-file', '-p',
                         action='store',
                         dest='pchk_file',
                         type=str,
@@ -17,25 +18,26 @@ def get_parser():
                         then the program will search for my.pchk.transmitted \
                         and use it for puncturing if avilable.',
                         required=True)
-    parser.add_argument('--gen-file','-g',
+    parser.add_argument('--gen-file', '-g',
                         action='store',
                         dest='gen_file',
                         type=str,
                         help='Generator matrix file. Required for encoding.',
                         required=True)
-    parser.add_argument('--input-file','-i',
+    parser.add_argument('--input-file', '-i',
                         action='store',
                         dest='input_file',
                         type=str,
                         help='Input file containing one or more message blocks (one per line).',
                         required=True)
-    parser.add_argument('--output-file','-o',
+    parser.add_argument('--output-file', '-o',
                         action='store',
                         dest='output_file',
                         type=str,
                         help='Output file to store encoded blocks (one per line).',
                         required=True)
     return parser
+
 
 def main():
     parser = get_parser()
@@ -47,12 +49,12 @@ def main():
     out_path = args.output_file
 
     # get path to LDPC library encode script
-    ldpc_library_path = os.path.join(os.path.dirname( __file__ ),os.path.pardir,'LDPC-codes')
-    ldpc_encode_path = os.path.join(ldpc_library_path,'encode')
+    ldpc_library_path = os.path.join(os.path.dirname(__file__), os.path.pardir, 'LDPC-codes')
+    ldpc_encode_path = os.path.join(ldpc_library_path, 'encode')
 
     # first perform the encoding
     subprocess.run(ldpc_encode_path + ' ' + pchk_file + ' ' + gen_file +
-          ' ' + src_file + ' ' + out_path, shell=True)
+                   ' ' + src_file + ' ' + out_path, shell=True)
 
     if not os.path.exists(transmitted_bits_file):
         print("INFO: No .transmitted file found. Assuming no puncturing.")
@@ -70,16 +72,17 @@ def main():
             num_transmitted_bits = len(transmitted_bits)
 
         # we will write the punctured codewords to a temporary file first
-        with tempfile.NamedTemporaryFile(mode='w',delete=False,dir=os.getcwd()) as f:
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, dir=os.getcwd()) as f:
             tmpfilename = f.name
             with open(out_path) as fin:
                 for line in fin:
                     line = line.rstrip('\n')
                     assert len(line) == num_total_bits
                     extracted_transmitted_bits = ''.join([line[i] for i in transmitted_bits])
-                    f.write(extracted_transmitted_bits+'\n')
+                    f.write(extracted_transmitted_bits + '\n')
 
         os.replace(tmpfilename, out_path)
+
 
 if __name__ == '__main__':
     main()

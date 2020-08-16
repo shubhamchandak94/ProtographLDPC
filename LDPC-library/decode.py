@@ -5,10 +5,11 @@ import subprocess
 import math
 import argparse
 
+
 def get_parser():
     # argument parser
     parser = argparse.ArgumentParser(description='Input')
-    parser.add_argument('--pchk-file','-p',
+    parser.add_argument('--pchk-file', '-p',
                         action='store',
                         dest='pchk_file',
                         type=str,
@@ -19,13 +20,13 @@ def get_parser():
                         then the program will search for my.pchk.transmitted \
                          and use it for puncturing if avilable.',
                         required=True)
-    parser.add_argument('--received-file','-i',
+    parser.add_argument('--received-file', '-i',
                         action='store',
                         dest='received_file',
                         type=str,
                         help='Received file containing one or more blocks (one per line).',
                         required=True)
-    parser.add_argument('--output-file','-o',
+    parser.add_argument('--output-file', '-o',
                         action='store',
                         dest='output_file',
                         type=str,
@@ -34,7 +35,7 @@ def get_parser():
     parser.add_argument('--channel',
                         action='store',
                         dest='channel',
-                        choices={'bsc','awgn','misc'},
+                        choices={'bsc', 'awgn', 'misc'},
                         help='Channel for computing LLR. Supported options: \
                         binary symmetric channel, \
                         additive white gaussian noise channel (modulation: 0 -> -1, 1 -> +1), \
@@ -57,6 +58,7 @@ def get_parser():
                         default=100)
     return parser
 
+
 def compute_llr(value, channel_name, channel_value):
     if channel_name == 'bsc':
         if value == 1:
@@ -78,12 +80,12 @@ def main():
     args = parser.parse_args()
     received_file = args.received_file
     channel_name = args.channel
-    if channel_name in ['bsc','awgn']:
+    if channel_name in ['bsc', 'awgn']:
         if args.channel_parameters is None:
             raise RuntimeError("Channel parameter not specified for bsc/awgn")
         channel_value = args.channel_parameters
     else:
-        channel_value = 0.0 # arbitrary value for misc channel for uniform interface
+        channel_value = 0.0  # arbitrary value for misc channel for uniform interface
     ldpc_decode_iterations = args.max_iterations
     assert ldpc_decode_iterations > 0
     decoded_file = args.output_file
@@ -91,14 +93,14 @@ def main():
     transmitted_bits_file = pchk_file + ".transmitted"
 
     # get path to LDPC library decode script
-    ldpc_library_path = os.path.join(os.path.dirname( __file__ ),os.path.pardir,'LDPC-codes')
-    ldpc_decode_path = os.path.join(ldpc_library_path,'decode')
+    ldpc_library_path = os.path.join(os.path.dirname(__file__), os.path.pardir, 'LDPC-codes')
+    ldpc_decode_path = os.path.join(ldpc_library_path, 'decode')
 
     if not os.path.exists(transmitted_bits_file):
         print("INFO: No .transmitted file found. Assuming no puncturing.")
         subprocess.run(ldpc_decode_path + ' ' + pchk_file + ' ' + received_file + ' ' + \
-            decoded_file  + ' ' + channel_name + ' ' + str(channel_value) + \
-             ' prprp ' + str(ldpc_decode_iterations), shell=True)
+                       decoded_file + ' ' + channel_name + ' ' + str(channel_value) + \
+                       ' prprp ' + str(ldpc_decode_iterations), shell=True)
     else:
         print("INFO: Using puncturing.")
         # first load the transmitted bit information
@@ -117,7 +119,7 @@ def main():
         # library that can handle LLRs.
 
         # first create a temporary file to store the LLRs for decoding.
-        with tempfile.NamedTemporaryFile(mode='w',delete=False,dir=os.getcwd()) as f:
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, dir=os.getcwd()) as f:
             tmpfilename = f.name
             # now read the received_file line by line and put in LLRs
             with open(received_file) as fin:
@@ -134,33 +136,34 @@ def main():
                     assert len(received_vals) == num_transmitted_bits
                     # now created llr list
                     llr_list = []
-                    for i,transmitted_bit in enumerate(transmitted_bits):
+                    for i, transmitted_bit in enumerate(transmitted_bits):
                         # first pad llr_list with 0s up to this point
-                        llr_list += [0.0]*(transmitted_bit-len(llr_list))
-                        llr_list.append(compute_llr(received_vals[i],channel_name,channel_value))
+                        llr_list += [0.0] * (transmitted_bit - len(llr_list))
+                        llr_list.append(compute_llr(received_vals[i], channel_name, channel_value))
                     # at the end pad till num_total_bits
                     assert len(llr_list) <= num_total_bits
-                    llr_list += [0.0]*(num_total_bits-len(llr_list))
+                    llr_list += [0.0] * (num_total_bits - len(llr_list))
                     # now write llr list to file
                     f.write(' '.join([str(llr) for llr in llr_list]) + '\n')
 
         # now run the decoder with misc 0.0 mode that handles llrs
         subprocess.run(ldpc_decode_path + ' ' + pchk_file + ' ' + tmpfilename + ' ' + \
-            decoded_file  + ' misc 0.0 prprp ' + str(ldpc_decode_iterations), shell=True)
+                       decoded_file + ' misc 0.0 prprp ' + str(ldpc_decode_iterations), shell=True)
 
         # next we need to take in the decoded output and extract the transmitted bits
         # we reuse the temporary file for this purpose
-        with open(tmpfilename,'w') as f:
+        with open(tmpfilename, 'w') as f:
             with open(decoded_file) as fin:
                 for line in fin:
                     line = line.rstrip('\n')
                     assert len(line) == num_total_bits
                     extracted_transmitted_bits = ''.join([line[i] for i in transmitted_bits])
-                    f.write(extracted_transmitted_bits+'\n')
+                    f.write(extracted_transmitted_bits + '\n')
 
         # move tmpfilename to decoded_file
-        os.replace(tmpfilename,decoded_file)
+        os.replace(tmpfilename, decoded_file)
         # We are done!
+
 
 if __name__ == "__main__":
     main()
