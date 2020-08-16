@@ -36,7 +36,7 @@ def get_parser():
                         type=str,
                         help='Method used for code construction. \
                               Allowed options: regular: \
-                              {gallager,random,populate-rows,populate-columns}.\
+                              {gallager,populate-rows,populate-columns}.\
                               protograph: {permutation,regular,quasi-cyclic,permuted-quasi-cyclic}.',
                         required=True)
     parser.add_argument('--n-checks',

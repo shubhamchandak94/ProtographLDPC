@@ -74,48 +74,6 @@ class RegularLDPC(TannerGraph):
             # merges all matrices in submatrices for final ldpc matrix
             return RegularLDPC.merge(submatrices, n, r)
 
-        # Random construction 1
-        # populates columns randomly
-        # !Not a reliable construction!
-        elif method == "random":
-            print("WARNING: random construction is unreliable")
-
-            # create base tanner graph with r = 0, c = 0
-            tanner_graph = {}
-            counts = {}  # stores weight of each row key
-            for i in range(int(n * c / r)):
-                tanner_graph[i] = []
-                counts[i] = 0
-
-            col = 0
-
-            # as columns are traversed, this list maintains the row indices which are still available for population
-            available_rows = [i for i in range(int(n * c / r))]
-
-            while len(available_rows) > 0:
-
-                # chooses c random row indices
-                col_indices = random.sample(available_rows, c)
-
-                # populates tanner graph at chosen indices
-                for index in col_indices:
-                    tanner_graph[index].append(col)
-                    counts[index] += 1
-
-                # removes rows which have reached capacity from available_rows
-                indices = []
-                for index in counts:
-                    if counts[index] == r:
-                        available_rows.remove(index)
-                        indices.append(index)
-
-                # separated to avoid io error with dict operations
-                for index in indices:
-                    del counts[index]
-
-                col += 1
-            return tanner_graph
-
         # ------------------------------------------
         # Duplicate code included for easier reading
         # ------------------------------------------
