@@ -179,8 +179,13 @@ class TannerGraph:
             if len(permutation_list) != self.width:
                 raise RuntimeError("cannot perform graph row permutation: invalid permutation list")
 
-        for i in range(len(permutation_list)):
-            self.swap_columns(i, permutation_list[i])
+        # we first transpose the graph and then permute the rows and then transpose again
+        self.tanner_graph = transpose(self.tanner_graph,self.width)
+        self.height, self.width = self.width, self.height
+        self.permute_rows(permutation_list)
+
+        self.tanner_graph = transpose(self.tanner_graph,self.width)
+        self.height, self.width = self.width, self.height
 
     def swap_columns(self, i, j):
         for row in self.tanner_graph:
@@ -244,12 +249,10 @@ diverse methods of matrix construction.
 # returns:
 #   TannerGraph.tanner_graph attribute representing the transposed dictionary
 def transpose(tanner_graph, new_height):
-    new_graph = {}
-    for i in range(new_height):
-        new_graph[i] = []
-        for j in tanner_graph:
-            if tanner_graph.get(j).count(i) == 1:
-                new_graph.get(i).append(j)
+    new_graph = {i:[] for i in range(new_height)}
+    for row in tanner_graph:
+        for col in tanner_graph[row]:
+            new_graph[col].append(row)
     return new_graph
 
 

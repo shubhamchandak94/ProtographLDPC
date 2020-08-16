@@ -32,6 +32,8 @@ Given a list of n randomly chosen indices, where n is defined by the value of th
 bounded by the width of the submatrix, this list represents the entries for the first row of the code. For every
 subsequent row in the submatrix, that row is defined by the circular right shift of the previous row.
 
+construction = permuted-quasi-cyclic
+Similar to quasi-cyclic but the rows and columns of the submatrix are permuted.
 '''
 
 class ProtographLDPC(TannerGraph):
