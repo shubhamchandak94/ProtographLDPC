@@ -19,126 +19,70 @@
 # library ldpc construction: evenboth
 # corruption: binary symmetric
 
-if [ "$#" -ne 7 ]; then
+if [ "$#" -ne 6 ]; then
     echo "Illegal number of parameters, see usage in script"
     exit 1
 fi
 
 # read arguments
 n_bits=$1 # length of codeword (n)
-n_checks=$2 # set according to the desired rate (this is n-k)
+n_checks=$2 # set according to the desired rate (this is n-k) - number of parity bits
 n_ones_column=$3 # should generally set to 3
-error_rate=$4 # BSC error rate
-n_blocks=$5 # number of blocks to get estimate of bit/block error rate
-n_iterations=$6 # number of LDPC iterations in prprp decoding
-protograph_file=$7
+message_length=$((n_bits - n_checks)) # length of a message before encoding
+n_blocks=$4 # number of messages
+channel=$5 # bsc, awgn
+channel_value=$6 # corresponding error probability
 
-# clear
 
 # create temporary directory
 tempdir=$(mktemp -d)
+tempres=$tempdir/tempres
 
-echo "----------------------------------------------------------------------------------------------------"
-echo "------------------------------------ TRANSMITTING MESSAGE ------------------------------------------"
-echo "----------------------------------------------------------------------------------------------------"
-
-echo "temporary directory $tempdir"
-
-echo "transmitting all-zero codeword with error probability ${4}..."
-./LDPC-codes/transmit $n_bits"x"$n_blocks $tempdir/received 1 bsc $error_rate
-echo ""
-
-echo "computing block error rate and bit error rate (at codeword level) for recieved message before decoding"
-python3 -u compute_error_rate.py $tempdir/received
-echo ""
-
-echo "----------------------------------------------------------------------------------------------------"
-echo "------------------------------------- REGULAR CODE TESTS -------------------------------------------"
-echo "----------------------------------------------------------------------------------------------------"
-
-echo "generating parity check matrix through default implementation..."
-./LDPC-codes/make-ldpc $tempdir/default.pchk ${n_checks} ${n_bits} 1 evenboth ${n_ones_column}
-echo ""
-
-echo "decoding transmission for library generated parity matrix..."
-./LDPC-codes/decode $tempdir/default.pchk $tempdir/received $tempdir/default.decoded bsc $error_rate prprp $n_iterations
-echo ""
-
-echo "computing block error rate and bit error rate (at codeword level) for library generated parity matrix"
-python3 -u compute_error_rate.py $tempdir/default.decoded
-echo ""
-
-echo "----------------------------------------------------------------------------------------------------"
-
-echo "generating parity check matrix through python (Gallager construction)..."
-python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk regular gallager ${1} ${2} ${3}
-echo ""
-
-echo "decoding transmission for python generated parity matrix (Gallager construction)..."
-./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
-echo ""
-
-echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (Gallager construction)"
-python3 -u compute_error_rate.py $tempdir/python.decoded
-echo ""
-
-echo "----------------------------------------------------------------------------------------------------"
-
-echo "generating parity check matrix through python (evenboth construction populate rows)..."
-python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk regular populate-rows ${1} ${2} ${3}
-echo ""
-
-echo "decoding transmission for python generated parity matrix (evenboth construction populate rows)..."
-./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
-echo ""
-
-echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (evenboth construction populate columns)"
-python3 -u compute_error_rate.py $tempdir/python.decoded
-echo ""
-
-echo "----------------------------------------------------------------------------------------------------"
-
-echo "generating parity check matrix through python (evenboth construction populate columns)..."
-python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk regular populate-columns ${1} ${2} ${3}
-echo ""
-
-echo "decoding transmission for python generated parity matrix (evenboth construction populate populate columns)..."
-./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
-echo ""
-
-echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (evenboth construction populate columns)"
-python3 -u compute_error_rate.py $tempdir/python.decoded
-echo ""
-
-echo "----------------------------------------------------------------------------------------------------"
-
-echo "generating parity check matrix through python (evenboth construction populate rows row col weights inferred)..."
-python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk regular populate-rows ${1} ${2}
-echo ""
-
-echo "decoding transmission for python generated parity matrix (evenboth construction populate rows)..."
-./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
-echo ""
-
-echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (evenboth construction populate columns)"
-python3 -u compute_error_rate.py $tempdir/python.decoded
-echo ""
-
-echo "----------------------------------------------------------------------------------------------------"
-
-echo "generating parity check matrix through python (evenboth construction populate columns row col weights inferred)..."
-python3 ./LDPC-TannerGraphs/Exec.py $tempdir/python.pchk regular populate-columns ${1} ${2}
-echo ""
-
-echo "decoding transmission for python generated parity matrix (evenboth construction populate populate columns)..."
-./LDPC-codes/decode $tempdir/python.pchk $tempdir/received $tempdir/python.decoded bsc $error_rate prprp $n_iterations
-echo ""
-
-echo "computing block error rate and bit error rate (at codeword level) for python generated parity matrix (evenboth construction populate columns)"
-python3 -u compute_error_rate.py $tempdir/python.decoded
-echo ""
+mkdir $tempdir/message
+mkdir $tempdir/tempres
 
 
+echo "----- creating message"
+./LDPC-codes/rand-src $tempdir/message/message 0 "${message_length}x${n_blocks}"
+
+
+test_construction () {
+	construction=$1
+
+	echo "----- testing: ${construction} construction"
+
+	# create a parity check equation
+	python3 ./LDPC-library/make-pchk.py --output-pchk $tempres/pchk --code-type regular --construction $construction --n-checks $n_checks --n-bits $n_bits --checks-per-col $n_ones_column > /dev/null 2>&1
+
+	# create a generator matrix
+	./LDPC-codes/make-gen $tempres/pchk $tempres/genfile sparse > /dev/null 2>&1
+
+	# encode message according to this code
+	python3 ./LDPC-library/encode.py --pchk-file $tempres/pchk --gen-file $tempres/genfile --input-file $tempdir/message/message --output-file $tempres/encoded > /dev/null 2>&1
+
+	# introduce corruption
+	./LDPC-codes/transmit $tempres/encoded $tempres/received 0 $channel $channel_value > /dev/null 2>&1
+
+	# display difference between encoded and corrupted
+	difference=`cmp -l $tempres/encoded $tempres/received| wc -l`
+	echo -n "percent difference before decoding: "
+	echo $difference/$n_bits/$n_blocks|bc -l
+
+	# decode corrupted message
+	python3 ./LDPC-library/decode.py --pchk-file $tempres/pchk --received-file $tempres/received --output-file $tempres/decoded --channel $channel --channel-parameters $channel_value > /dev/null 2>&1
+
+	# display difference between encoded and decoded (the lower this value the better)
+	difference=`cmp -l $tempres/encoded $tempres/decoded | wc -l` > /dev/null 2>&1
+	echo -n "percent difference after decoding: " 
+	echo $difference/$n_bits/$n_blocks|bc -l
+
+	rm -rf $tempres/*
+}
+
+# test_construction gallager
+# test_construction random
+test_construction populate-rows
+test_construction populate-columns
 
 # Delete temporary directory
 rm -rf $tempdir

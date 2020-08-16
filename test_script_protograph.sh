@@ -1,13 +1,6 @@
 #!/bin/bash
 
-# arguments:
-# 	protograph-file
-# 	factor
-# 	message-length
-# 	block-length
-#  	num-blocks
-#	channel
-# 	channel-value
+# args: protograph-file factor message-length num-blocks channel channel-value unpunctured-block-length
 
 # 
 # create a message 
@@ -64,7 +57,6 @@ test_construction () {
 
 	# introduce corruption
 	./LDPC-codes/transmit $tempres/encoded $tempres/received 0 $channel $channel_value > /dev/null 2>&1
-	# python3 ./cut.py $tempres/received
 
 	# display difference between encoded and corrupted
 	difference=`cmp -l $tempres/encoded $tempres/received| wc -l`
