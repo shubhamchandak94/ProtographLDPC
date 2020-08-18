@@ -4,17 +4,19 @@ from libs.RegularLDPC import RegularLDPC
 from libs.TannerGraph import *
 
 '''
-- A class for the handling of ProtogrpahLDPC matrices in Tanner Graph form
+- A class for the handling of ProtographLDPC matrices in Tanner Graph form
 
 The tanner graph is stored as a dictionary, row indices (check nodes) are mapped to lists of column indices (variable
 nodes) to indicate bipartite connections
 
-args: input to enable construction. input follows the following construction pattern: args[0] = Protograph object
-containing the Protograph to be lifted. args[1] depicts the factor by which to lift the given protograph.
+construction arguments:
+protograph = fully constructed protograph object, not just the protograph template filepath
+factor = expansion factor for this protograph
 
-The construction argument indicates the algorithm to be employed in the construction of protograph submatrices. These
+construction = indicates the algorithm to be employed in the construction of protograph submatrices. These
 submatrices are defined by the following scope: (rows: r => r + f, columns: c => c + f) for all (r, c) where r % f == 0
-and c % f == 0. f is the supplied protograph lift factor.
+and c % f == 0. f is the supplied protograph lift factor and r, c are bounded by the dimensions of the expanded code's
+height and width
 
 The implemented constructions work as follows:
 
@@ -33,7 +35,12 @@ subsequent row in the submatrix, that row is defined by the circular right shift
 
 construction = permuted-quasi-cyclic
 Similar to quasi-cyclic but the rows and columns of the submatrix are permuted.
+
+The eventual expanded ldpc code is a combination of these submatrices in the order their corresponding entries exist in
+the protograph. Specifically, for all (r, c) in the protograph, there exists a submatrix of dimension f at (rf, cf) in 
+the eventual code.
 '''
+
 
 class ProtographLDPC(TannerGraph):
 
@@ -58,10 +65,9 @@ class ProtographLDPC(TannerGraph):
         self.tanner_graph = ProtographLDPC.expanded_protograph(self.protograph, self.factor, self.construction)
 
     '''
-    This method provides a means by which a given protograph can be lifted by a given factor. This method cannot identify
-    if a supplied permutation set does not fit the provided lift factor, so if unsure, do not supply this method with a
-    permutation set. The option to provide your own set is for the purposes of not creating redundant objects.
+    This method provides the means by which a given protograph can be lifted by a given factor. 
     '''
+
     # parameters:
     #   protograph: Protograph, the protograph code which must be lifted
     #   factor: the factor by which to lift the protograph
@@ -80,12 +86,10 @@ class ProtographLDPC(TannerGraph):
                 if protograph.get(r / factor, c / factor) > factor:
                     raise RuntimeError("Invalid protograph value for given lift factor")
 
-
                 elif protograph.get(r / factor, c / factor) == 0:
                     continue
 
                 else:
-
                     expanded.insert(ProtographLDPC.submatrix(
                         submatrix_construction=construction,
                         factor=factor,
@@ -95,10 +99,10 @@ class ProtographLDPC(TannerGraph):
         return expanded.tanner_graph
 
     # parameters:
+    #   submatrix_construction: the algorithm by which the submatrix is to be constructed
+    #   factor: the lifting factor by which the associated protograph is to be lifted
     #   num_ones_per_row: the number of ones per column/row. This is bounded by the lifting factor of the protograph
     #   as all submatrices are of dimension width = factor, height = factor.
-    #   factor: the lifting factor by which the associated protograph is to be lifted by
-    #   submatrix_construction: the algorithm through which the submatrix is constructed
     # returns:
     #   submatrix: TannerGraph, graph to be inserted into the eventual code
     @staticmethod
@@ -106,18 +110,18 @@ class ProtographLDPC(TannerGraph):
 
         if submatrix_construction == "permutation":
             # start with a random permutation
-            start = Identity(random.sample(range(factor),factor))
+            start = Identity(random.sample(range(factor), factor))
 
             if num_ones_per_row == 1:
-                return start # we are done
+                return start  # we are done
 
             for i in range(num_ones_per_row - 1):
                 # in this case we need to add in more permutations,
                 # but we need to make sure they are non-overlapping
                 while True:
-                    trial_permutation = Identity(random.sample(range(factor),factor))
+                    trial_permutation = Identity(random.sample(range(factor), factor))
                     if not start.overlaps(trial_permutation):
-                        start = start.absorb_nonoverlapping(trial_permutation,[0, 0])
+                        start = start.absorb_nonoverlapping(trial_permutation, [0, 0])
                         break
             return start
 
@@ -147,10 +151,13 @@ class ProtographLDPC(TannerGraph):
         else:
             raise RuntimeError('Invalid construction method')
 
+
 '''
 Constructs a submatrix graph from a series of right shifts of an originating index list. This method provides the
 base implementation for the quasi-cyclic and permuted-quasi-cyclic constructions.
 '''
+
+
 # parameters:
 #   first_row_indices: list(int), the indices on which the right shift cycle is to initiate upon
 #   graph: TannerGraph, the graph to build the cycles on

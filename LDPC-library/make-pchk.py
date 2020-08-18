@@ -84,6 +84,7 @@ def get_parser():
 
 
 # file should be opened with the wb mode
+# writes a single value to specified file in binary
 def intio_write(file, value):
     for i in range(3):
         b = value & 0xff
@@ -105,7 +106,7 @@ def intio_write(file, value):
     file.write(binaryBtoBytes)
 
 
-# writes tanner graph in machine readable to specified file
+# writes entire tanner graph in machine readable to specified file
 def write_graph_to_file(ldpc_code, filepath):
     if isinstance(ldpc_code, Protograph):
         print("cannot write Protographs to disk in raw form, must convert to an ldpc code")
@@ -144,7 +145,7 @@ def main():
     code_type = args.code_type
     construction = args.construction
 
-    protograph_file = None
+    protograph = None
     factor = None
 
     # will write this to disk after population
@@ -154,7 +155,9 @@ def main():
         if args.n_checks is None or args.n_bits is None or args.checks_per_col is None:
             raise RuntimeError('Please provide n_checks, n_bits and checks_per_col for regular codes.')
         regular_dimension_args = [args.n_bits, args.n_checks, args.checks_per_col]
-        ldpc_code = RegularLDPC(regular_dimension_args, construction, verbose=True)
+        ldpc_code = RegularLDPC(regular_dimension_args, construction,
+                                verbose=True)  # setting verbose to true prints code info during construction
+
     elif code_type == "protograph":
         if args.protograph_file is None or args.expansion_factor is None:
             raise RuntimeError('Please provide protograph_file and expansion_factor for protograph codes.')
@@ -172,27 +175,34 @@ def main():
     print("INFO: # Rate =", "{:.2f}".format((ldpc_code.width - ldpc_code.height) / ldpc_code.width))
 
     puncturing_used = None
+    bits_to_transmit = None
+    num_bits_transmitted = None
+
     # generate .transmitted file for puncturing if needed
     transmitted_bits_file = pchk_file + ".transmitted"
+
     if code_type == "protograph":
         if protograph.transmitted_bits is not None:  # otherwise no puncturing required
+
             bits_to_transmit = \
                 [j for i in protograph.transmitted_bits for j in range(i * factor, i * factor + factor)]
             num_bits_transmitted = len(bits_to_transmit)
-            f = open(os.path.join(transmitted_bits_file), 'w')
-            f.write('total bits before transmission: ' + str(
-                str(ldpc_code.width) + '\n' + ' '.join([str(pos) for pos in bits_to_transmit])))
             puncturing_used = True
+
     elif code_type == "regular":
         assert 0.0 < args.fraction_transmitted <= 1.0
         if args.fraction_transmitted != 1.0:  # otherwise no puncturing required
+
             num_bits_transmitted = math.ceil(args.fraction_transmitted * ldpc_code.width)
+
             bits_to_transmit = random.sample(range(ldpc_code.width), num_bits_transmitted)
             bits_to_transmit.sort()
-            f = open(os.path.join(transmitted_bits_file), 'w')
-            f.write('total bits before transmission: ' + str(
-                str(ldpc_code.width) + '\n' + ' '.join([str(pos) for pos in bits_to_transmit])))
             puncturing_used = True
+
+    if puncturing_used:
+        f = open(os.path.join(transmitted_bits_file), 'w')
+        f.write('total bits before transmission: ' + str(
+            str(ldpc_code.width) + '\n' + ' '.join([str(pos) for pos in bits_to_transmit])))
 
     print()
     if puncturing_used:

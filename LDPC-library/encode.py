@@ -64,12 +64,11 @@ def main():
         # first load the transmitted bit information
         with open(transmitted_bits_file) as f:
             line1 = f.readline().rstrip('\n')
-            num_total_bits = int(line1.split(' ')[-1])
+            num_total_bits = int(line1.split(' ')[-1])  # this is the total bit count line
             line2 = f.readline().rstrip('\n')
             transmitted_bits = [int(i) for i in line2.split(' ')]
             # sort for convenience
             transmitted_bits.sort()
-            num_transmitted_bits = len(transmitted_bits)
 
         # we will write the punctured codewords to a temporary file first
         with tempfile.NamedTemporaryFile(mode='w', delete=False, dir=os.getcwd()) as f:
@@ -81,6 +80,7 @@ def main():
                     extracted_transmitted_bits = ''.join([line[i] for i in transmitted_bits])
                     f.write(extracted_transmitted_bits + '\n')
 
+        # write punctured data from tempfile to output path
         os.replace(tmpfilename, out_path)
 
 

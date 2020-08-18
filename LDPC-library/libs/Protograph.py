@@ -1,20 +1,20 @@
 from libs.TannerGraph import *
 
 '''
-This TannerGraph subclass constructs the tanner_graph dictionary as a dictionary of lists of ProtographEntry objects.
+This subclass constructs the tanner_graph dictionary as a dictionary of lists of ProtographEntry objects.
 This allows each entry to have an entry value not necessarily equal to 1.
 
 Protographs can be read from predefined files in the following format:
-n_checks (height) n_bits (width)
+n_checks (height) n_bits (width) # protograph dimensions
 transmitted_bits [list of transmitted indices (1-indexed)] # optional, only needed when puncturing
 dense/sparse # mode
 matrix
 
-if the switch indicates a dense matrix, the matrix section represents the
-consists of n_checks lines each containing n_bits space-separated values
-representing the edge weight for that connection
+if the switch indicates a dense matrix, the matrix section consists of n_checks lines each containing n_bits 
+space-separated values representing the edge weight for that connection. This representation directly represents
+the protograph in matrix form.
 
-For sparse mode, entries are non-zero positions in the Protograph's matrix representation
+For the sparse mode, entries are non-zero positions in the Protograph's matrix representation
 each entry is listed in the file as follows:
 row in matrix, column in matrix, value in matrix
     integers are all single-space separated, positions are 1-indexed
@@ -38,7 +38,7 @@ class Protograph(TannerGraph):
         self.height = parsed_file[1][0]
         self.width = parsed_file[1][1]
 
-        self.transmitted_bits = parsed_file[2] # this is None for no puncturing
+        self.transmitted_bits = parsed_file[2]  # this is None for no puncturing
 
         self.tanner_graph = Protograph.create_tanner_graph_for_protograph(array)
 
@@ -170,7 +170,7 @@ def read_protograph_array_from_file(filepath):
     dimensions = [int(i) for i in lines[0].split(' ')]
     if lines[1].split(' ')[0] == "transmitted_bits":
         # subtract 1 for 1-indexed to 0-indexed
-        transmitted_bits = [int(i)-1 for i in lines[1].split(' ')[1:]]
+        transmitted_bits = [int(i) - 1 for i in lines[1].split(' ')[1:]]
         switch = lines[2]
         matrix_entries = lines[3:]
     else:

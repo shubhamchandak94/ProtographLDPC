@@ -80,14 +80,18 @@ def main():
     args = parser.parse_args()
     received_file = args.received_file
     channel_name = args.channel
+
     if channel_name in ['bsc', 'awgn']:
         if args.channel_parameters is None:
             raise RuntimeError("Channel parameter not specified for bsc/awgn")
         channel_value = args.channel_parameters
+
     else:
         channel_value = 0.0  # arbitrary value for misc channel for uniform interface
+
     ldpc_decode_iterations = args.max_iterations
     assert ldpc_decode_iterations > 0
+
     decoded_file = args.output_file
     pchk_file = args.pchk_file
     transmitted_bits_file = pchk_file + ".transmitted"
@@ -113,8 +117,8 @@ def main():
             transmitted_bits.sort()
             num_transmitted_bits = len(transmitted_bits)
 
-        # To handle puncturing, we compute the LLRs for the received messages,
-        # and then insert LLR of 0.0 to denote punctured bits. Then this new
+        # To handle puncturing, we compute the LLRs for the received messages.
+        # An LLR of 0.0 denotes a punctured bits. This new
         # "received message" is decoded with the misc channel mode in the ldpc
         # library that can handle LLRs.
 

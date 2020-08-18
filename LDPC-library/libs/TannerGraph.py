@@ -17,6 +17,7 @@ contained in that matrix row. Unlisted values are assumed to be empty and theref
 
 import random
 
+
 class TannerGraph:
 
     # All subclasses must implement height, width, tanner_graph definitions
@@ -166,11 +167,13 @@ class TannerGraph:
 
         return None
 
+    # swaps two rows given row indices
     def swap_rows(self, i, j):
         temp = self.tanner_graph[i]
         self.tanner_graph[i] = self.tanner_graph[j].copy()
         self.tanner_graph[j] = temp
 
+    # randomly shuffles the columns of the code
     def permute_columns(self, permutation_list=None):
 
         if permutation_list is None:
@@ -180,13 +183,14 @@ class TannerGraph:
                 raise RuntimeError("cannot perform graph row permutation: invalid permutation list")
 
         # we first transpose the graph and then permute the rows and then transpose again
-        self.tanner_graph = transpose(self.tanner_graph,self.width)
+        self.tanner_graph = transpose(self.tanner_graph, self.width)
         self.height, self.width = self.width, self.height
         self.permute_rows(permutation_list)
 
-        self.tanner_graph = transpose(self.tanner_graph,self.width)
+        self.tanner_graph = transpose(self.tanner_graph, self.width)
         self.height, self.width = self.width, self.height
 
+    # swaps two columns given column indices
     def swap_columns(self, i, j):
         for row in self.tanner_graph:
             for e in range(len(self.getRow(row))):
@@ -208,7 +212,6 @@ class TannerGraph:
 # return:
 #   Empty Tanner Graph instantiation with width, height attributes defined
 def make_graph(rows, width, height):
-
     graph = TannerGraph(None)
 
     graph.width = width
@@ -218,6 +221,7 @@ def make_graph(rows, width, height):
         graph.addRow()
 
     return graph
+
 
 '''
 Traverses the dictionary to find identical key values. These correspond to repeated parity check equations which
@@ -249,7 +253,7 @@ diverse methods of matrix construction.
 # returns:
 #   TannerGraph.tanner_graph attribute representing the transposed dictionary
 def transpose(tanner_graph, new_height):
-    new_graph = {i:[] for i in range(new_height)}
+    new_graph = {i: [] for i in range(new_height)}
     for row in tanner_graph:
         for col in tanner_graph[row]:
             new_graph[col].append(row)
@@ -305,6 +309,7 @@ def get_width(tanner_graph):
 Performs a circular right shift of all elements in a given list
 '''
 
+
 # parameters:
 #   row: list, a list to be right shifted. This list is commonly a row of a TannerGraph in library implementations
 #   width: int, the cap to the right-shift. If the width is surpassed by any element, that element is reset to 0
@@ -323,7 +328,7 @@ This method is intended to normalize matrix representations for aesthetic purpos
 
 
 # parameters:
-#   list(list()) array to be normalized
+#   arr: list(list()), array to be normalized
 # return:
 #   list(list()) normalized 2d list
 def normalize(arr):

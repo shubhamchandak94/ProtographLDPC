@@ -3,14 +3,16 @@ import random
 from libs.TannerGraph import *
 
 '''
-- A class for the handling of Regular LDPC matrices in tanner graph form
+A class for the handling of Regular LDPC matrices in tanner graph form
 
 The tanner graph is stored as a dictionary, row indices (check nodes) are mapped to lists of column indices (variable
-nodes) to indicate bipartite connections
+nodes) to indicate bipartite connections. Although this class defines regular matrices, it is not a requirement that 
+row and column weightages be constant. This is attempted in the respective constructions, but is not always possible
+given the following premise for completely regular codes:
+h = w * (c/r) where h = height, w = width, c = column weightage, r = row weightage
 
 args: input to enable construction. input follows the following construction patern: h = n * (c / r) where c / r is not
-explicitly simplified, h = height of matrix, n = length of codeword/width matrix, c = column weight, r = row weight
-where weightages are constant for the most part (certain constructions fail to provide complete regularity)
+explicitly simplified
 
 construction specifies the method by which the matrix corresponding to args will be created
 '''
@@ -30,7 +32,6 @@ class RegularLDPC(TannerGraph):
 
         #
         # args provided [width (n_bits), height (n_checks), 1s per col]
-        # user-controlled matrix weightages
         #
         # Because r is dependent on width, height, and c (assuming regularity), defining c results
         # in limiting the constructor to one possible r value.
@@ -62,8 +63,8 @@ class RegularLDPC(TannerGraph):
         if method == "gallager":
 
             if n % r != 0:
-                print("WARNING: Gallager construction: "+
-                    "cannot generate perfectly regular matrix for the given arguments, modifications inferred")
+                print("WARNING: Gallager construction: " +
+                      "cannot generate perfectly regular matrix for the given arguments, modifications inferred")
 
             # keeps track of all created submatrices
             submatrices = []
@@ -193,8 +194,9 @@ class RegularLDPC(TannerGraph):
     (in this case sub graphs). Because of the nature of LDPC codes, the order of the stacking is irrelevant,
     and subsequently random
     '''
+
     # parameters:
-    #   submatrices: list of TannerGraph.tanner_graph, a list of dictionaries to be stacked
+    #   submatrices: list of TannerGraph.tanner_graph: dictionary tanner_graphs to be stacked
     #   n: int, the width of each codeword
     #   r: int, the weight of each row of each submatrix in submatrices
     # return:
