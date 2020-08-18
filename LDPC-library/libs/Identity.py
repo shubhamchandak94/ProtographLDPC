@@ -6,9 +6,6 @@ A class for the handling of Identity type matrices in TannerGraph form. It is im
 identity matrices and identity type matrices. Identity type matrices are regular matrices whose length and width are the
 same and who's columns and rows share a weightage of exactly 1. Identity type matrix entries are restricted in
 value (all must carry a value of 1), but are not as heavily restricted in position as they would be in an Identity Matrix.
-
-Although this library does not implement a construction of LDPC codes built on identity matrices, this class is included
-for experimental purposes, should you want to play around with different types of code constructions.
 '''
 
 class Identity(TannerGraph):
