@@ -37,7 +37,7 @@ construction = permuted-quasi-cyclic
 Similar to quasi-cyclic but the rows and columns of the submatrix are permuted.
 
 The eventual expanded ldpc code is a combination of these submatrices in the order their corresponding entries exist in
-the protograph. Specifically, for all (r, c) in the protograph, there exists a submatrix of dimension f at (rf, cf) in 
+the protograph. Specifically, for all (r, c) in the protograph, there exists a submatrix of dimension f at (rf, cf) in
 the eventual code.
 '''
 
@@ -65,7 +65,7 @@ class ProtographLDPC(TannerGraph):
         self.tanner_graph = ProtographLDPC.expanded_protograph(self.protograph, self.factor, self.construction)
 
     '''
-    This method provides the means by which a given protograph can be lifted by a given factor. 
+    This method provides the means by which a given protograph can be lifted by a given factor.
     '''
 
     # parameters:
@@ -126,7 +126,7 @@ class ProtographLDPC(TannerGraph):
             return start
 
         elif submatrix_construction == "regular":
-            return RegularLDPC([factor, factor, num_ones_per_row], "populate-rows")
+            return RegularLDPC([factor, factor, num_ones_per_row], "populate-columns")
 
         elif submatrix_construction == "quasi-cyclic":
 
@@ -141,7 +141,7 @@ class ProtographLDPC(TannerGraph):
 
             graph = make_graph(factor, factor, factor)
 
-            first_row_indices = list(range(num_ones_per_row))
+            first_row_indices = random.sample(range(factor), num_ones_per_row)
             graph = construct_cyclic_submatrix(first_row_indices, graph)
 
             graph.permute_rows()
