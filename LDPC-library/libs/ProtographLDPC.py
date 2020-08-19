@@ -4,7 +4,7 @@ from libs.RegularLDPC import RegularLDPC
 from libs.TannerGraph import *
 
 '''
-- A class for the handling of ProtographLDPC matrices in Tanner Graph form
+A class for the handling of ProtographLDPC matrices in Tanner Graph form
 
 The tanner graph is stored as a dictionary, row indices (check nodes) are mapped to lists of column indices (variable
 nodes) to indicate bipartite connections
