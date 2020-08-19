@@ -22,10 +22,10 @@ python3 make-pchk.py --output-pchk pchk-file --code-type {regular, protograph} -
 ```
 ```
 build-params:
-if --code-type == regular:
-    build-params: --protograph-file protograph-file --expansion-factor lift-factor [-f percent-transmitted]
 if --code-type == protograph:
-    build-params: --n-checks num-rows --n-bits num-cols --ones-per-col ones-per-column
+    build-params: --protograph-file protograph-file --expansion-factor lift-factor 
+if --code-type == regular: 
+    build-params: --n-checks num-rows --n-bits num-cols --ones-per-col ones-per-column [-f percent-transmitted]
 ```
 
 | code-type |  construction options |
@@ -40,18 +40,17 @@ pchk-file.transmitted
 ```
 
 * the pchk file contains the machine-readable fully constructed LDPC code
-* if puncturing is implemented, an additional pchk-file.transmitted file is created containing the necessary meta information for puncturing. If puncturing is not implemented, this file is not created. When creating a protograph code, this file is always generated regardless of puncturing.
+* if puncturing is implemented, an additional pchk-file.transmitted file is created containing the necessary meta information for puncturing. If puncturing is not implemented, this file is not created.
 
-the .transmitted file contains the following information
+the .transmitted file contains the puncturing information
 ```sh
 total bits before transmission: code-width
 [space separated list of transmitted bit indices]
 ```
-* Puncturing for protographs is defined within the protograph template passed. the punctured indices are excluded from the list of transmitted bits within the protograph. Read more [here](TODO).
+* Puncturing for protographs is defined within the protograph template passed - the punctured indices are excluded from the list of transmitted bits within the protograph. Read more [here](TODO).
 * Puncturing for regular codes is achieved with the optional -f flag. if this flag is provided, the value passed specifies the proportion of bits to transmit; a .transmitted file is generated accordingly. Read more [here](TODO).
 
 If puncturing is implemented, you can mess with the default configuration by altering the index list within the .transmitted file.
-
 
 ## encode
 Encodes a message provided a parity check code

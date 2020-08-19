@@ -2,7 +2,7 @@
 Gemfile
 Gemfile.lock
 _site/
-
+.DS_Store
 *.idea/
 .idea
 ./LDPC-library/libs/__pycache__/
