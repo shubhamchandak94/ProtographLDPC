@@ -1,9 +1,0 @@
-I"9<h2 id="background">Background</h2>
-<p>Linear codes were developed as a means to enable the correction of errors induced in the streaming of data. They are defined by their property that any linear sum of messages results in a message. These codes can be broken into two types - block codes and convolutional codes. This library focuses on code construction as it relates to block codes.</p>
-
-<p>Linear block codes are designed in such a way that upon encoding a message, this message can be decoded assuming a non-critical corruption rate through an analysis of the received message bits. This is accomplished through an evaluation of parity check equations where a modulo summation is performed on the received message indicated by the indices of the parity check equation. For our purposes, the result will be zero.</p>
-
-<p>A code is defined by a collection of these parity check equations, and the number of codewords that can possibly be created</p>
-
-<p>linear codes background  - parity check and generator matrices, puncturing, include any additional details as needed.</p>
-:ET

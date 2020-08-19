@@ -1,7 +1,0 @@
-I"Y<h2 id="ldpc-codes">LDPC Codes</h2>
-<h3 id="background">Background</h3>
-<p>LDPC codes–(L)ow (D)ensity (P)arity (C)heck Codes–are codes which are defined by particularly sparse parity check matrices. The quality of being sparse is defined by an absurdly small ratio of 1s to 0s, as well as a large distribution uniformity of  1s within the parity check matrix. Unlike other types of linear codes, LDPC codes are not restricted in their hamming distance by larger code rates (code rate being the ratio of message length to encoded codeword length).</p>
-
-<h3 id="representation">Representation</h3>
-
-:ET
