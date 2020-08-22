@@ -25,7 +25,7 @@ Given a code width <strong>n</strong>, a constant row weightage <strong>r</stron
 
 Because of the property that all strictly regular codes share: <strong>height = width (c / r)</strong>, the height of these submatrices is equivalent equivalent by <strong>w (width)</strong> / <strong>r</strong>. 
 
-These <strong>c</strong> <strong>w</strong> by <strong>w / r</strong> are populated according to the following algorithm:
+These <strong>c</strong> <strong>w</strong> by <strong>w / r</strong> matrices are populated according to the following algorithm:
 
 ```sh
 for h in range([0, w/r - 1)):
@@ -33,7 +33,7 @@ for h in range([0, w/r - 1)):
         populate(submatrix[h * r + x][h]) 
 ```
 
-The submatrix thus derived is then permuted in its columns according to a random permutation [0, <strong>w</strong>)]
+The submatrix thus derived is then permuted in its columns according to a random permutation [0, <strong>w</strong>)
 
 This construction enforces strict regularity on the resulting code. There is a trade-off: the condition <strong>height = width (c / r)</strong> does not hold for all variable values <strong>w</strong>, <strong>r</strong>, <strong>c</strong>. The library implementation recalculates construction arguments that fit the regularity condition. If the given arguments do not yield a perfectly regular code, the arguments are trimmed until the resulting height and width are perfectly regular.
 
@@ -51,14 +51,12 @@ for i in range([0, w * c)):
     l[i] = i % h
 ```
 
-Because this list always consists of <strong>w</strong> sets of <strong>[0, c)</strong>, the list is guaranteed to be of a length which could populate every single column with a constant number of 1s. This enforcement comes at the expense of the horizontal regularity: no enforcement of constant row weightages is maintained in this implementation. This produces a vertically regular code matrix that is not necessarily horizontally regular.
+Because this list always consists of <strong>w</strong> sets of <strong>[0, c)</strong>, the list is guaranteed to be of a length n such that n entries can be placed within the matrix without compromising the vertical regularity.
 
-This algorithm provides a code by which decoding is made slightly more even. Every codeword bit is protected by an equal number of parity check equations, therefore the distribution of code protection is tends to be more uniform.
+This enforcement of vertical regularity comes at the expense of the horizontal regularity: no enforcement of constant row weightages is maintained in this implementation. In doing so, this algorithm provides a code by which decoding is made slightly more even. Every codeword bit is protected by an equal number of parity check equations, therefore the distribution of code protection tends to uniformity.
 
 ### populate-rows
 
-The populate-columsn matrix performs the same operations. Simply put if the blank code is transposed and populated according to populate-columns, then the result is transposed, the effect will be the same as if the matrix were constructed using populate-rows.
+The populate-columns matrix performs the same operations. Simply put, if the blank code before population is transposed and populated according to populate-columns, then the result is transposed, the effect will be the same as if the matrix were constructed using populate-rows.
 
-As is suggested, this construction enforces constant row weightages on the resultaning code. This implementation is included for the purposes of experimentation.
-
-
+As is suggested, this construction enforces constant row weightages on the resultaning code.
