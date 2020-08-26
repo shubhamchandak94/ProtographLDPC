@@ -1,35 +1,19 @@
 #!/bin/bash
 
-# args: protograph-file factor message-length num-blocks channel channel-value unpunctured-block-length
-
-#
-# create a message
-#
-# for all protograph construction methods:
-#
-# create a parity check file
-# create a generator matrix file
-#
-# encode message
-# transmit encoded message with specified corruption
-#
-# cmp decoded encoded
-
-
-
 if [ "$#" -ne 7 ]; then
     echo "Illegal number of parameters, see usage in script"
     exit 1
 fi
 
 # read arguments
-protograph_file=$1
-expansion_factor=$2
-message_length=$3
-n_blocks=$4
-channel=$5
-channel_value=$6
-seed=$7
+protograph_file=$1 # file with protograph
+expansion_factor=$2 # expansion factor
+message_length=$3 # determined by number of check nodes and variable nodes (incl. untransmitted) in
+# protograph and the expansion factor
+n_blocks=$4 # number of messages
+channel=$5 # bsc, awgn
+channel_value=$6 # corresponding error probability/standard deviation
+seed=$7 # seed for reproducibility
 
 # create temporary directory
 tempdir=$(mktemp -d)
@@ -47,7 +31,7 @@ test_construction () {
 	echo "----- testing: ${construction} construction"
 
 	# create a parity check equation
-	python3 ./LDPC-library/make-pchk.py --output-pchk $tempres/pchk --code-type protograph --construction $construction --protograph-file $protograph_file --expansion-factor $expansion_factor --seed $seed > /dev/null 2>&1
+	python3 ./LDPC-library/make-pchk.py --output-pchk-file $tempres/pchk --code-type protograph --construction $construction --protograph-file $protograph_file --expansion-factor $expansion_factor --seed $seed > /dev/null 2>&1
 
 	# create a generator matrix
 	./LDPC-codes/make-gen $tempres/pchk $tempres/genfile sparse > /dev/null 2>&1

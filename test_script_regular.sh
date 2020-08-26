@@ -1,24 +1,5 @@
 #!/bin/bash
 
-# Process:
-#
-# create ldpc matrices (width, height)
-# - create using both personal implementation and library implementation
-#
-# transmit all-zeros codewords through BSC
-#
-# decode default message with prprp max 100
-#
-# print error rate (block error rate and bit error rate)
-#
-# arguments:
-# parity-check-width (codeword length), parity-check-height (number of checks),
-# 1s per col, error rate, numblocks, number of LDPC iterations
-#
-# implied:
-# library ldpc construction: evenboth
-# corruption: binary symmetric
-
 if [ "$#" -ne 7 ]; then
     echo "Illegal number of parameters, see usage in script"
     exit 1
@@ -31,8 +12,8 @@ n_ones_column=$3 # should generally set to 3
 message_length=$((n_bits - n_checks)) # length of a message before encoding
 n_blocks=$4 # number of messages
 channel=$5 # bsc, awgn
-channel_value=$6 # corresponding error probability
-seed=$7
+channel_value=$6 # corresponding error probability/standard deviation
+seed=$7 # seed for reproducibility
 
 # create temporary directory
 tempdir=$(mktemp -d)
@@ -52,7 +33,7 @@ test_construction () {
 	echo "----- testing: ${construction} construction"
 
 	# create a parity check equation
-	python3 ./LDPC-library/make-pchk.py --output-pchk $tempres/pchk --code-type regular --construction $construction --n-checks $n_checks --n-bits $n_bits --checks-per-col $n_ones_column --seed $seed > /dev/null 2>&1
+	python3 ./LDPC-library/make-pchk.py --output-pchk-file $tempres/pchk --code-type regular --construction $construction --n-checks $n_checks --n-bits $n_bits --checks-per-col $n_ones_column --seed $seed > /dev/null 2>&1
 
 	# create a generator matrix
 	./LDPC-codes/make-gen $tempres/pchk $tempres/genfile sparse > /dev/null 2>&1
