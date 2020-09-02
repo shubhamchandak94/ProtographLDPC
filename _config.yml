@@ -1,5 +1,4 @@
 remote_theme: pmarsceill/just-the-docs
-theme: just-the-docs
 
 title: "ProtographLDPC"
 description: "Implementation of Protograph LDPC error correction codes"
