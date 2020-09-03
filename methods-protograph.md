@@ -16,7 +16,7 @@ nav_order: 2
 
 ### Background
 
-This library includes different constructions for the creation of Protograph-based LDPC Codes. Protograph codes are created through the expansion of a base protograph. The resulting LDPC code matrix is a combination of "submatrices", each submatrix constructed according to the corresponding degree specified in the protograph. Given an expansion factor f, these submatrices are strictly f by f dimensions. 
+This library includes different constructions for the creation of Protograph-based LDPC Codes. Protograph codes are created through the expansion of a base protograph. The resulting LDPC code matrix is a combination of "submatrices", each submatrix constructed according to the corresponding degree specified in the protograph. Given an expansion factor f, these submatrices are strictly f by f dimensions.
 
 For example assume a protograph whose matrix representation has a height width <strong>w</strong> a height <strong>h</strong> an expansion factor <strong>f</strong> and is populated with integers in the following domain: [0, ∞).
 
@@ -35,9 +35,9 @@ This library contains an api for the handling of the special case of tanner grap
 
 ### Regular
 
-This construction generates a submatrix equivalent to a regular code built according to parameters width = <strong>f</strong>, height = <strong>f</strong>, 1s per col = <strong>v</strong>, construction = <code>populate-columns</code>. 
+This construction generates a submatrix equivalent to a regular code built according to parameters width = <strong>f</strong>, height = <strong>f</strong>, 1s per col = <strong>v</strong>, construction = <code>populate-columns</code>.
 
-You can read more about the populate-columns code construction [here](./methods-regular.html#populate-columns). This construction method was chosen over other regular construction methods because of its ability to enforce a constant column weightage in the prescence of dimension constraints. 
+You can read more about the populate-columns code construction [here](./methods-regular.html#populate-columns). This construction method was chosen over other regular construction methods because of its ability to enforce a constant column weightage in the prescence of dimension constraints.
 
 ### Quasi-Cyclic
 
