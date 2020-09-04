@@ -366,13 +366,13 @@ def analyze(code):
     print("arguments: " + str(code.args))
     print("code construction: " + code.construction)
 
-    print("code as graph")
-    print(code.tanner_graph)
+    # print("code as graph")
+    # print(code.tanner_graph)
 
-    print("code as matrix: ")
+    # print("code as matrix: ")
     matrix = code.as_matrix()
-    for line in matrix:
-        print(line)
+    # for line in matrix:
+    #     print(line)
 
     row_weights = []
     for line in matrix:

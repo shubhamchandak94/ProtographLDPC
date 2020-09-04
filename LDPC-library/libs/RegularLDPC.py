@@ -45,16 +45,15 @@ class RegularLDPC(TannerGraph):
             self.n = int(self.args[0])
             self.c = int(self.args[2])
             self.r = int((self.width / self.height) * self.c)
-            if self.r*self.height != self.c*self.width and construction != 'peg':
-                raise RuntimeError("Only peg construction can handle non-exact value for number of 1s per row." )
+            # if self.r * self.height != self.c * self.width and construction != 'peg':
+            #     raise RuntimeError("Only peg construction can handle non-exact value for number of 1s per row.")
             if verbose and construction != 'peg':
                 print("INFO: Regular code: inferred ones per row as", self.r)
         else:
             raise RuntimeError("invalid input provided")
 
         self.tanner_graph = \
-        RegularLDPC.get_parity_check_graph(self.n, self.height, self.r, self.c, self.construction)
-
+            RegularLDPC.get_parity_check_graph(self.n, self.height, self.r, self.c, self.construction)
 
     # parameters:
     #   n: int, the width of the LDPC code, the codeword length
@@ -73,12 +72,12 @@ class RegularLDPC(TannerGraph):
             # which is trivial in our case since we have regular codes
             with tempfile.NamedTemporaryFile(mode='w', delete=False, dir=os.getcwd()) as f:
                 degFileName = f.name
-                f.write('1\n') # number of degrees
-                f.write(str(c)+'\n') # degree of variable node
-                f.write('1.0\n') # probability of the degree occurring
+                f.write('1\n')  # number of degrees
+                f.write(str(c) + '\n')  # degree of variable node
+                f.write('1.0\n')  # probability of the degree occurring
 
-            peg_library_path = os.path.join(os.path.dirname(__file__), \
-                    os.path.join(os.path.pardir,os.path.pardir), 'peg')
+            peg_library_path = os.path.join(os.path.dirname(__file__),
+                                            os.path.join(os.path.pardir, os.path.pardir), 'peg')
             peg_exec_path = os.path.join(peg_library_path, 'MainPEG')
 
             # now create temporary file name to be used for output of peg
@@ -88,9 +87,9 @@ class RegularLDPC(TannerGraph):
             # run PEG
             # create seed first
             peg_seed = random.randrange(10000000)
-            subprocess.run(peg_exec_path + ' -numM ' + str(m) + ' -numN ' + str(n) + \
-                          ' -codeName ' + outFileName + ' -degFileName ' + degFileName + \
-                          ' -q -seed ' + str(peg_seed), shell=True)
+            subprocess.run(peg_exec_path + ' -numM ' + str(m) + ' -numN ' + str(n) +
+                           ' -codeName ' + outFileName + ' -degFileName ' + degFileName +
+                           ' -q -seed ' + str(peg_seed), shell=True)
 
             os.remove(degFileName)
             # create the initial empty graph
@@ -109,20 +108,21 @@ class RegularLDPC(TannerGraph):
                 for line in f:
                     vals = [int(val) for val in line.rstrip('\n').rstrip(' ').split(' ')]
                     for val in vals:
-                        if val != 0: # 0 is used to denote absence of variable node
-                            tanner_graph.get(check_num).append(val-1)
+                        if val != 0:  # 0 is used to denote absence of variable node
+                            tanner_graph.get(check_num).append(val - 1)
                     check_num += 1
                 assert check_num == m
             os.remove(outFileName)
             return tanner_graph
+
         # Gallager's construction of random LDPC matrices
         # although this construction yields perfectly regular codes, it is not a reliable construction:
         #   it is impossible to enforce regularity while strictly maintaining a provided height and width
         elif method == "gallager":
 
             if n % r != 0:
-                raise RuntimeError("Gallager construction: " + \
-                      "cannot generate perfectly regular matrix for the given arguments")
+                raise RuntimeError("Gallager construction: " +
+                                   "cannot generate perfectly regular matrix for the given arguments")
 
             # keeps track of all created submatrices
             submatrices = []
