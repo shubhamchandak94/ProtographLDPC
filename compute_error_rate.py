@@ -14,10 +14,13 @@ with open(decoded_file) as f:
     decoded_codewords = [l.rstrip('\n') for l in f.readlines()]
 
 assert len(encoded_codewords) == len(decoded_codewords)
+len_codeword = len(encoded_codewords[0])
 for i in range(len(encoded_codewords)):
-    assert len(encoded_codewords[i]) == len(decoded_codewords[i])
+    assert len(encoded_codewords[i]) == len_codeword
+    assert len(decoded_codewords[i]) == len_codeword
 
 print('Number of codewords:', len(decoded_codewords))
+print('Codeword length:', len_codeword)
 bit_errors_total = 0
 block_errors_total = 0
 total_length = 0

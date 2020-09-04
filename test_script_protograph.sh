@@ -31,31 +31,47 @@ test_construction () {
 	echo "----- testing: ${construction} construction"
 
 	# create a parity check equation
-	python3 ./LDPC-library/make-pchk.py --output-pchk-file $tempres/pchk --code-type protograph --construction $construction --protograph-file $protograph_file --expansion-factor $expansion_factor --seed $seed > /dev/null 2>&1
+	python3 ./LDPC-library/make-pchk.py --output-pchk-file $tempres/pchk \
+                                      --code-type protograph \
+                                      --construction $construction \
+                                      --protograph-file $protograph_file \
+                                      --expansion-factor $expansion_factor \
+                                      --seed $seed
 
 	# create a generator matrix
-	./LDPC-codes/make-gen $tempres/pchk $tempres/genfile sparse > /dev/null 2>&1
+	./LDPC-codes/make-gen $tempres/pchk $tempres/genfile sparse
 
 	# encode message according to this code
-	python3 ./LDPC-library/encode.py --pchk-file $tempres/pchk --gen-file $tempres/genfile --input-file $tempdir/message/message --output-file $tempres/encoded > /dev/null 2>&1
+	python3 ./LDPC-library/encode.py --pchk-file $tempres/pchk \
+                                   --gen-file $tempres/genfile \
+                                   --input-file $tempdir/message/message \
+                                   --output-file $tempres/encoded
 
 	# introduce corruption
-	./LDPC-codes/transmit $tempres/encoded $tempres/received $seed $channel $channel_value > /dev/null 2>&1
+	./LDPC-codes/transmit $tempres/encoded $tempres/received $seed $channel $channel_value
 
 	# decode corrupted message
-	python3 ./LDPC-library/decode.py --pchk-file $tempres/pchk --received-file $tempres/received --output-file $tempres/decoded --channel $channel --channel-parameters $channel_value > /dev/null 2>&1
-
+	python3 ./LDPC-library/decode.py --pchk-file $tempres/pchk \
+                                   --received-file $tempres/received \
+                                   --output-file $tempres/decoded \
+                                   --channel $channel \
+                                   --channel-parameters $channel_value
+  echo ""
+  echo "------------------------------------------------------------------------"
+  echo "------------------------------------------------------------------------"
+	echo "${construction} construction"
 	echo -n "percent difference after decoding: "
 	python3 compute_error_rate.py $tempres/encoded $tempres/decoded
-
+  echo "------------------------------------------------------------------------"
+  echo "------------------------------------------------------------------------"
+  echo ""
 	rm -rf $tempres/*
 }
 
+test_construction peg
 test_construction quasi-cyclic
 test_construction permuted-quasi-cyclic
 test_construction permutation
-test_construction regular
-
 
 # Delete temporary directory
 rm -rf $tempdir

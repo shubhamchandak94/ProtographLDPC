@@ -34,11 +34,12 @@ def get_parser():
                         action='store',
                         dest='construction',
                         type=str,
-                        help='Method used for code construction. \
-                              Allowed options: regular: \
+                        default='peg',
+                        help='Method used for code construction (default peg). \
+                              Other options: regular: \
                               {gallager,populate-rows,populate-columns}.\
-                              protograph: {permutation,regular,quasi-cyclic,permuted-quasi-cyclic}.',
-                        required=True)
+                              protograph: {permutation,quasi-cyclic,permuted-quasi-cyclic}.',
+                        required=False)
     parser.add_argument('--n-checks',
                         action='store',
                         dest='n_checks',
