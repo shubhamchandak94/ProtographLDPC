@@ -24,9 +24,9 @@ construction = permutation
 This submatrix is a result of the sum of n (non-overlapping) permutation matrices of width f, where n is
 defined by the position at row = r / f, column = c / f on the supplied protograph.
 
-construction = regular
+construction = peg
 This submatrix is a regular LDPC matrix graph whose row and column weightage is defined by the protograph's value
-at row = r / f, column = c / f.
+at row = r / f, column = c / f. The regular matrix is generated using PEG algorithm.
 
 construction = quasi-cyclic
 Given a list of n randomly chosen indices, where n is defined by the value of the protogrpah at (r, c) and n is
@@ -62,7 +62,8 @@ class ProtographLDPC(TannerGraph):
         self.width = self.protograph.width * self.factor
         self.height = self.protograph.height * self.factor
 
-        self.tanner_graph = ProtographLDPC.expanded_protograph(self.protograph, self.factor, self.construction)
+        self.tanner_graph = \
+        ProtographLDPC.expanded_protograph(self.protograph, self.factor, self.construction)
 
     '''
     This method provides the means by which a given protograph can be lifted by a given factor.
@@ -106,9 +107,14 @@ class ProtographLDPC(TannerGraph):
     # returns:
     #   submatrix: TannerGraph, graph to be inserted into the eventual code
     @staticmethod
-    def submatrix(submatrix_construction="regular", factor=None, num_ones_per_row=None):
+    def submatrix(submatrix_construction="peg", factor=None, num_ones_per_row=None):
+        if submatrix_construction == "peg":
+            if num_ones_per_row > 1:
+                return RegularLDPC([factor, factor, num_ones_per_row], "peg")
+            else: # in this case peg returns identity which is bad
+                return Identity(random.sample(range(factor), factor))
 
-        if submatrix_construction == "permutation":
+        elif submatrix_construction == "permutation":
             # start with a random permutation
             start = Identity(random.sample(range(factor), factor))
 
@@ -124,9 +130,6 @@ class ProtographLDPC(TannerGraph):
                         start = start.absorb_nonoverlapping(trial_permutation, [0, 0])
                         break
             return start
-
-        elif submatrix_construction == "regular":
-            return RegularLDPC([factor, factor, num_ones_per_row], "populate-columns")
 
         elif submatrix_construction == "quasi-cyclic":
 
