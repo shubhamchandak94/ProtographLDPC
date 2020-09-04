@@ -24,3 +24,9 @@ cd LDPC-codes/
 make
 cd ..
 ```
+Install PEG library:
+```
+cd peg/
+make
+cd ..
+```
