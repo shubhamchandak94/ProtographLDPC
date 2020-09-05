@@ -13,7 +13,7 @@ LDPC codes are a class of linear error-correction codes on sparse bipartite grap
 - Utility and test scripts to allow analysis of these codes.
 
 This library heavily uses two prior libraries and we would like to thank the corresponding developers:
-- [LDPC-codes](LDPC-codes/): Library for construction, encoding, decoding of regular and irregular LDPC codes, also containing several utility scripts. This is a fork of Radford Neal's library available [here](https://github.com/radfordneal/LDPC-codes).
+- [LDPC-codes](https://github.com/shubhamchandak94/LDPC-codes): Library for construction, encoding, decoding of regular and irregular LDPC codes, also containing several utility scripts. This is a fork of Radford Neal's library available [here](https://github.com/radfordneal/LDPC-codes).
 - [peg](peg/): Implementation of the Progressive Edge Growth (PEG) algorithm used for parity check matrix construction. This was obtained from http://www.inference.org.uk/mackay/PEG_ECC.html.
 
 See the [documentation](https://shubhamchandak94.github.io/ProtographLDPC/) for details on the library including installation instructions, usage, examples, methods, simulation results, references and citation information.
