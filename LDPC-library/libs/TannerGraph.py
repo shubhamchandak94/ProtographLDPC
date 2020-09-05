@@ -361,18 +361,21 @@ analyzes a given code with a few print statements
 
 # parameters:
 #   TannerGraph, graph to be analyzed
-def analyze(code):
+#   printCode, whether to display the entire code (suitable only for small matrices)
+def analyze(code, printCode=False):
     print()
     print("arguments: " + str(code.args))
     print("code construction: " + code.construction)
 
-    print("code as graph")
-    print(code.tanner_graph)
-
-    print("code as matrix: ")
     matrix = code.as_matrix()
-    for line in matrix:
-        print(line)
+
+    if printCode:
+        print("code as graph")
+        print(code.tanner_graph)
+
+        print("code as matrix: ")
+        for line in matrix:
+            print(line)
 
     row_weights = []
     for line in matrix:

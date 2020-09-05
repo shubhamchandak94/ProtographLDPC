@@ -38,7 +38,7 @@ def get_parser():
                         help='Method used for code construction (default peg). \
                               Other options: regular: \
                               {gallager,populate-rows,populate-columns}.\
-                              protograph: {permutation,quasi-cyclic,permuted-quasi-cyclic}.',
+                              protograph: {sum-permutations,quasi-cyclic,permuted-quasi-cyclic}.',
                         required=False)
     parser.add_argument('--n-checks',
                         action='store',

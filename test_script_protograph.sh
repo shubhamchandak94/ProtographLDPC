@@ -71,7 +71,7 @@ test_construction () {
 test_construction peg
 test_construction quasi-cyclic
 test_construction permuted-quasi-cyclic
-test_construction permutation
+test_construction sum-permutations
 
 # Delete temporary directory
 rm -rf $tempdir
