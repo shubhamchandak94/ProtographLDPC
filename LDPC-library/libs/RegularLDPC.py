@@ -45,10 +45,11 @@ class RegularLDPC(TannerGraph):
             self.n = int(self.args[0])
             self.c = int(self.args[2])
             self.r = int((self.width / self.height) * self.c)
-            print("INFO: Regular code: inferred average ones per row as", self.r)
-            if self.height*self.r!= self.width*self.c:
-                print("WARNING: Code parameters don't allow a perfectly regular code. " + \
-                "The row or column weights will be variable depending on the construction method.")
+            if verbose:
+                print("INFO: Regular code: inferred average ones per row as", self.r)
+                if self.height*self.r!= self.width*self.c:
+                    print("WARNING: Code parameters don't allow a perfectly regular code. " + \
+                    "The row or column weights will be variable depending on the construction method.")
         else:
             raise RuntimeError("invalid input provided")
 
