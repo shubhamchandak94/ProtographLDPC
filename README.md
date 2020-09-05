@@ -1,8 +1,10 @@
 # ProtographLDPC
 
 **Implementation of Protograph LDPC error correction codes**  
-*Roshan Prabhakar, Shubham Chandak, Kedar Tatwawadi*  
-Stanford University
+*Roshan Prabhakar<sup>1</sup>, Shubham Chandak<sup>2</sup>, Kedar Tatwawadi<sup>2</sup>*
+
+<sup>1</sup>Fremont High School, Sunnyvale, CA, USA  
+<sup>2</sup>Stanford University, Stanford, CA, USA  
 
 **Documentation**: https://shubhamchandak94.github.io/ProtographLDPC/
 
