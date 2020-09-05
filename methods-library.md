@@ -36,13 +36,13 @@ Although this library is built to work independently, the python scripts include
 
 ## LDPC-library
 
-Check [usage](TODO) for a description of the provided scripts
+Check [Usage](usage.html) for a description of the provided scripts
 
 ### Implemented classes
 
 <strong>TannerGraph.py</strong>
 
-The class defined by this file provides the superclass for all implemented code classes in this library. It provides the base tanner graph structure upon which to other classes must build upon. Specifically, this class defines the tanner_graph dictionary, the fundamental structure behind the library's functionality. 
+The class defined by this file provides the superclass for all implemented code classes in this library. It provides the base tanner graph structure upon which to other classes must build upon. Specifically, this class defines the tanner_graph dictionary, the fundamental structure behind the library's functionality.
 
 All subclasses are required to implement the construction of this structure, as well as a definition of the width and height attributes.
 
