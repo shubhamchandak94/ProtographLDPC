@@ -37,7 +37,7 @@ def get_parser():
                         default='peg',
                         help='Method used for code construction (default peg). \
                               Other options: regular: \
-                              {gallager,populate-rows,populate-columns}.\
+                              {gallager,populate-rows,populate-columns,peg}.\
                               protograph: {permutation,quasi-cyclic,permuted-quasi-cyclic}.',
                         required=False)
     parser.add_argument('--n-checks',
