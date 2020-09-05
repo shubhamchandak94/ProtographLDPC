@@ -15,7 +15,7 @@ The Jupyter notebook used for running the experiments and generating the plots i
 - Some of the plots are noisy at higher SNRs because we didn't have enough resolution at low BERs due to the limited experiment size.
 
 ### Comparison of regular and protograph codes
-Here we compare a regular code with the AR4JA and AR3A protographs (see Sample Protographs [here](methods-sample-protographs.html)). We compare these codes for rate `1/2` and `2/3`. Note that the two protographs have a parameter `n` that allows setting the rate to `(n+1)/(n+2)`. For these plots, we use the best construction method for each
+Here we compare a regular code with the AR4JA and AR3A protographs (see Sample Protographs [here](methods-sample-protographs.html)). We compare these codes for rate `1/2` and `2/3`. Note that the two protographs have a parameter `n` that allows setting the rate to `(n+1)/(n+2)`. For these plots, we use the default `peg` construction method for each code.
 
 *Comparison of rate 1/2 codes*  
 ![](figures/simulation_plots/rate_1_2_comparison.png)  
@@ -31,7 +31,7 @@ Looking at the plots above we can make the following observations (which are con
 In practice, an appropriate protograph can be chosen for the channel of interest by following the guidance in [Fang et al. (2016)](https://ieeexplore.ieee.org/abstract/document/7112076). The [GitHub repository](https://github.com/shubhamchandak94/ProtographLDPC/tree/master/sample-protographs) contains some other protographs to experiment with.
 
 ### Comparison of construction methods for regular codes
-We compared different construction methods for the regular codes at the two rates. Apart from the three construction methods in this library (details [here](methods-regular.html)), we also test the construction method `evenboth no4cycle` from the base library (details [here](https://shubhamchandak94.github.io/LDPC-codes/pchk.html#ldpc)). The base library construction method is labeled as `library` in the plots below.
+We compare two different construction methods for the regular codes at the two rates. Apart from the default `peg` construction method in this library (details [here](methods-regular.html#peg)), we also test the construction method `evenboth no4cycle` from the base library (details [here](https://shubhamchandak94.github.io/LDPC-codes/pchk.html#ldpc)). The base library construction method is labeled as `library` in the plots below.
 
 *Comparison of construction methods for rate 1/2 regular code*  
 ![](figures/simulation_plots/regular_rate_1_2_constructions.png)  
@@ -39,7 +39,7 @@ We compared different construction methods for the regular codes at the two rate
 *Comparison of construction methods for rate 2/3 regular code*  
 ![](figures/simulation_plots/regular_rate_2_3_constructions.png)  
 
-Based on the plots above, the construction from the base library seems to outperform the others, although further experimentation with multiple random realizations might provide a clearer picture. For the users, we recommend using the base library `evenboth no4cycle` described on the [Usage](usage.html) page since it also attempts to remove short cycles from the graph for better results. Among the constructions in this library, we suggest using `populate-columns`, although some experimentation with multiple random realizations is highly recommended.
+Based on the plots above, the `peg` construction outperforms the `library` construction.  This might be because PEG performs a more systematic elimination of short cycles as compared to the base library.
 
 ### Comparison of construction methods for protograph codes
 We compared different construction methods for the AR4JA and AR3A protograph codes at the two rates.
@@ -56,7 +56,7 @@ We compared different construction methods for the AR4JA and AR3A protograph cod
 *Comparison of construction methods for rate 2/3 AR3A code*  
 ![](figures/simulation_plots/ar3a_rate_2_3_constructions.png)  
 
-Based on the plots above, we see that the `quasi-cyclic` construction consistently does worse, which is expected due to the worse distance properties (e.g., see [Mitchell et al. (2014)](https://ieeexplore.ieee.org/document/6089477)). We included this construction for reference since it enables more efficient encoding (part of future work), and a variation is used in the 5G standard. Among the other constructions, there is no clear winner, although the `regular` construction is generally close to the best.
+Based on the plots above, we see that the `quasi-cyclic` construction consistently does worse, which is expected due to the worse minimum distance properties (e.g., see [Mitchell et al. (2014)](https://ieeexplore.ieee.org/document/6089477)). We included this construction for reference since it enables more efficient encoding, and a variation is used in the 5G standard (see [Future Work](future-work.html)). Among the other constructions, there is no clear winner, although the default `peg` construction is generally close to the best.
 
 ### Summary
-In practice, the user should perform multiple random samplings of the code with different seeds and select the protograph, the construction and the random realization that performs the best for the channel of interest. The provided [test scripts](usage.html#test-scripts) and the [Jupyter notebook](https://github.com/shubhamchandak94/ProtographLDPC/blob/master/simulations/simulations.ipynb) for simulations can be useful for this purpose. We did not select default construction methods because different methods might perform better in different ettings.
+In practice, the user should perform multiple random samplings of the code with different seeds and select the protograph, the construction and the random realization that performs the best for the channel of interest. The provided [test scripts](usage.html#test-scripts) and the [Jupyter notebook](https://github.com/shubhamchandak94/ProtographLDPC/blob/master/simulations/simulations.ipynb) for simulations can be useful for this purpose.
