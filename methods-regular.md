@@ -60,3 +60,6 @@ This enforcement of vertical regularity comes at the expense of the horizontal r
 The populate-columns matrix performs the same operations. Simply put, if the blank code before population is transposed and populated according to populate-columns, then the result is transposed, the effect will be the same as if the matrix were constructed using populate-rows.
 
 As is suggested, this construction enforces constant row weightages on the resulting code at the expense of the vertical regularity.
+
+### peg
+// TODO

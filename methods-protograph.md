@@ -10,7 +10,7 @@ nav_order: 2
 ## Table of Contents
 * [background](./methods-protograph.html#background)
 * [permutation](./methods-protograph.html#permutation)
-* [regular](./methods-protograph.html#regular)
+* [peg](./methods-protograph.html#peg)
 * [quasi-cyclic](./methods-protograph.html#quasi-cyclic)
 * [permuted-quasi-cyclic](./methods-protograph.html#permuted-quasi-cuclic)
 
@@ -33,7 +33,7 @@ Implications:
 
 This library provides an api for the handling of the special case of tanner graphs for identity matrices. The permutation construction utilizes this class to generate respective submatrices.
 
-### Regular
+### Peg
 
 This construction generates a submatrix equivalent to a regular code built according to parameters width = <strong>f</strong>, height = <strong>f</strong>, 1s per col = <strong>v</strong>, construction = <code>peg</code>.
 
