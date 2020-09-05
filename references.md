@@ -16,12 +16,10 @@ Here are some papers and other resources that were helpful for understanding pro
 
 
 ### Protograph LDPC codes
+- Divsalar, Dariush, Sam Dolinar, and Christopher Jones. "Construction of protograph LDPC codes with linear minimum distance." _2006 IEEE International Symposium on Information Theory._ IEEE, 2006.
 - Fang, Yi, et al. "A survey on protograph LDPC codes and their applications." _IEEE Communications Surveys & Tutorials_ 17.4 (2015): 1989-2016.
 - Thorpe, Jeremy. "Low-density parity-check (LDPC) codes constructed from protographs." _IPN progress report_ 42.154 (2003): 42-154.
 
 ### Other
+- Chandak, Shubham, et al. "Improved read/write cost tradeoff in DNA-based data storage using LDPC codes." _2019 57th Annual Allerton Conference on Communication, Control, and Computing (Allerton)._ IEEE, 2019.
 - Mitchell, David GM, Roxana Smarandache, and Daniel J. Costello. "Quasi-cyclic LDPC codes based on pre-lifted protographs." _IEEE Transactions on Information Theory_ 60.10 (2014): 5856-5874.
-
-
-1. ABCD
-2. EFGH

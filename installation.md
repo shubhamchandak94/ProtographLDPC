@@ -7,23 +7,35 @@ parent: Overview
 
 # Installation
 ---
-The relevant code is contained at [this](https://github.com/shubhamchandak94/ProtographLDPC/) repository. <br>
-Python 3.x is recommended for all services, support has not been tested for earlier versions
+The relevant code is contained on GitHub at [https://github.com/shubhamchandak94/ProtographLDPC/](https://github.com/shubhamchandak94/ProtographLDPC/).  
+The code has been tested on Linux and MacOS with Python 3.
 
-Do a recursive download
-```sh
-git clone --recursive https://github.com/shubhamchandak94/ProtographLDPC
+Do a recursive download:
+```
+git clone --recursive https://github.com/shubhamchandak94/ProtographLDPC/
 ```
 
-To update the contained submodule, run
-```sh
+Enter the project directory:
+```
+cd ProtographLDPC/
+```
+
+To update submodule in existing clone, run
+```
 git pull --recurse-submodules
 git submodule update --init --recursive
 ```
-
-After cloning, install the LDPC-codes submodule
-```sh
+Install LDPC-codes submodule:
+```
 cd LDPC-codes/
 make
 cd ..
 ```
+Install PEG library:
+```
+cd peg/
+make
+cd ..
+```
+
+For usage and test scripts, see [this](usage.html) page.
