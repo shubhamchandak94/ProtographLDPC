@@ -20,7 +20,7 @@ height and width
 
 The implemented constructions work as follows:
 
-construction = permutation
+construction = sum-permutations
 This submatrix is a result of the sum of n (non-overlapping) permutation matrices of width f, where n is
 defined by the position at row = r / f, column = c / f on the supplied protograph.
 
@@ -114,7 +114,7 @@ class ProtographLDPC(TannerGraph):
             else: # in this case peg returns identity which is bad
                 return Identity(random.sample(range(factor), factor))
 
-        elif submatrix_construction == "permutation":
+        elif submatrix_construction == "sum-permutations":
             # start with a random permutation
             start = Identity(random.sample(range(factor), factor))
 
