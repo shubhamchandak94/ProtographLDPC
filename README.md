@@ -1,4 +1,4 @@
-# Protograph LDPC Codes
+# ProtographLDPC
 
 **Implementation of Protograph LDPC error correction codes**  
 *Roshan Prabhakar, Shubham Chandak, Kedar Tatwawadi*  
