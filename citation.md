@@ -4,7 +4,7 @@ title: Citation
 nav_order: 7
 ---
 
-### Citation
+## Citation
 
 You can cite this library as follows:
 
