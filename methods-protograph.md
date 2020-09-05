@@ -18,7 +18,7 @@ nav_order: 2
 
 This library includes different constructions for the creation of Protograph-based LDPC Codes. Protograph codes are created through the expansion of a base protograph. The resulting LDPC code matrix is a combination of "submatrices", each submatrix constructed according to the corresponding degree specified in the protograph. Given an expansion factor f, these submatrices are strictly f by f dimensions.
 
-For example assume a protograph whose matrix representation has a height width <strong>w</strong> a height <strong>h</strong> an expansion factor <strong>f</strong> and is populated with integers in the following domain: [0, ∞).
+For example assume a protograph whose matrix representation has a width <strong>w</strong> a height <strong>h</strong> an expansion factor <strong>f</strong> and is populated with integers in the following domain: [0, ∞).
 
 The resulting LDPC code would be representable by a <strong>w * f</strong> by <strong>h * f</strong> matrix, where each <strong>f</strong> by <strong>f</strong> scope positioned at <strong>(r, c)</strong> for all <strong>r % f == 0, c % f == 0</strong> within the resulting matrix would correspond to a submatrix whose construction depended on the protograph degree specified at location <strong>(r/f, c/f)</strong>.
 
@@ -31,13 +31,13 @@ This construction generates a submatrix the result of a summation of <strong>v</
 Implications:
 * the resulting matrix is strictly regular in the weightages of its rows and columns - each permutation matrix adds exactly one node to each row and to each column of the submatrix.
 
-This library contains an api for the handling of the special case of tanner graphs being identity matrces. The permutation construction utilizes this class to generate respective submatrices.
+This library provides an api for the handling of the special case of tanner graphs for identity matrices. The permutation construction utilizes this class to generate respective submatrices.
 
 ### Regular
 
-This construction generates a submatrix equivalent to a regular code built according to parameters width = <strong>f</strong>, height = <strong>f</strong>, 1s per col = <strong>v</strong>, construction = <code>populate-columns</code>.
+This construction generates a submatrix equivalent to a regular code built according to parameters width = <strong>f</strong>, height = <strong>f</strong>, 1s per col = <strong>v</strong>, construction = <code>peg</code>.
 
-You can read more about the populate-columns code construction [here](./methods-regular.html#populate-columns). This construction method was chosen over other regular construction methods because of its ability to enforce a constant column weightage in the prescence of dimension constraints.
+You can read more about the peg code construction [here](./methods-regular.html#peg). This construction method was chosen over other regular construction methods as it is the current state of the art for regular code construction.
 
 ### Quasi-Cyclic
 

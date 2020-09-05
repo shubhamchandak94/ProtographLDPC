@@ -9,15 +9,14 @@ nav_order: 1
 ## Background
 Linear codes were developed as a means to enable the correction of errors induced in the streaming of data. They are defined by their property that any linear sum of messages results in a message. These codes can be broken into two types - block codes and convolutional codes. This library focuses on code construction as it relates to block codes.
 
-Linear block codes are designed in such a way that upon encoding a message, this message can be decoded assuming a non-critical corruption rate through an analysis of the received message bits. This is accomplished through an evaluation of parity check equations where a modulo summation is performed on the received message indicated by the indices of the parity check equation. For our purposes, the result will be zero.
+Linear block codes are designed in such a way that upon encoding a message, this message can be decoded assuming a non-critical corruption rate through an analysis of the received message bits. This is accomplished through an evaluation of parity check equations where a modulo summation is performed on the received message indicated by the indices of the parity check equation for each parity check equation in the code. For our purposes, each parity check equation yields a zero for a given correct message.
 
-A code is defined by a collection of these parity check equations, and the number of conforming codewords that can possibly be created is referred to as the size of the code. This collection of parity check equations is represented in the form of a parity check matrix, where each row of the matrix indicates a parity check equation. Within these rows, a 1 at bit n indicates the inclusion of received bit n in the equation defined by the row.
+A code is defined by a collection of parity check equations, and the number of conforming codewords that can possibly be created is referred to as the size of the code. This collection of parity check equations is represented in the form of a parity check matrix, where each row of the matrix indicates a parity check equation. Within these rows, a 1 at bit n indicates the inclusion of received bit n in the equation defined by the row.
 
 Important:
 * <strong>n</strong>: commonly used to denote codeword length
 * <strong>k</strong>: commonly used to denote message length
-* <strong>code rate</strong>: the ratio <strong>k/n</strong> where k is the length of a message before encoding and n is the length of the encoded codeword
-* <strong>block</strong>: codeword
+* <strong>code rate</strong>: the ratio <strong>k/n</strong> where <strong>k</strong> is the length of a message before encoding and <strong>n</strong> is the length of the encoded codeword
 
 ## Parity Check Matrix
 The matrix containing the cumulation of parity check equations is known as the parity check matrix. Its width n is equivalent to the length of all codewords defined by the code. Assuming a binary character system, the number of all messages of length n is equal to 2<sup>n</sup>. By including a nonzero number of parity check equations, the number of codewords that conform to the code decreases. 
@@ -34,12 +33,12 @@ Assuming a codeword can be divided into <strong>M</strong> parity check bits *<s
 
 a parity check matrix *<strong>H</strong>* can be divided into an <strong>M</strong> by <strong>M</strong> matrix *<strong>A</strong>* occupying the first <strong>M</strong> columns of <strong>H</strong> and an <strong>M</strong> by <strong>K</strong> matrix *<strong>B</strong>* occupying the remaining <strong>K</strong> columns of *<strong>H</strong>*. 
 
-And all codewords conforming to the code H follow the rule:
+All codewords conforming to the code H follow the rule:
 <strong>*Ac* + *Bs* = 0</strong>
 
 From here, we derive <strong>*Ac* = *Bs*</strong>. Modulo arithmetic is performed thus addition and subtraction are identical in effect.
 
-Given *<strong>A</strong>* is invertible, the following relationship is given relating parity bits to message bits:
+Given *<strong>A</strong>* is invertible, the following equation relates parity check bits to message bits:
 <strong>*c* = *A<sup>-1</sup>Bs*</strong>
 
 Both a parity check matrix and generator matrix must be initialized before the encoding/decoding proccesses can occur. This libraries provides multiple constructions for different types of parity check matrices, and generator matrices are generated from this matrix.

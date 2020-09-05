@@ -7,13 +7,13 @@ nav_order: 2
 
 # LDPC Codes
 ## Background
-LDPC codes--(L)ow (D)ensity (P)arity (C)heck Codes--are codes which are defined by particularly sparse parity check matrices. The quality of being sparse is defined by an absurdly small ratio of 1s to 0s, as well as a large distribution uniformity of  1s within the parity check matrix. Unlike other types of linear codes, LDPC codes are not restricted in their hamming distance by larger code rates (code rate being the ratio of message length to encoded codeword length).
+LDPC codes--(L)ow (D)ensity (P)arity (C)heck Codes--are codes which are defined by particularly sparse parity check matrices. The quality of being sparse is defined by an extremely small ratio of 1s to 0s, as well as a large distribution uniformity of  1s within the parity check matrix. Unlike other types of linear codes, LDPC codes are not restricted in their hamming distance by larger code rates (code rate being the ratio of message length to encoded codeword length).
 
 ## Representation
-All linear codes can be represented in a variety of ways. Thought operations are performed on the matrix level, linear codes can also be represented by gaphs, among the most prevalant of which is the Tanner (Bi-partite) graph.
+All linear codes can be represented in a variety of ways. Though operations are performed on the matrix level, linear codes can also be represented by gaphs, among the most prevalant of which is the Tanner (Bi-partite) graph representation.
 
 This graph represents codes as follows:
-given a layer of nodes representing the parity check equations and a layer of nodes representing the indices in the codeword, connections are made between parity-check node and codeword-index node if the parity-check equation includes the code-word index in its summation.
+given a layer of nodes representing the parity check equations and a layer of nodes representing the indices in the codeword, connections are made between parity-check node and codeword-index node if the parity-check equation of the parity-check node includes the code-word index in its summation.
 
 For example, consider the following code in both its matrix form and bipartite graph form:
 ![example code](./figures/example_code.png)
@@ -35,7 +35,7 @@ The three most relevant to this library are:
 * Regular codes
 * Protograph codes
 
-NOTE: When discussing weight, weight refers to the number of ones in defined scope.
+NOTE: When discussing weight, weight refers to the number of ones in the defined scope.
 
 
 ### Irregular LDPC Codes
@@ -49,16 +49,22 @@ Specifically, for all entirely regular LDPC codes, the width <strong>w</strong> 
 
 <strong>h</strong> = <strong>w (c / r)</strong>
 
-If the constant <strong>c / r</strong> is to be maintained, then there is restriction placed on both <strong>w</strong and <strong>h</strong>. Some regular code constructions defined in this library enforce complete regularity at the expense of width and height values, while some enforce the given width and height at the expense of the regularity of the matrix.
+where <strong>c</strong> represents the constant column weightage of the code and <strong>r</strong> represents the constant row weightage.
 
-In this sense, both comoletely regular and mostly regular matrices can repreesnt a regular LDPC code. 
+If the constant <strong>c / r</strong> is to be maintained, then there is restriction placed on both <strong>w</strong> and <strong>h</strong>, specifically 
+
+<strong>c / r</strong> = <strong>h / w</strong>.
+
+Some regular code constructions defined in this library enforce complete regularity at the expense of width and height values, while some enforce the given width and height at the expense of the regularity of the matrix.
+
+In this sense, both completely regular and mostly regular matrices can repreesnt a regular LDPC code. 
 
 ### Protograph LDPC Codes
 
 Protograph LDPC Codes implement the expanding of a protograph into a full-fledged LDPC Code. 
 A protograph is a tanner graph with a few special properties:
 * protographs contain a relatively small number of of nodes
-* protographs allow for parallel connections, meaning more than one connection between a check note and variable node
+* protographs allow for parallel connections, meaning more than one connection between a check node and variable node
     * In the representative matrix for the protograph, this would manifest as a value greater than 1
 
 You can read more about protographs [here](https://personal.utdallas.edu/~aria/papers/NguyenNosratinia2012a.pdf). <br>

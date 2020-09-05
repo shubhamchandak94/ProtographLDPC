@@ -47,8 +47,8 @@ the .transmitted file contains the puncturing information
 total bits before transmission: code-width
 [space separated list of transmitted bit indices]
 ```
-* Puncturing for protographs is defined within the protograph template passed - the punctured indices are excluded from the list of transmitted bits within the protograph. Read more [here](TODO).
-* Puncturing for regular codes is achieved with the optional -f flag. if this flag is provided, the value passed specifies the proportion of bits to transmit; a .transmitted file is generated accordingly. Read more [here](TODO).
+* Puncturing for protographs is defined within the protograph template passed - the punctured indices are excluded from the list of transmitted bits within the protograph. Y
+* Puncturing for regular codes is achieved with the optional -f flag. if this flag is provided, the value passed specifies the proportion of bits to transmit; a .transmitted file is generated accordingly.
 
 If puncturing is implemented, you can mess with the default configuration by altering the index list within the .transmitted file.
 

@@ -5,4 +5,4 @@ has_children: true
 nav_order: 3
 ---
 
-Brief outline of our contributions. Main content is in children pages.
+Brief outline of our contributions. Main content below.
