@@ -11,7 +11,7 @@ PROGRAM = MainPEG
 OBJECTS = MainPEG.o CyclesOfGraph.o BigGirth.o
 
 CXX = g++
-CXXFLAGS = -g -ansi -pedantic -Wno-deprecated -Wall -O2
+CXXFLAGS = -g -ansi -pedantic -Wno-deprecated -Wall -O2 -std=c++11
 #CXXFLAGS = -g -ansi -pedantic -Wall -march=native -ftree-vectorize -O3
 
 .SUFFIXES: .o .C
