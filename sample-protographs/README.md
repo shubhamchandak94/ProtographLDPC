@@ -1,5 +1,7 @@
 ### Protographs
 
+This directory contains some sample protographs, see the [documentation](https://shubhamchandak94.github.io/ProtographLDPC/methods-sample-protographs.html) for details on the format.
+
 | File name | Source | rate | description | representation |
 |-----------|--------|------|-------------|----------------|
 | regular_rate_1_2 | Fig. 7(a) in [1] | 1/2 | (3,6) regular protograph code | sparse |
@@ -17,5 +19,5 @@
 | ar3a_n_2_rate_3_4 | Fig. 3(a) in [1] | 3/4 | AR3A (n=2) | dense |
 
 #### References:
-1. Fang, Yi, et al. "A survey on protograph LDPC codes and their applications." IEEE Communications Surveys & Tutorials 17.4 (2015): 1989-2016.
+1. Fang, Yi, et al. "A survey on protograph LDPC codes and their applications." _IEEE Communications Surveys & Tutorials_ 17.4 (2015): 1989-2016.
 2. https://web.stanford.edu/class/ee388/HOMEWORK2018/lecture-6-7.pdf
