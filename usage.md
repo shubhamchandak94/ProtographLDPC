@@ -10,9 +10,9 @@ parent: Overview
 This page contains the usage of the various scripts in the library. The [Examples](examples.html) page can be helpful to further understand the usage. We refer throughout to tools in the base library documented [here](https://shubhamchandak94.github.io/LDPC-codes/).
 
 Scripts:
-* [LDPC-library/make-pchk.py](#make-pchk)
-* [LDPC-library/encode.py](#encode)
-* [LDPC-library/decode.py](#decode)
+* [make-pchk.py](#make-pchkpy)
+* [encode.py](#encodepy)
+* [decode.py](#decodepy)
 * [Test scripts](#test-scripts)
 
 
@@ -124,7 +124,7 @@ The generator matrix file can be generated using the base library tool [`make-ge
 Finally, the [`extract`](https://shubhamchandak94.github.io/LDPC-codes/decoding.html#extract) and [`extract_systematic`](https://shubhamchandak94.github.io/LDPC-codes/support.html#extract_systematic) utilities in the base library can be used to find the positions of and extract the message bits in the codeword.
 
 
-## Decode
+## decode.py
 Decodes a received message using the parity check matrix.
 
 General usage:
