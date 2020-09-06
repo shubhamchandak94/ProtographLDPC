@@ -64,24 +64,24 @@ For details on the construction methods, see [Methods](methods.html). For detail
 
 For regular codes, this reduces to:
 ```sh
-python LDPC-library/make-pchk.py --output-pchk-file PCHK_FILE \
-                    --code-type regular \
-                    [--construction CONSTRUCTION] \
-                    --n-checks N_CHECKS \
-                    --n-bits N_BITS \
-                    [--checks-per-col CHECKS_PER_COL] \
-                    [--fraction-transmitted FRACTION_TRANSMITTED] \
+python LDPC-library/make-pchk.py --output-pchk-file PCHK_FILE
+                    --code-type regular
+                    [--construction CONSTRUCTION]
+                    --n-checks N_CHECKS
+                    --n-bits N_BITS
+                    [--checks-per-col CHECKS_PER_COL]
+                    [--fraction-transmitted FRACTION_TRANSMITTED]
                     [--seed SEED]
 ```
 Here, the construction can be one of `peg` (default), `populate-columns`, `populate-rows` or `gallager`. The `--fraction-transmitted` option can be used for random puncturing, by default it is set to `1.0` (no puncturing). We also direct the user to the base library parity check generation script ([`make-ldpc`](https://shubhamchandak94.github.io/LDPC-codes/pchk.html#make-ldpc)) which implements slightly different construction methods but uses a similar interface.
 
 For protograph codes, this reduces to:
 ```sh
-python LDPC-library/make-pchk.py --output-pchk-file PCHK_FILE \
-                    --code-type protograph \
-                    [--construction CONSTRUCTION] \
-                    --protograph-file PROTOGRAPH_FILE \
-                    --expansion-factor EXPANSION_FACTOR \
+python LDPC-library/make-pchk.py --output-pchk-file PCHK_FILE
+                    --code-type protograph
+                    [--construction CONSTRUCTION]
+                    --protograph-file PROTOGRAPH_FILE
+                    --expansion-factor EXPANSION_FACTOR
                     [--seed SEED]
 ```
 Here, the construction can be one of `peg` (default), `sum-permutations`, `quasi-cyclic` or `permuted-quasi-cyclic`.
@@ -194,7 +194,7 @@ For testing the AR4JA rate 1/2 protograph ([here](https://github.com/shubhamchan
 3 5
 transmitted_bits 1 2 3 4
 ```
-This tells us that the protograph has 3 check nodes, 5 variable nodes. And 4 out of the 5 variable nodes are actually transmitted. Thus the number of message bits is 5 - 3 = 2, and the rate is 2/4 = 1/2. To get a block length of 1500 as in the regular code example above, the expansion factor of the protograph is 1500/4 = 375. The tesst script is called below.
+This tells us that the protograph has 3 check nodes, 5 variable nodes. And 4 out of the 5 variable nodes are actually transmitted. Thus the number of message bits is 5 - 3 = 2, and the rate is 2/4 = 1/2. To get a block length of 1500 as in the regular code example above, the expansion factor of the protograph is 1500/4 = 375. The test script is called below.
 ```sh
 ./test_script_protograph.sh sample-protographs/ar4ja_n_0_rate_1_2 375 750 1000 bsc 0.07 85
 ```
