@@ -4,7 +4,6 @@ title: Background
 nav_order: 2
 ---
 # Background
----
 We provide here a very brief background on error correction codes, specifically linear codes and LDPC codes (regular and protograph). For a more detailed introduction, please see the [References](references.html) page.
 
 ## Linear Codes

@@ -94,7 +94,7 @@ total bits before transmission: code-width
 For protograph codes, the transmitted bits are determined from the protograph itself. For regular codes, when using the `--fraction-transmitted` option, the transmitted bits are chosen randomly, and can be modified later according to the user's wishes.
 
 ## encode.py
-Encodes a message provided a parity check code and a generator matrix.
+Encodes a message provided a parity check code and a generator matrix. This can be used with any code in the appropriate format, not necessarily generated using this library.
 
 **General usage:**
 ```sh
@@ -124,7 +124,7 @@ Finally, the [`extract`](https://shubhamchandak94.github.io/LDPC-codes/decoding.
 
 
 ## decode.py
-Decodes a received message using the parity check matrix.
+Decodes a received message using the parity check matrix. This can be used with any code in the appropriate format, not necessarily generated using this library.
 
 General usage:
 ```sh
