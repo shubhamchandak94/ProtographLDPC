@@ -13,7 +13,8 @@ Scripts:
 * [encode.py](#encodepy)
 * [decode.py](#decodepy)
 * [Test scripts](#test-scripts)
-
+  * [test_script_regular.sh](#test_script_regularsh)
+  * [test_script_protograph.sh](#test_script_protographsh)
 
 ## make-pchk.py
 Generates a regular or protograph parity check matrix.
@@ -169,24 +170,49 @@ The base library provides a [`transmit`](https://shubhamchandak94.github.io/LDPC
 Finally, the [`extract`](https://shubhamchandak94.github.io/LDPC-codes/decoding.html#extract) and [`extract_systematic`](https://shubhamchandak94.github.io/LDPC-codes/support.html#extract_systematic) utilities in the base library can be used to find the positions of and extract the message bits in the codeword.
 
 
-### Test scripts
-The test scripts perform a communication roundtrip and print the decoding error rates.
+## Test scripts
+
+The test scripts perform a communication roundtrip and print the decoding error rates. We first provide two commands for testing the library and then explain the usage of the scripts in more detail. Also see the [Simulations](simulations.html) page which can be helpful for more comprehensive experimentation.
+
+**Quick test:**
+```sh
+./test_script_regular.sh 1500 750 3 1000 bsc 0.07 85
+./test_script_protograph.sh sample-protographs/ar4ja_n_0_rate_1_2 375 750 1000 bsc 0.07 85
+```
+
+The channel can also be set to `awgn` in which case the channel parameter represents the standard deviation of the Gaussian noise. The channels are described in more detail [here](https://shubhamchandak94.github.io/LDPC-codes/channel.html).
+
+### test_script_regular.sh
+**General usage:**
+```sh
+./test_script_regular.sh $n $m $c $n_blocks $channel $channel_param $seed
+```
+**Sample usage:**
 ```sh
 ./test_script_regular.sh 1500 750 3 1000 bsc 0.07 85
 ```
+
 This tests all the construction methods for a (3,6) regular code with the following parameters:
 ```
 block length (n) = 1500
 number of check nodes (m) = 750
 number of message bits = m - n = 750
 Rate = #message bits/n = 1/2
-#1s per column (i.e., connections per check node) = 3
+c = #1s per column (i.e., connections per check node) = 3
 #1s per row (i.e., connections per variable node) = n * #1s per column / m = 6
 Number of blocks simulated = 1000
 Channel = bsc (binary symmetric channel)
 Channel parameter (error probability) = 0.07
 Seed = 85
 ```
+
+### test_script_protograph.sh
+**General usage:**
+```sh
+./test_script_protograph.sh $protograph_file $expansion_factor $num_message_bits $n_blocks $channel $channel_param $seed
+```
+
+**Sample usage:**
 
 For testing the AR4JA rate 1/2 protograph ([here](https://github.com/shubhamchandak94/ProtographLDPC/blob/master/sample-protographs/ar4ja_n_0_rate_1_2)), we first look at the header of the protograph file:
 ```
