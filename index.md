@@ -4,7 +4,6 @@ title: Overview
 nav_order: 1
 has_children: true
 ---
-
 **Implementation of Protograph LDPC error correction codes**  
 *Roshan Prabhakar<sup>1</sup>, Shubham Chandak<sup>2</sup>, Kedar Tatwawadi<sup>2</sup>*
 

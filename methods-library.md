@@ -5,8 +5,8 @@ parent: Methods
 nav_order: 4
 ---
 
-# Library Organization
-
+# Library organization
+---
 ## Background
 This library includes a collection of code classes packaging functionality to describe LDPC Codes. Before any experimentation is performed, it must be noted that this library deals with LDPC Codes in their tanner graph form. Dealing with tanner graphs allows for the complete sidestepping of degree zero entries - they are not indicable on tanner graph representations of codes. Given LDPC codes are majoratively composed of 0s, this presents a considerable optimization.
 

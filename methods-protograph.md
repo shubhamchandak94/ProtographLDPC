@@ -1,20 +1,20 @@
 ---
 layout: default
-title: Parity pheck construction - protograph codes
+title: Protograph code construction
 parent: Methods
 nav_order: 2
 ---
 
-# Protograph-based LDPC Code Constructions
-
+# Protograph code construction
 ## Table of Contents
-* [background](./methods-protograph.html#background)
-* [permutation](./methods-protograph.html#permutation)
-* [peg](./methods-protograph.html#peg)
-* [quasi-cyclic](./methods-protograph.html#quasi-cyclic)
-* [permuted-quasi-cyclic](./methods-protograph.html#permuted-quasi-cuclic)
+* [Background](#background)
+* [Construction methods](#construction-methods)
+  * [peg](#peg) (default)
+  * [sum-permutations](#sum-permutations)
+  * [quasi-cyclic](#quasi-cyclic)
+  * [permuted-quasi-cyclic](#permuted-quasi-cyclic)
 
-### Background
+## Background
 
 This library includes different constructions for the creation of Protograph-based LDPC Codes. Protograph codes are created through the expansion of a base protograph. The resulting LDPC code matrix is a combination of "submatrices", each submatrix constructed according to the corresponding degree specified in the protograph. Given an expansion factor f, these submatrices are strictly f by f dimensions.
 
@@ -24,7 +24,14 @@ The resulting LDPC code would be representable by a <strong>w * f</strong> by <s
 
 The protograph code constructions following are constructions of this submatrix. <strong>f</strong> is used to represent the expansion factor (and thus width of the submatrix) and <strong>v</strong> is used to represent the protograph degree upon which the submatrix construction is to operate.
 
-### Permutation
+## Construction methods
+### peg
+
+This construction generates a submatrix equivalent to a regular code built according to parameters width = <strong>f</strong>, height = <strong>f</strong>, 1s per col = <strong>v</strong>, construction = <code>peg</code>.
+
+You can read more about the peg code construction [here](./methods-regular.html#peg). This construction method was chosen over other regular construction methods as it is the current state of the art for regular code construction.
+
+### sum-permutations
 
 This construction generates a submatrix the result of a summation of <strong>v</strong> non-overlapping permutation matrices.
 
@@ -33,13 +40,7 @@ Implications:
 
 This library provides an api for the handling of the special case of tanner graphs for identity matrices. The permutation construction utilizes this class to generate respective submatrices.
 
-### Peg
-
-This construction generates a submatrix equivalent to a regular code built according to parameters width = <strong>f</strong>, height = <strong>f</strong>, 1s per col = <strong>v</strong>, construction = <code>peg</code>.
-
-You can read more about the peg code construction [here](./methods-regular.html#peg). This construction method was chosen over other regular construction methods as it is the current state of the art for regular code construction.
-
-### Quasi-Cyclic
+### quasi-cyclic
 
 This construction generates a submatrix according to the following schema:
 
@@ -47,7 +48,7 @@ The initial matrix row is created of width <strong>f</strong>, height = 1. This 
 
 You can read more about Quasi-Cyclic LDPC Codes [here](https://ieeexplore.ieee.org/document/6145509).
 
-### Permuted Quasi Cuclic
+### permuted-quasi-cyclic
 
 This construction generates a submatrix according to a similar schema:
 

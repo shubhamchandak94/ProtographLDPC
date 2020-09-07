@@ -3,7 +3,7 @@ layout: default
 title: References
 nav_order: 6
 ---
-
+# References
 Here are some papers and other resources that were helpful for understanding protograph LDPC codes and implementing this library.
 
 ## Table of Contents

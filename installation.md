@@ -6,7 +6,6 @@ parent: Overview
 ---
 
 # Installation
----
 The relevant code is contained on GitHub at [https://github.com/shubhamchandak94/ProtographLDPC/](https://github.com/shubhamchandak94/ProtographLDPC/).  
 The code has been tested on Linux and MacOS with Python 3.
 

@@ -3,11 +3,12 @@ layout: default
 title: Background
 nav_order: 2
 ---
-
+# Background
+---
 We provide here a very brief background on error correction codes, specifically linear codes and LDPC codes (regular and protograph). For a more detailed introduction, please see the [References](references.html) page.
 
-# Linear Codes
-## Background
+## Linear Codes
+### Background
 Linear codes were developed as a means to enable the correction of errors induced in the streaming of data. They are defined by their property that any linear sum of messages results in a message. These codes can be broken into two types - block codes and convolutional codes. This library focuses on code construction as it relates to block codes.
 
 Linear block codes are designed in such a way that upon encoding a message, this message can be decoded assuming a non-critical corruption rate through an analysis of the received message bits. This is accomplished through an evaluation of parity check equations where a modulo summation is performed on the received message indicated by the indices of the parity check equation for each parity check equation in the code. For our purposes, each parity check equation yields a zero for a given correct message.
@@ -19,15 +20,15 @@ Important:
 * <strong>k</strong>: commonly used to denote message length
 * <strong>code rate</strong>: the ratio <strong>k/n</strong> where <strong>k</strong> is the length of a message before encoding and <strong>n</strong> is the length of the encoded codeword
 
-## Parity Check Matrix
+### Parity Check Matrix
 The matrix containing the cumulation of parity check equations is known as the parity check matrix. Its width n is equivalent to the length of all codewords defined by the code. Assuming a binary character system, the number of all messages of length n is equal to 2<sup>n</sup>. By including a nonzero number of parity check equations, the number of codewords that conform to the code decreases.
 
 As the number of possible codewords decreases, but the length of all codewords stays the same, the distance between codewords increases where distance is defined by the number of nonidentical values between two codewords. For example, there is a distance of 3 between the codewords 100101 and 000011. The minimum distance between any two possible codewords that conform to a given code is known as the hamming distance of that code. This value is important - the larger the hamming distance, the larger the necessary corruption to render a received message undecodeable.
 
-## Generator Matrix
+### Generator Matrix
 A generator matrix is defined by the parity check matrix H. The generator matrix G performs the lifting of a message to a proper codeword. Optimized codes define parity check matrices, and therefore generator matrices, in such a way that if messages are of length m, and the number of possible codewords defined by the code is equal to z < 2<sup>n</sup> (where n is the length of resulting codewords), 2<sup>m</sup> (the number of possible messages) is as close to z (the number of possible codewords) as possible. Such codes where 2<sup>m</sup> = z are known as perfect codes.
 
-## Library specification
+### Library specification
 The encoding/decoding processes defined by this library assume the following schema
 
 Assuming a codeword can be divided into <strong>M</strong> parity check bits *<strong>c</strong>* preceeding <strong>K</strong> message bits *<strong>s</strong>*:
@@ -46,18 +47,18 @@ Both a parity check matrix and generator matrix must be initialized before the e
 
 ###### ** The api to interact with these matrices is defined in the usage section
 
-## Puncturing
+### Puncturing
 The process of puncturing is simple: the rate of a given linear code can be made larger by transmitting fewer codeword indices.
 
 In order to effectively "puncture" a codeword, only the transmission of the weakest protected indices within that codeword is performed. For any given code, the parity check equations defined by the parity check matrix will render a few codeword indices more susceptible to irreversible corruption than other codeword indices. By transmitting solely these "weakly protected" indices, and assuming erasure corruption for the strongest protected bits, the code rate can be drastically increased while maintaining code viability.
 
 In the provided implementations, puncturing is implemented by streaming the codeword after removing punctured bits, then reconstructing the received message with 0s representing erasures in the punctured indices.
 
-# LDPC Codes
-## Background
+## LDPC Codes
+### Background
 LDPC codes--(L)ow (D)ensity (P)arity (C)heck Codes--are codes which are defined by particularly sparse parity check matrices. The quality of being sparse is defined by an extremely small ratio of 1s to 0s, as well as a large distribution uniformity of  1s within the parity check matrix. Unlike other types of linear codes, LDPC codes are not restricted in their hamming distance by larger code rates (code rate being the ratio of message length to encoded codeword length).
 
-## Representation
+### Representation
 All linear codes can be represented in a variety of ways. Though operations are performed on the matrix level, linear codes can also be represented by gaphs, among the most prevalant of which is the Tanner (Bi-partite) graph representation.
 
 This graph represents codes as follows:
@@ -75,7 +76,7 @@ Each of the four parity check nodes (a.k.a. check nodes) in the tanner graph map
 Understanding this representation is crucial to customize the provided library. All functions (with the exception of wrappers of the base library) work with parity check codes in their bipartite graph form. Doing so allows for the sole handling of 1s (graph connections), thus sidestepping the processing of 0s. This is ideal: LDPC Codes by definition contain many 0s and few 1s.
 
 
-## LDPC Code Classification
+### LDPC Code Classification
 LDPC codes can be further classified according to their characteristics and constructions.
 
 The three most relevant to this library are:
@@ -86,11 +87,11 @@ The three most relevant to this library are:
 NOTE: When discussing weight, weight refers to the number of ones in the defined scope.
 
 
-### Irregular LDPC Codes
+#### Irregular LDPC Codes
 Irregular codes are codes whose parity check matrices contain row and column weightages that
 are not necessarily constant for the entire matrix.
 
-### Regular LDPC Codes
+#### Regular LDPC Codes
 Regular codes are represented by matrices whos row weights are constant and whose column weights are constant. It is important to note that although by definition row and column weights must be constant in regular codes, some constructions do not allow this: there are tradeoffs.
 
 Specifically, for all entirely regular LDPC codes, the width <strong>w</strong> of the matrix relates to its height <strong>h</strong> according to the following relationship:
@@ -107,7 +108,7 @@ Some regular code constructions defined in this library enforce complete regular
 
 In this sense, both completely regular and mostly regular matrices can repreesnt a regular LDPC code.
 
-### Protograph LDPC Codes
+#### Protograph LDPC Codes
 
 Protograph LDPC Codes implement the expanding of a protograph into a full-fledged LDPC Code.
 A protograph is a tanner graph with a few special properties:

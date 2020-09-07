@@ -5,8 +5,7 @@ nav_order: 2
 parent: Overview
 ---
 
-# Library Usage
----
+# Usage
 This page contains the usage of the various scripts in the library. The [Examples](examples.html) page can be helpful to further understand the usage. We refer throughout to tools in the base library documented [here](https://shubhamchandak94.github.io/LDPC-codes/).
 
 Scripts:

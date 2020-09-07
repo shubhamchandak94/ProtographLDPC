@@ -5,8 +5,7 @@ parent: Methods
 nav_order: 3
 ---
 
-# Protographs
-
+# Sample protographs
 In order to generate a protograph ldpc code, a protograph file must be supplied to the make-pchk program. <br>
 This file is always of the following format:
 
@@ -42,6 +41,3 @@ If <code>switch</code> is toggled to dense, this is the direct text that would r
 ```
 
 You can find a list of example protograph files already implemented for your convenience [here](https://github.com/shubhamchandak94/ProtographLDPC/tree/master/sample-protographs).
-
-
-

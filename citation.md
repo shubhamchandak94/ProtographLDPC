@@ -4,11 +4,12 @@ title: Citation
 nav_order: 7
 ---
 
-## Citation
-
+# Citation
 You can cite this library as follows:
 
-Roshan Prabhakar, Shubham Chandak, & Kedar Tatwawadi. (2020, September 5). Implementation of Protograph LDPC error correction codes (Version v1.0). Zenodo. http://doi.org/10.5281/zenodo.4016076
+Roshan Prabhakar, Shubham Chandak, & Kedar Tatwawadi. (2020, September 5). Implementation of Protograph LDPC error correction codes (Version v1.0). Zenodo. <http://doi.org/10.5281/zenodo.4016076>
+
+[![DOI](https://zenodo.org/badge/287030442.svg)](https://zenodo.org/badge/latestdoi/287030442)
 
 **Bibtex:**
 {% raw %}

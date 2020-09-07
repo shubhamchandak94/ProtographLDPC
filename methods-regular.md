@@ -1,41 +1,47 @@
 ---
 layout: default
-title: Parity check construction - regular
+title: Regular code construction
 parent: Methods
 nav_order: 1
 ---
 
-# Regular-type LDPC Code Constructions
+# Regular code construction
 
 ## Table of Contents
-* [background](./methods-regular.html#background)
-* [gallager](./methods-regular.html#gallager)
-* [populate-columns](./methods-regular.html#populate-columns)
-* [populate-rows](./methods-regular.html#populate-rows)
+* [Background](#background)
+* [Construction methods](#construction-methods)
+  * [peg](#peg) (default)
+  * [gallager](#gallager)
+  * [populate-columns](#populate-columns)
+  * [populate-rows](#populate-rows)
 
-### Background
+## Background
 
 Unlike Protograph-based LDPC Constructions, all regular code constructions included in this library directly construct the conclusive LDPC Code.
 
-### Gallager
+## Construction methods
+### peg
+// TODO
 
-Proposed by Robert Gallager during the conception phase of LDPC codes, this construction merges a series of submatrix codes to produce the cumulative LDPC code. 
+### gallager
+
+Proposed by Robert Gallager during the conception phase of LDPC codes, this construction merges a series of submatrix codes to produce the cumulative LDPC code.
 
 Given a code width <strong>n</strong>, a constant row weightage <strong>r</strong>, and a constant column weightage <strong>c</strong>, <strong>c</strong> independent matrices each of constant column weight 1 are generated individually.
 
-Because of the property that all strictly regular codes share: <strong>height = width (c / r)</strong>, the height of these submatrices is equivalent equivalent by <strong>w (width)</strong> / <strong>r</strong>. 
+Because of the property that all strictly regular codes share: <strong>height = width (c / r)</strong>, the height of these submatrices is equivalent equivalent by <strong>w (width)</strong> / <strong>r</strong>.
 
 These <strong>c</strong> <strong>w</strong> by <strong>w / r</strong> matrices are populated according to the following algorithm:
 
 ```sh
 for h in range([0, w/r - 1)):
     for x in range([0, r)):
-        populate(submatrix[h * r + x][h]) 
+        populate(submatrix[h * r + x][h])
 ```
 
 The submatrix thus derived is then permuted in its columns according to a random permutation [0, <strong>w</strong>)
 
-This construction enforces strict regularity on the resulting code. There is a trade-off: the condition <strong>height = width (c / r)</strong> does not hold for all variable values <strong>w</strong>, <strong>r</strong>, <strong>c</strong>. The library implementation refuses construction arguments that do not fit this regularity condition. 
+This construction enforces strict regularity on the resulting code. There is a trade-off: the condition <strong>height = width (c / r)</strong> does not hold for all variable values <strong>w</strong>, <strong>r</strong>, <strong>c</strong>. The library implementation refuses construction arguments that do not fit this regularity condition.
 
 The cumulative LDPC code consists of a vertical merging of these individual submatrices.
 
@@ -60,6 +66,3 @@ This enforcement of vertical regularity comes at the expense of the horizontal r
 The populate-columns matrix performs the same operations. Simply put, if the blank code before population is transposed and populated according to populate-columns, then the result is transposed, the effect will be the same as if the matrix were constructed using populate-rows.
 
 As is suggested, this construction enforces constant row weightages on the resulting code at the expense of the vertical regularity.
-
-### peg
-// TODO
