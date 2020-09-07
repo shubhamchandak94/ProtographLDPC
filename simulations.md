@@ -64,7 +64,7 @@ We compared different construction methods for the AR4JA and AR3A protograph cod
 *Comparison of construction methods for rate 2/3 AR3A code*  
 ![](figures/simulation_plots/ar3a_rate_2_3_constructions.png)  
 
-Based on the plots above, we see that the `quasi-cyclic` construction consistently does worse, which is expected due to the worse minimum distance properties (e.g., see [Mitchell et al. (2014)](https://ieeexplore.ieee.org/document/6089477)). We included this construction for reference since it enables more efficient encoding, and a variation is used in the 5G standard (see [Future Work](future-work.html)). Among the other constructions, there is no clear winner, although the default `peg` construction is generally close to the best.
+Based on the plots above, we see that the `quasi-cyclic` construction consistently does worse, which is expected due to the worse minimum distance properties (e.g., see [Mitchell et al. (2014)](https://ieeexplore.ieee.org/document/6089477)). We included this construction for reference since it enables more efficient encoding, and a variation is used in the 5G standard (see [Future work](future-work.html)). Among the other constructions, there is no clear winner, although the default `peg` construction is generally close to the best.
 
 ## Summary
 In practice, the user should perform multiple random samplings of the code with different seeds and select the protograph, the construction and the random realization that performs the best for the channel of interest. The provided [test scripts](usage.html#test-scripts) and the [Jupyter notebook](https://github.com/shubhamchandak94/ProtographLDPC/blob/master/simulations/simulations.ipynb) for simulations can be useful for this purpose.

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Future Work
+title: Future work
 nav_order: 5
 ---
 # Future work
