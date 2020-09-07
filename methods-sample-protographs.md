@@ -88,4 +88,4 @@ sparse
 3 5 1
 ```
 
-You can find a list of example protograph files [here](https://github.com/shubhamchandak94/ProtographLDPC/tree/master/sample-protographs). These include the AR4JA and AR3A protographs at rates 1/2, 2/3 and 3/4, along with certain other optimized protographs from [Fang et al. (2016)](https://ieeexplore.ieee.org/abstract/document/7112076).
+You can find a list of example protograph files in the repository [here](https://github.com/shubhamchandak94/ProtographLDPC/tree/master/sample-protographs). These include the AR4JA and AR3A protographs at rates 1/2, 2/3 and 3/4, along with certain other optimized protographs from [Fang et al. (2016)](https://ieeexplore.ieee.org/abstract/document/7112076).
