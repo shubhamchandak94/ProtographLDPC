@@ -20,7 +20,7 @@ This library includes different constructions for the creation of Protograph-bas
 
 We start with a protograph whose matrix representation has width `n_p`, height `m_p` an expansion factor `N` and is populated with non-negative integers. This can be represented as a graph with `n_p` variable nodes, `m_p` check nodes, and the number of connections between a given variable and check node defined by the corresponding entry in the matrix. The resulting LDPC code would be representable by a `m x n` matrix, where `m = m_p x N` and `n = n_p x N`. Suppose the `(i,j)`th entry in the protograph has value (weight) of `w`, then the submatrix `(i x N: (i+1) x N, j x N: (j+1) x N)` in the expanded matrix has exactly `w` 1s in each row and in each column. Note that `0 <= w <= N`. As an example, when `w = 0` the submatrix is the all-zeros matrix and when `w = 1` the submatrix can be any permutation matrix.
 
-Note that the construction algorithm does not take puncturing into account. Puncturing is considered after the parity check matrix construction to determine which of the bits in the expanded matrix should be transmitted.
+Note that the construction algorithm does not take puncturing into account. Puncturing is considered after the parity check matrix construction to determine which of the bits in the expanded matrix should be transmitted. This is determined by the transmitted bits in the protograph itself - all the corresponding bits in the expanded matrix are also transmitted.
 
 We show below an small example obtained from [Butler and Siegel (2013)](https://ieeexplore.ieee.org/document/6482231) that should help illustrate this better. The example has parameters `m_p = 2`, `n_p = 3` and `N = 3`.
 
