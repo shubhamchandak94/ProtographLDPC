@@ -6,6 +6,11 @@ nav_order: 6
 
 Here are some papers and other resources that were helpful for understanding protograph LDPC codes and implementing this library.
 
+## Table of Contents
+* [Papers](#papers)
+* [Software](#software)
+* [Learning material](#learning-material)
+
 ## Papers
 
 ### LDPC codes
@@ -21,5 +26,22 @@ Here are some papers and other resources that were helpful for understanding pro
 - Thorpe, Jeremy. "Low-density parity-check (LDPC) codes constructed from protographs." _IPN progress report_ 42.154 (2003): 42-154.
 
 ### Other
+- Butler, Brian K., and Paul H. Siegel. "Bounds on the minimum distance of punctured quasi-cyclic LDPC codes." _IEEE transactions on information theory_ 59.7 (2013): 4584-4597.
 - Chandak, Shubham, et al. "Improved read/write cost tradeoff in DNA-based data storage using LDPC codes." _2019 57th Annual Allerton Conference on Communication, Control, and Computing (Allerton)._ IEEE, 2019.
 - Mitchell, David GM, Roxana Smarandache, and Daniel J. Costello. "Quasi-cyclic LDPC codes based on pre-lifted protographs." _IEEE Transactions on Information Theory_ 60.10 (2014): 5856-5874.
+- Van Nguyen, Thuy, Aria Nosratinia, and Dariush Divsalar. "The design of rate-compatible protograph LDPC codes." _IEEE Transactions on communications_ 60.10 (2012): 2841-2850.
+
+## Software
+- Software for Low Density Parity Check Codes:
+  - <https://shubhamchandak94.github.io/LDPC-codes/>
+  - <http://radfordneal.github.io/LDPC-codes/>
+- Source code for Progressive Edge Growth parity-check matrix construction:
+  - <http://www.inference.org.uk/mackay/PEG_ECC.html>
+
+## Learning material
+- Introduction to Error-Correcting Codes (Mary Wootters, EE 25N, Stanford): [[YouTube](https://youtu.be/q32CxFzOr9s)]
+- Error Correcting Codes playlist (eigenchris): [[YouTube](https://www.youtube.com/playlist?list=PLJHszsWbB6hqkOyFCQOAlQtfzC1G9sf2_)]
+- Hamming & low density parity check codes (Art of the Problem): [[YouTube](https://youtu.be/RWUxtGh-guY)]
+- LDPC Codes - a brief Tutorial (Bernhard M.J. Leiner): [[pdf](http://www.bernh.net/media/download/papers/ldpc.pdf)]
+- LDPC and Polar Codes in 5G Standard playlist (Andrew Thangaraj, IIT Madras): [[YouTube](https://www.youtube.com/playlist?list=PLyqSpQzTE6M81HJ26ZaNv0V3ROBrcv-Kc)]
+- EE 388 course material (Andrea Montanari, Stanford): [[Website](https://web.stanford.edu/class/ee388/ee388.html)]
