@@ -32,7 +32,7 @@ def get_parser():
                         type=str,
                         help='Output file to store decoded blocks (one per line). \
                         An additional output_file.unpunctured is generated when puncturing is used \
-                        and contains all the codeword bits including unpunctured bits, to enable easy \
+                        and contains all the codeword bits including punctured bits, to enable easy \
                         extraction of message bits from the codeword.',
                         required=True)
     parser.add_argument('--channel',
