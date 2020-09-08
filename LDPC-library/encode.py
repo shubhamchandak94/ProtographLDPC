@@ -34,7 +34,10 @@ def get_parser():
                         action='store',
                         dest='output_file',
                         type=str,
-                        help='Output file to store encoded blocks (one per line).',
+                        help='Output file to store encoded blocks (one per line). \
+                        An additional output_file.unpunctured is generated when puncturing is used \
+                        and contains all the codeword bits including unpunctured bits, to enable easy \
+                        extraction of message bits from the codeword.',',
                         required=True)
     return parser
 
@@ -81,7 +84,9 @@ def main():
                     f.write(extracted_transmitted_bits + '\n')
 
         # write punctured data from tempfile to output path
+        os.replace(out_path,out_path+'.unpunctured')
         os.replace(tmpfilename, out_path)
+
 
 
 if __name__ == '__main__':

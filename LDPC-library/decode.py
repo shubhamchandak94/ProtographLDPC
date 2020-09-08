@@ -30,7 +30,10 @@ def get_parser():
                         action='store',
                         dest='output_file',
                         type=str,
-                        help='Output file to store decoded blocks (one per line).',
+                        help='Output file to store decoded blocks (one per line). \
+                        An additional output_file.unpunctured is generated when puncturing is used \
+                        and contains all the codeword bits including unpunctured bits, to enable easy \
+                        extraction of message bits from the codeword.',
                         required=True)
     parser.add_argument('--channel',
                         action='store',
@@ -165,6 +168,7 @@ def main():
                     f.write(extracted_transmitted_bits + '\n')
 
         # move tmpfilename to decoded_file
+        os.replace(decoded_file,decoded_file+'.unpunctured')
         os.replace(tmpfilename, decoded_file)
         # We are done!
 
