@@ -86,10 +86,10 @@ python LDPC-library/make-pchk.py --output-pchk-file PCHK_FILE
 ```
 Here, the construction can be one of `peg` (default), `sum-permutations`, `quasi-cyclic` or `permuted-quasi-cyclic`.
 
-This script generates a parity check code (`PCHK_FILE`) in a format compatible with the base library. This can be converted from/to the [alist format](http://www.inference.org.uk/mackay/codes/alist.html) using the base library (see [this](https://shubhamchandak94.github.io/LDPC-codes/pchk.html)). When code puncturing is required, an additional `PCHK_FILE.transmitted` file is created. This human-readable file has the following format (where code-width represents the number of codeword bits before puncturing):
+This script generates a parity check code (`PCHK_FILE`) in a format compatible with the base library. This can be converted from/to the [alist format](http://www.inference.org.uk/mackay/codes/alist.html) using the base library (see [this](https://shubhamchandak94.github.io/LDPC-codes/pchk.html)). Note that the encoding and decoding scripts also work with codes constructed with other libraries as long as the proper format is used. When code puncturing is required, an additional `PCHK_FILE.transmitted` file is created. This human-readable file has the following format (where code-width represents the number of codeword bits before puncturing):
 ```sh
 total bits before transmission: code-width
-[space separated list of transmitted bit indices]
+[space separated list of transmitted bit indices (0-based)]
 ```
 
 For protograph codes, the transmitted bits are determined from the protograph itself. For regular codes, when using the `--fraction-transmitted` option, the transmitted bits are chosen randomly, and can be modified later according to the user's wishes.

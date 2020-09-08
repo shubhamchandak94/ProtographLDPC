@@ -45,3 +45,4 @@ Here are some papers and other resources that were helpful for understanding pro
 - LDPC Codes - a brief Tutorial (Bernhard M.J. Leiner): [[pdf](http://www.bernh.net/media/download/papers/ldpc.pdf)]
 - LDPC and Polar Codes in 5G Standard playlist (Andrew Thangaraj, IIT Madras): [[YouTube](https://www.youtube.com/playlist?list=PLyqSpQzTE6M81HJ26ZaNv0V3ROBrcv-Kc)]
 - EE 388 course material (Andrea Montanari, Stanford): [[Website](https://web.stanford.edu/class/ee388/ee388.html)]
+- Wikipedia pages on [Error correction codes](https://en.wikipedia.org/wiki/Error_correction_code), [Linear codes](https://en.wikipedia.org/wiki/Linear_code) and [LDPC codes](https://en.wikipedia.org/wiki/Low-density_parity-check_code).
