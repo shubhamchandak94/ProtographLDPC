@@ -42,7 +42,7 @@ The different construction methods below only differ in the submatrix generation
 
 ### peg
 
-This is the default construction method and generates a submatrix equivalent to a [regular code](methods-regular.html) built according to parameters `n = N`, `m = N`, `c = w` (column weight) with the `peg` construction described [here](methods-regular.html#peg). The construction method was chosen over other regular construction methods as it is the current state-of-the-art for regular code construction. When `w = 1`, we found that the `peg` algorithm always generated the identity matrix which led to issues due to insufficient randomness. Thus we replaced `peg` with a permutation matrix when `w = 1`.
+This is the default construction method and generates a submatrix equivalent to a [regular code](methods-regular.html) built according to parameters `n = N`, `m = N`, `c = w` (column weight) with the `peg` construction described [here](methods-regular.html#peg). The construction method was chosen over other regular construction methods as it is the current state-of-the-art for regular code construction. When `w = 1`, we found that the `peg` algorithm always generated the identity matrix which led to issues due to insufficient randomness. Thus we replaced `peg` with a permutation matrix when `w = 1`. The `peg` construction might be unsuitably slow for extremely large expansion factors (above ~50,000), and other constructions might be better in this case.
 
 ### sum-permutations
 

@@ -73,7 +73,7 @@ python LDPC-library/make-pchk.py --output-pchk-file PCHK_FILE
                     [--fraction-transmitted FRACTION_TRANSMITTED]
                     [--seed SEED]
 ```
-Here, the construction can be one of `peg` (default), `populate-columns`, `populate-rows` or `gallager`. The `--fraction-transmitted` option can be used for random puncturing, by default it is set to `1.0` (no puncturing). We also direct the user to the base library parity check generation script ([`make-ldpc`](https://shubhamchandak94.github.io/LDPC-codes/pchk.html#make-ldpc)) which implements slightly different construction methods but uses a similar interface.
+Here, the construction can be one of `peg` (default), `populate-columns`, `populate-rows` or `gallager`. The `--fraction-transmitted` option can be used for random puncturing, by default it is set to `1.0` (no puncturing). We also direct the user to the base library parity check generation script ([`make-ldpc`](https://shubhamchandak94.github.io/LDPC-codes/pchk.html#make-ldpc)) which implements slightly different construction methods but uses a similar interface. Due to the complexity of the `peg` algorithm, the base library construction (with parameters `evenboth no4cycle`) or one of the other three constructions in this library might be the best option when constructing extremely large codes with codeword lengths above ~100,000.
 
 For protograph codes, this reduces to:
 ```sh
@@ -84,7 +84,7 @@ python LDPC-library/make-pchk.py --output-pchk-file PCHK_FILE
                     --expansion-factor EXPANSION_FACTOR
                     [--seed SEED]
 ```
-Here, the construction can be one of `peg` (default), `sum-permutations`, `quasi-cyclic` or `permuted-quasi-cyclic`.
+Here, the construction can be one of `peg` (default), `sum-permutations`, `quasi-cyclic` or `permuted-quasi-cyclic`. The `peg` construction might be unsuitably slow for extremely large expansion factors (above ~50,000), and other constructions might be better in this case.
 
 This script generates a parity check code (`PCHK_FILE`) in a format compatible with the base library. This can be converted from/to the [alist format](http://www.inference.org.uk/mackay/codes/alist.html) using the base library (see [this](https://shubhamchandak94.github.io/LDPC-codes/pchk.html)). Note that the encoding and decoding scripts also work with codes constructed with other libraries as long as the proper format is used. When code puncturing is required, an additional `PCHK_FILE.transmitted` file is created. This human-readable file has the following format (where code-width represents the number of codeword bits before puncturing):
 ```sh
@@ -116,12 +116,16 @@ optional arguments:
                         Input file containing one or more message blocks (one
                         per line).
   --output-file OUTPUT_FILE, -o OUTPUT_FILE
-                        Output file to store encoded blocks (one per line).
+                        Output file to store encoded blocks (one per line). An
+                        additional output_file.unpunctured is generated when
+                        puncturing is used and contains all the codeword bits
+                        including punctured bits, to enable easy extraction of
+                        message bits from the codeword.
 ```
 
 The generator matrix file can be generated using the base library tool [`make-gen`](https://shubhamchandak94.github.io/LDPC-codes/encoding.html#make-gen). This automatically checks for the `PCHK_FILE.transmitted` file and applies puncturing if this exists. This is simply a wrapper around the base library [`encode`](https://shubhamchandak94.github.io/LDPC-codes/encoding.html#encode) utility, chiefly adding the puncturing capability.
 
-Finally, the [`extract`](https://shubhamchandak94.github.io/LDPC-codes/decoding.html#extract) and [`extract_systematic`](https://shubhamchandak94.github.io/LDPC-codes/support.html#extract_systematic) utilities in the base library can be used to find the positions of and extract the message bits in the codeword.
+Finally, the [`extract`](https://shubhamchandak94.github.io/LDPC-codes/decoding.html#extract) and [`extract_systematic`](https://shubhamchandak94.github.io/LDPC-codes/support.html#extract_systematic) utilities in the base library can be used to find the positions of and extract the message bits in the codeword. The `extract` tool should be used with the `.unpunctured` output file in case puncturing is being used, since the underlying base library is not aware of the puncturing.
 
 
 ## decode.py
@@ -146,7 +150,11 @@ optional arguments:
                         Received file containing one or more blocks (one per
                         line).
   --output-file OUTPUT_FILE, -o OUTPUT_FILE
-                        Output file to store decoded blocks (one per line).
+                        Output file to store decoded blocks (one per line). An
+                        additional output_file.unpunctured is generated when
+                        puncturing is used and contains all the codeword bits
+                        including punctured bits, to enable easy extraction of
+                        message bits from the codeword.
   --channel {misc,awgn,bsc}
                         Channel for computing LLR. Supported options: binary
                         symmetric channel, additive white gaussian noise
@@ -167,7 +175,7 @@ The channels and channel parameters are discussed in the base library documentat
 
 The base library provides a [`transmit`](https://shubhamchandak94.github.io/LDPC-codes/channel.html#transmit) function which induces corruption according to a binary-symetric or gaussian noice channel).
 
-Finally, the [`extract`](https://shubhamchandak94.github.io/LDPC-codes/decoding.html#extract) and [`extract_systematic`](https://shubhamchandak94.github.io/LDPC-codes/support.html#extract_systematic) utilities in the base library can be used to find the positions of and extract the message bits in the codeword.
+Finally, the [`extract`](https://shubhamchandak94.github.io/LDPC-codes/decoding.html#extract) and [`extract_systematic`](https://shubhamchandak94.github.io/LDPC-codes/support.html#extract_systematic) utilities in the base library can be used to find the positions of and extract the message bits in the codeword. The `extract` tool should be used with the `.unpunctured` output file in case puncturing is being used, since the underlying base library is not aware of the puncturing.
 
 
 ## Test scripts
