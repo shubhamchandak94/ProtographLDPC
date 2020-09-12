@@ -37,7 +37,7 @@ def get_parser():
                         help='Output file to store encoded blocks (one per line). \
                         An additional output_file.unpunctured is generated when puncturing is used \
                         and contains all the codeword bits including punctured bits, to enable easy \
-                        extraction of message bits from the codeword.',',
+                        extraction of message bits from the codeword.',
                         required=True)
     return parser
 
