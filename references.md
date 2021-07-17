@@ -42,7 +42,7 @@ Here are some papers and other resources that were helpful for understanding pro
 - Introduction to Error-Correcting Codes (Mary Wootters, EE 25N, Stanford): [[YouTube](https://youtu.be/q32CxFzOr9s)]
 - Error Correcting Codes playlist (eigenchris): [[YouTube](https://www.youtube.com/playlist?list=PLJHszsWbB6hqkOyFCQOAlQtfzC1G9sf2_)]
 - Hamming & low density parity check codes (Art of the Problem): [[YouTube](https://youtu.be/RWUxtGh-guY)]
-- Hamming codes and error correction (2 video series on YouTube): [[part 1](https://www.youtube.com/watch?v=X8jsijhllIA&ab_channel=3Blue1Brown)[part 2](https://www.youtube.com/watch?v=b3NxrZOu_CE&ab_channel=3Blue1Brown)]
+- Hamming codes and error correction (2 video series on YouTube): [[part 1](https://www.youtube.com/watch?v=X8jsijhllIA&ab_channel=3Blue1Brown)][[part 2](https://www.youtube.com/watch?v=b3NxrZOu_CE&ab_channel=3Blue1Brown)]
 - LDPC Codes - a brief Tutorial (Bernhard M.J. Leiner): [[pdf](http://www.bernh.net/media/download/papers/ldpc.pdf)]
 - LDPC and Polar Codes in 5G Standard playlist (Andrew Thangaraj, IIT Madras): [[YouTube](https://www.youtube.com/playlist?list=PLyqSpQzTE6M81HJ26ZaNv0V3ROBrcv-Kc)]
 - EE 388 course material (Andrea Montanari, Stanford): [[Website](https://web.stanford.edu/class/ee388/ee388.html)]
